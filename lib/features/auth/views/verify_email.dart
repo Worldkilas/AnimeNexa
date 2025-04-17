@@ -1,5 +1,6 @@
 import 'package:anime_nexa/shared/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:sizer/sizer.dart';
 
@@ -78,7 +79,10 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
               SizedBox(height: 10.h),
               CustomButton(
                 text: 'Verify code',
-                onPressed: () {},
+                onPressed: () {
+                  //TODO; VERIFY CODE
+                  context.go('/auth/signIn/setNameAndUsername');
+                },
               ),
               const SizedBox(height: 20),
               Row(

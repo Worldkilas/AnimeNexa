@@ -29,6 +29,7 @@ class AuthScreen extends StatelessWidget {
                   height: 60,
                   onPressed: () {
                     //TODO: implement sign in
+                    context.go('/auth/signIn');
                   },
                 ),
                 SizedBox(height: 2.h),

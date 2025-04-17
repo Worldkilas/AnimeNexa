@@ -31,7 +31,7 @@ class AppTypography {
   );
 
   static TextStyle displayMediumBold = GoogleFonts.epilogue(
-    fontSize: 32,
+    fontSize: 34,
     fontWeight: FontWeight.w700,
     height: 1.2,
   );
