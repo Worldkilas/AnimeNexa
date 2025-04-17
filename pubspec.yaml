@@ -38,7 +38,14 @@ dependencies:
   flutter_riverpod: ^2.6.1
   sizer: ^3.0.5
   riverpod_annotation: ^2.6.1
-  flutter_onboarding_slider: ^1.0.11
+
+  dio: ^5.8.0+1
+  go_router: ^14.8.1
+  google_fonts: ^6.2.1
+  flutter_svg: ^2.0.17
+  fpdart: ^1.1.1
+  get_it: ^8.0.3
+  pin_code_fields: ^8.0.1
 
 dev_dependencies:
   flutter_test:
@@ -67,6 +74,8 @@ flutter:
   assets:
     - lib/assets/fonts/
     - lib/assets/images/
+    - lib/assets/icons/
+    - lib/assets/Frame 551.png
     - lib/assets/fonts/Epilogue/Epilogue-VariableFont_wght.ttf
 
   #   - images/a_dot_ham.jpeg

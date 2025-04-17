@@ -1,10 +1,10 @@
-import 'package:anime_nexa/app/features/onboarding/onboarding_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sizer/sizer.dart';
 
-import 'app/constants/app_theme.dart';
-import 'app/providers/counter_provider.dart';
+import 'shared/constants/app_theme.dart';
+import 'providers/counter_provider.dart';
+import 'shared/navigation/app_router.dart';
 
 void main() {
   runApp(ProviderScope(child: const MyApp()));
@@ -16,11 +16,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Sizer(builder: (context, orientation, deviceType) {
-      return MaterialApp(
+      return MaterialApp.router(
+        routerConfig: appRouterConfig,
         title: 'Flutter Demo',
         debugShowCheckedModeBanner: false,
         theme: appTheme,
-        home: const OnboardingScreen(),
       );
     });
   }

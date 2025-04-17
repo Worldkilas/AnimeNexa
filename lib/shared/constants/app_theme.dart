@@ -4,6 +4,7 @@ import 'app_colors.dart';
 import 'app_typography.dart';
 
 final appTheme = ThemeData(
+  useMaterial3: true,
   primaryColor: AppColors.primary,
   scaffoldBackgroundColor: AppColors.background,
   textTheme: TextTheme(
@@ -22,7 +23,9 @@ final appTheme = ThemeData(
   ),
   appBarTheme: AppBarTheme(
     backgroundColor: AppColors.primary,
-    titleTextStyle: AppTypography.displayMediumBold.copyWith(color: Colors.white,),
+    titleTextStyle: AppTypography.displayMediumBold.copyWith(
+      color: Colors.white,
+    ),
   ),
   buttonTheme: ButtonThemeData(
     buttonColor: AppColors.primary,
@@ -40,5 +43,5 @@ final appTheme = ThemeData(
     border: OutlineInputBorder(
       borderSide: BorderSide(color: AppColors.line),
     ),
-  ),  
+  ),
 );
