@@ -55,6 +55,12 @@ class AppTypography {
     height: 1.5,
   );
 
+  static TextStyle textMediumBold = GoogleFonts.epilogue(
+    fontSize: 16,
+    fontWeight: FontWeight.w700,
+    height: 1.5,
+  );
+
   static TextStyle textSmall = GoogleFonts.epilogue(
     fontSize: 14,
     fontWeight: FontWeight.w400,
