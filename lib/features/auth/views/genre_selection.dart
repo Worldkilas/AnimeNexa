@@ -3,6 +3,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sizer/sizer.dart';
 
+import '../../../shared/widgets/custom_button.dart';
+
 class GenresScreen extends StatelessWidget {
   const GenresScreen({super.key});
 
@@ -27,18 +29,17 @@ class GenresScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SvgPicture.asset('lib/assets/icons/Logo.svg'),
-              const SizedBox(height: 10),
+              SizedBox(height: 2.5.h),
               Text(
                 'Genre Interests',
                 style: theme.textTheme.displayMedium,
               ),
               const SizedBox(height: 10),
-              const Text(
+              Text(
                 'Select  Anime genres that interest you.',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 14, color: Colors.black),
+                style: theme.textTheme.bodyMedium,
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: 7.h),
               Wrap(
                 spacing: 10,
                 runSpacing: 10,
@@ -47,11 +48,11 @@ class GenresScreen extends StatelessWidget {
                     label: Text(genre),
                     selected: false, // Static for UI purposes
                     onSelected: (bool selected) {
-                      // Selection logic (not implemented)
+                      //TODO:  Selection logic (not implemented)
                     },
-                    selectedColor: const Color(0xFF6A0DAD),
+                    selectedColor: theme.primaryColor,
                     backgroundColor: Colors.grey[200],
-                    labelStyle: const TextStyle(color: Colors.black),
+                    labelStyle: theme.textTheme.displaySmall,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                       side: const BorderSide(color: Color(0xFF6A0DAD)),
@@ -61,36 +62,34 @@ class GenresScreen extends StatelessWidget {
                   );
                 }).toList(),
               ),
-              const SizedBox(height: 20),
+              Spacer(),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  OutlinedButton(
-                    onPressed: () {
-                      context.go('/name');
-                    },
-                    style: OutlinedButton.styleFrom(
-                      side: const BorderSide(color: Color(0xFF6A0DAD)),
-                      foregroundColor: const Color(0xFF6A0DAD),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 10),
+                  CustomButton(
+                    text: 'Back',
+                    backgroundColor: Colors.white,
+                    borderSide: BorderSide(
+                      color: theme.primaryColor,
+                      width: 1.5,
                     ),
-                    child: const Text('Back'),
-                  ),
-                  ElevatedButton(
+                    textColor: Colors.black,
                     onPressed: () {
-                      // Next button logic (not implemented)
+                      context.pop();
                     },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF6A0DAD),
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 10),
-                    ),
-                    child: const Text('Next'),
+                    width: 140,
                   ),
+                  CustomButton(
+                    text: 'Next',
+                    onPressed: () {
+                      //TODO: Change to actual navigation
+                      context.go('/home');
+                    },
+                    width: 140,
+                  )
                 ],
               ),
+              SizedBox(height: 4.h)
             ],
           ),
         ),
