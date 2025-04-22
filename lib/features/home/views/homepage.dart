@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+
+import '../../../shared/constants/app_colors.dart';
+import '../../../shared/widgets/custom_button.dart';
 
 final List<String> storyAvatars =
-    List.generate(10, (index) => 'https://i.pravatar.cc/150?img=$index');
+    List.generate(10, (index) => 'lib/assets/images/post.png');
 final List<Map<String, String>> posts = [
   {
-    'image': 'https://via.placeholder.com/400x300?text=Post1',
+    'image': 'lib/assets/images/post.png',
     'author': 'Dante',
     'caption': 'Itachi made the biggest sacrifice in history',
     'likes': '1292',
     'time': '5h ago',
   },
   {
-    'image': 'https://via.placeholder.com/400x300?text=Post2',
+    'image': 'lib/assets/images/post.png',
     'author': 'Dante',
     'caption': 'Another cool post about anime',
     'likes': '892',
@@ -42,16 +46,14 @@ class Homepage extends StatelessWidget {
       elevation: 0,
       title: Row(
         children: [
-          Image.asset("assets/logo.png",
-              height: 30), // Replace with your logo asset
+          SvgPicture.asset(
+            "lib/assets/icons/Logo.svg",
+            color: AppColors.primary,
+          ), // Replace with your logo asset
           Spacer(),
-          ElevatedButton(
+          CustomButton(
             onPressed: () {},
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.purple,
-              shape: StadiumBorder(),
-            ),
-            child: Text("Connect Wallet"),
+            text: 'Connect wallet',
           ),
           IconButton(
             icon: Icon(Icons.menu, color: Colors.black),
@@ -74,7 +76,7 @@ class Homepage extends StatelessWidget {
             padding: const EdgeInsets.all(6.0),
             child: CircleAvatar(
               radius: 25,
-              backgroundImage: NetworkImage(storyAvatars[index]),
+              backgroundImage: AssetImage(storyAvatars[index]),
             ),
           );
         },
@@ -117,7 +119,7 @@ class Homepage extends StatelessWidget {
         children: [
           Stack(
             children: [
-              Image.network(post['image']!,
+              Image.asset(post['image']!,
                   fit: BoxFit.cover, width: double.infinity, height: 200),
               Positioned(
                 bottom: 8,
@@ -127,7 +129,7 @@ class Homepage extends StatelessWidget {
                     CircleAvatar(
                         radius: 12,
                         backgroundImage:
-                            NetworkImage('https://i.pravatar.cc/150?img=3')),
+                            AssetImage('lib/assets/images/post.png')),
                     SizedBox(width: 6),
                     Text(post['author']!,
                         style: TextStyle(color: Colors.white)),
