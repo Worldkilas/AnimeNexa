@@ -1,5 +1,6 @@
 import 'package:anime_nexa/shared/constants/app_typography.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../../shared/constants/app_colors.dart';
@@ -99,7 +100,9 @@ class ProfileScreen extends StatelessWidget {
             backgroundColor: Colors.white,
             textStyle: AppTypography.linkXSmall,
             borderSide: BorderSide(color: Theme.of(context).primaryColor),
-            onPressed: () {},
+            onPressed: () {
+              context.go('/edit');
+            },
           ),
         ),
         Text(
