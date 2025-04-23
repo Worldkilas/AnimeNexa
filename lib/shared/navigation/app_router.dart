@@ -1,7 +1,7 @@
 import 'package:anime_nexa/features/create/views/create_reels.dart';
 import 'package:anime_nexa/features/discover/views/discover_page.dart';
 import 'package:anime_nexa/features/home/views/homepage.dart';
-import 'package:anime_nexa/features/messaging/views/messages.dart';
+import 'package:anime_nexa/features/messaging/views/inbox.dart';
 import 'package:anime_nexa/features/user_profile/views/user_profile.dart';
 import 'package:anime_nexa/shared/view/layout_scaffold.dart';
 import 'package:flutter/material.dart';
@@ -88,7 +88,7 @@ final appRouterConfig = GoRouter(
           routes: [
             GoRoute(
               path: '/messaging',
-              builder: (context, state) => const MessagingView(),
+              builder: (context, state) => const InboxView(),
             ),
           ],
         ),
