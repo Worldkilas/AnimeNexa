@@ -1,0 +1,2 @@
+C:/Users/USER/Documents/flutter projs/AnimeNexa/android/app/.cxx/Debug/jd5036l1/armeabi-v7a/CMakeFiles/edit_cache.dir
+C:/Users/USER/Documents/flutter projs/AnimeNexa/android/app/.cxx/Debug/jd5036l1/armeabi-v7a/CMakeFiles/rebuild_cache.dir
