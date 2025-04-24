@@ -11,32 +11,35 @@ class LayoutScaffold extends StatelessWidget {
     return Scaffold(
       body: statefulNavigationShell,
       bottomNavigationBar: NavigationBar(
-          selectedIndex: statefulNavigationShell.currentIndex,
-          onDestinationSelected: statefulNavigationShell.goBranch,
-          indicatorColor: Theme.of(context).primaryColor,
-          labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
-          destinations: [
-            NavigationDestination(
-              icon: SvgPicture.asset('lib/assets/icons/home.svg'),
-              label: 'Home',
-            ),
-            NavigationDestination(
-              icon: SvgPicture.asset('lib/assets/icons/discover.svg'),
-              label: 'Discover',
-            ),
-            NavigationDestination(
-              icon: SvgPicture.asset('lib/assets/icons/Add.svg'),
-              label: '',
-            ),
-            NavigationDestination(
-              icon: SvgPicture.asset('lib/assets/icons/messages.svg'),
-              label: 'Messages',
-            ),
-            NavigationDestination(
-              icon: SvgPicture.asset('lib/assets/icons/profile.svg'),
-              label: 'Profile',
-            ),
-          ]),
+        selectedIndex: statefulNavigationShell.currentIndex,
+        onDestinationSelected: (index) => index == 1
+            ? context.push('/discover')
+            : statefulNavigationShell.goBranch(index),
+        indicatorColor: Theme.of(context).primaryColor,
+        labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
+        destinations: [
+          NavigationDestination(
+            icon: SvgPicture.asset('lib/assets/icons/home.svg'),
+            label: 'Home',
+          ),
+          NavigationDestination(
+            icon: SvgPicture.asset('lib/assets/icons/discover.svg'),
+            label: 'Discover',
+          ),
+          NavigationDestination(
+            icon: SvgPicture.asset('lib/assets/icons/Add.svg'),
+            label: '',
+          ),
+          NavigationDestination(
+            icon: SvgPicture.asset('lib/assets/icons/messages.svg'),
+            label: 'Messages',
+          ),
+          NavigationDestination(
+            icon: SvgPicture.asset('lib/assets/icons/profile.svg'),
+            label: 'Profile',
+          ),
+        ],
+      ),
     );
   }
 }
