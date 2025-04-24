@@ -1,4 +1,4 @@
-import 'package:anime_nexa/features/discover/widgets/clan_action_button.dart';
+import 'package:anime_nexa/features/clans/widgets/clan_action_button.dart';
 import 'package:anime_nexa/shared/constants/app_typography.dart';
 import 'package:anime_nexa/shared/widgets/custom_button.dart';
 import 'package:flutter/material.dart';

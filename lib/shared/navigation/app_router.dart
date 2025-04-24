@@ -1,7 +1,5 @@
 import 'package:anime_nexa/features/create/views/create_reels.dart';
 import 'package:anime_nexa/features/discover/views/discover_page.dart';
-import 'package:anime_nexa/features/discover/views/society_page.dart';
-import 'package:anime_nexa/features/discover/views/suggested_clans.dart';
 import 'package:anime_nexa/features/home/views/homepage.dart';
 import 'package:anime_nexa/features/messaging/views/messages.dart';
 import 'package:anime_nexa/features/user_profile/views/edit_profile.dart';
@@ -74,6 +72,14 @@ final appRouterConfig = GoRouter(
         StatefulShellBranch(
           routes: [
             GoRoute(
+              path: '/discover',
+              builder: (context, state) => const DiscoverPage(),
+            ),
+          ],
+        ),
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
               path: '/crete',
               builder: (context, state) => const CreateReels(),
             ),
@@ -101,19 +107,14 @@ final appRouterConfig = GoRouter(
       path: '/edit',
       builder: (context, state) => const EditProfileScreen(),
     ),
-    GoRoute(
-      path: '/discover',
-      builder: (context, state) => const DiscoverPage(),
-      routes: [
-        GoRoute(
-          path: '/society',
-          builder: (context, state) => const SocietyPage(),
-        ),
-         GoRoute(
-          path: '/suggested',
-          builder: (context, state) => const SuggestedClans(),
-        ),
-      ]
-    ),
+    // Future routes to be added later
+    // GoRoute(
+    //   path: '/society',
+    //   builder: (context, state) => const SocietyPage(),
+    // ),
+    // GoRoute(
+    //   path: '/suggested',
+    //   builder: (context, state) => const SuggestedClans(),
+    // ),
   ],
 );

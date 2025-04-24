@@ -1,5 +1,5 @@
-import 'package:anime_nexa/features/discover/widgets/post_action_button.dart';
-import 'package:anime_nexa/features/discover/widgets/post_images.dart';
+import 'package:anime_nexa/features/clans/widgets/post_action_button.dart';
+import 'package:anime_nexa/features/clans/widgets/post_images.dart';
 import 'package:anime_nexa/shared/constants/app_theme.dart';
 import 'package:anime_nexa/shared/constants/app_typography.dart';
 import 'package:anime_nexa/shared/utils.dart';

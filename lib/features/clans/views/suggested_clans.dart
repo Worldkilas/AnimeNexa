@@ -1,4 +1,4 @@
-import 'package:anime_nexa/features/discover/widgets/discover_clan_card.dart';
+import 'package:anime_nexa/features/clans/widgets/discover_clan_card.dart';
 import 'package:anime_nexa/shared/constants/app_typography.dart';
 import 'package:anime_nexa/shared/utils.dart';
 import 'package:flutter/material.dart';
