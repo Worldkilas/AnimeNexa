@@ -12,7 +12,7 @@ class LayoutScaffold extends StatelessWidget {
       body: statefulNavigationShell,
       bottomNavigationBar: NavigationBar(
           selectedIndex: statefulNavigationShell.currentIndex,
-          onDestinationSelected: statefulNavigationShell.goBranch,
+          onDestinationSelected: (index) => index == 2 ? context.push('/post') : statefulNavigationShell.goBranch(index),
           indicatorColor: Theme.of(context).primaryColor,
           labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
           destinations: [
