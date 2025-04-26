@@ -13,8 +13,10 @@ import '../../features/auth/views/genre_selection.dart';
 import '../../features/auth/views/name_screen.dart';
 import '../../features/auth/views/sign_in.dart';
 import '../../features/auth/views/verify_email.dart';
+import '../../features/messaging/views/chat_view.dart';
 import '../../features/messaging/views/inbox.dart';
 import '../../features/onboarding/views/onboarding_screen.dart';
+import '../../features/settings/view/settings_screen.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final appRouterConfig = GoRouter(
@@ -91,6 +93,12 @@ final appRouterConfig = GoRouter(
             GoRoute(
               path: '/messaging',
               builder: (context, state) => const InboxView(),
+              routes: [
+                GoRoute(
+                  path: '/chatView',
+                  builder: (context, state) => const ChatView(),
+                ),
+              ],
             ),
           ],
         ),
@@ -107,6 +115,10 @@ final appRouterConfig = GoRouter(
     GoRoute(
       path: '/edit',
       builder: (context, state) => const EditProfileScreen(),
+    ),
+    GoRoute(
+      path: '/settings',
+      builder: (context, state) => const SettingsScreen(),
     ),
   ],
 );
