@@ -1,6 +1,7 @@
 import 'package:anime_nexa/features/create/views/create_reels.dart';
 import 'package:anime_nexa/features/discover/views/discover_page.dart';
 import 'package:anime_nexa/features/home/views/homepage.dart';
+import 'package:anime_nexa/features/settings/view/notifications_screen.dart';
 
 import 'package:anime_nexa/features/user_profile/views/edit_profile.dart';
 import 'package:anime_nexa/features/user_profile/views/user_profile.dart';
@@ -16,6 +17,7 @@ import '../../features/auth/views/verify_email.dart';
 import '../../features/messaging/views/chat_view.dart';
 import '../../features/messaging/views/inbox.dart';
 import '../../features/onboarding/views/onboarding_screen.dart';
+import '../../features/settings/view/accounts.dart';
 import '../../features/settings/view/settings_screen.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -98,6 +100,20 @@ final appRouterConfig = GoRouter(
                   path: '/chatView',
                   builder: (context, state) => const ChatView(),
                 ),
+                GoRoute(
+                  path: '/settings',
+                  builder: (context, state) => const SettingsScreen(),
+                  routes: [
+                    GoRoute(
+                      path: '/accounts',
+                      builder: (context, state) => const Accounts(),
+                    ),
+                    GoRoute(
+                      path: '/notification',
+                      builder: (context, state) => const NotificationsScreen(),
+                    )
+                  ],
+                ),
               ],
             ),
           ],
@@ -107,18 +123,16 @@ final appRouterConfig = GoRouter(
             GoRoute(
               path: '/profile',
               builder: (context, state) => const ProfileScreen(),
+              routes: [
+                GoRoute(
+                  path: '/edit',
+                  builder: (context, state) => const EditProfileScreen(),
+                ),
+              ],
             ),
           ],
         ),
       ],
-    ),
-    GoRoute(
-      path: '/edit',
-      builder: (context, state) => const EditProfileScreen(),
-    ),
-    GoRoute(
-      path: '/settings',
-      builder: (context, state) => const SettingsScreen(),
     ),
   ],
 );

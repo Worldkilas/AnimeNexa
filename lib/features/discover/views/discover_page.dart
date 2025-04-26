@@ -8,14 +8,6 @@ class DiscoverPage extends StatelessWidget {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-        appBar: AppBar(
-          title: TabBar(
-            tabs: [
-              Tab(text: 'For you'),
-              Tab(text: 'Followings'),
-            ],
-          ),
-        ),
         //TODO: Implement discover page
         body: TabBarView(
           children: List.generate(

@@ -14,7 +14,7 @@ class LayoutScaffold extends StatelessWidget {
           selectedIndex: statefulNavigationShell.currentIndex,
           onDestinationSelected: statefulNavigationShell.goBranch,
           indicatorColor: Theme.of(context).primaryColor,
-          labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
+          // labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
           destinations: [
             NavigationDestination(
               icon: SvgPicture.asset('lib/assets/icons/home.svg'),

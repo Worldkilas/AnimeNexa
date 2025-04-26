@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class ChatsTab extends StatelessWidget {
   const ChatsTab({super.key});
@@ -11,6 +12,9 @@ class ChatsTab extends StatelessWidget {
       itemBuilder: (context, index) {
         //TODO: implement real messages
         return ListTile(
+          onTap: () {
+            context.go('/messaging/chatView');
+          },
           leading: CircleAvatar(
             radius: 30,
             backgroundImage: AssetImage('lib/assets/images/unnamed (14).png'),

@@ -101,7 +101,7 @@ class ProfileScreen extends StatelessWidget {
             textStyle: AppTypography.linkXSmall,
             borderSide: BorderSide(color: Theme.of(context).primaryColor),
             onPressed: () {
-              context.go('/edit');
+              context.go('/profille/edit');
             },
           ),
         ),

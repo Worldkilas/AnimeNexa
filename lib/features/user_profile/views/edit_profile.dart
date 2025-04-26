@@ -68,12 +68,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           child: child!,
                         );
                       },
-                    ).then((value) {
-                      if (value != null) {
-                        _birthdayController.text =
-                            DateFormat('dd/MM/yyy').format(value);
-                      }
-                    });
+                    ).then(
+                      (value) {
+                        if (value != null) {
+                          _birthdayController.text =
+                              DateFormat('dd/MM/yyy').format(value);
+                        }
+                      },
+                    );
                   }
                 : null,
             decoration: InputDecoration(
@@ -175,7 +177,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               child: CustomButton(
                 height: 48,
                 text: "Done",
-                onPressed: () {},
+                onPressed: () {
+                  //TODO: Add functionality to save changes
+                },
               ),
             )
           ],
