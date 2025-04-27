@@ -123,12 +123,6 @@ final appRouterConfig = GoRouter(
             GoRoute(
               path: '/profile',
               builder: (context, state) => const ProfileScreen(),
-              routes: [
-                GoRoute(
-                  path: '/edit',
-                  builder: (context, state) => const EditProfileScreen(),
-                ),
-              ],
             ),
           ],
         ),
