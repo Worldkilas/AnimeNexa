@@ -38,7 +38,7 @@ dependencies:
   flutter_svg: ^2.0.17
   fpdart: ^1.1.1
   get_it: ^8.0.3
-  giphy_get: ^3.6.1
+  giphy_get: 3.6.0
   go_router: ^14.8.1
   google_fonts: ^6.2.1
   intl: ^0.19.0
