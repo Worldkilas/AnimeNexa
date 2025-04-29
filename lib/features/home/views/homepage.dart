@@ -1,3 +1,4 @@
+import 'package:anime_nexa/shared/constants/app_typography.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:sizer/sizer.dart';
@@ -51,11 +52,21 @@ class Homepage extends StatelessWidget {
           color: AppColors.primary,
         ),
         actions: [
-          CustomButton(
-            onPressed: () {},
-            text: 'Connect wallet',
-            width: 40.w,
-            height: 30,
+          InkWell(
+            onTap: () {
+              // Handle wallet connection here
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                color: AppColors.primary,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              padding: EdgeInsets.symmetric(horizontal: 11, vertical: 9),
+              child: Text(
+                "Connect wallet",
+                style: AppTypography.textSmall.copyWith(color: Colors.white),
+              ),
+            ),
           ),
           IconButton(
             icon: Icon(Icons.menu, color: Colors.black),
