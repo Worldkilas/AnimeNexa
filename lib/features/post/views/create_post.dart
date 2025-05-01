@@ -39,29 +39,6 @@ class _CreatePostState extends State<CreatePost> {
   TimeOfDay _selectedTime = const TimeOfDay(hour: 16, minute: 0);
   TextEditingController _postController = TextEditingController();
 
-  // void pickGif(BuildContext context) async {
-  //   showModalBottomSheet(
-  //       context: context,
-  //       constraints: BoxConstraints(
-  //         minHeight: 80.h,
-  //       ),
-  //       builder: (context) {
-  //         return
-  //       });
-  //   // GiphyGif? gif = await GiphyGet.getGif(
-  //   //   context: context,
-  //   //   apiKey: giphyAPIKey,
-  //   //   lang: GiphyLanguage.english,
-  //   //   randomID: Uuid().v4(),
-  //   //   tabColor: appTheme.primaryColor,
-  //   //   debounceTimeInMilliseconds: 350,
-  //   //   showEmojis: false,
-  //   //   showStickers: false,
-  //   // );
-  //   // setState(() {
-  //   //   _selectedFiles.add(gif);
-  //   // });
-  // }
 
   void _showScheduleBottomSheet(BuildContext context) {
     showModalBottomSheet(
@@ -102,10 +79,10 @@ class _CreatePostState extends State<CreatePost> {
             file.path!.endsWith('.mp4')) {
           if (file.path!.endsWith('.mp4')) {
             _selectedVids.add(file.path!);
-            // final thumbnail = await generateThumbnail(File(file.path!));
-            // setState(() {
-            //   _selectedFiles.add(thumbnail!);
-            // });
+            final thumbnail = await generateThumbnail(File(file.path!));
+            setState(() {
+              _selectedFiles.add(thumbnail!);
+            });
           } else {
             setState(() {
               _selectedFiles.add(file.xFile);
@@ -269,13 +246,14 @@ class _CreatePostState extends State<CreatePost> {
                   if (_selectedFiles.isNotEmpty)
                     ConstrainedBox(
                       constraints: BoxConstraints(
-                        maxHeight: 400,
+                        maxHeight: 35.h,
                       ),
                       child: CarouselView(
+                        itemSnapping: true,
                         itemExtent: _selectedFiles.length > 1 ? 320 : 100.w,
                         shrinkExtent: 200,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5),
+                          borderRadius: BorderRadius.circular(10),
                         ),
                         enableSplash: false,
                         children: _selectedFiles.map((sfile) {
@@ -285,16 +263,37 @@ class _CreatePostState extends State<CreatePost> {
                                 GiphyMediaView(media: sfile)
                               } else ...{
                                 Container(
-                                  height: 400,
+                                  height: 35.h,
                                   decoration: BoxDecoration(
                                     image: DecorationImage(
                                       image: FileImage(File(sfile.path)),
                                       fit: BoxFit.cover,
                                     ),
-                                    borderRadius: BorderRadius.circular(3),
+                                    borderRadius: BorderRadius.circular(6),
                                   ),
                                 ),
                               },
+                              if (sfile.runtimeType == GiphyMedia)
+                                Positioned(
+                                  bottom: 10,
+                                  left: 10,
+                                  child: Container(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 8, vertical: 2),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(4),
+                                      color:
+                                          Colors.black.withValues(alpha: 0.3),
+                                    ),
+                                    child: Text(
+                                      "GIF",
+                                      style: AppTypography.textXSmall.copyWith(
+                                        color: Colors.grey[200],
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ),
+                                  ),
+                                ),
                               Positioned(
                                 top: 10,
                                 right: 10,
