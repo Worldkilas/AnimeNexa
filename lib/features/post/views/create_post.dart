@@ -1,16 +1,28 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:anime_nexa/features/post/views/gif_screen.dart';
 import 'package:anime_nexa/features/post/widgets/options_bottom_sheet.dart';
 import 'package:anime_nexa/features/post/widgets/privacy_options_bottom_sheet.dart';
 import 'package:anime_nexa/features/post/widgets/schedule_bottom_sheet.dart';
+import 'package:anime_nexa/shared/constants/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:anime_nexa/shared/constants/app_typography.dart';
 import 'package:anime_nexa/shared/utils.dart';
+import 'package:giphy_flutter_sdk/dto/giphy_content_request.dart';
+import 'package:giphy_flutter_sdk/dto/giphy_media.dart';
+import 'package:giphy_flutter_sdk/dto/giphy_media_type.dart';
+import 'package:giphy_flutter_sdk/giphy_flutter_sdk.dart';
+import 'package:giphy_flutter_sdk/giphy_grid_view.dart';
+import 'package:giphy_flutter_sdk/giphy_media_view.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sizer/sizer.dart';
+import 'package:uuid/uuid.dart';
+
+// no need to hide, it's free😂
+const giphyAPIKey = "LrjKIV019iAkmubcMpunGTW1tvLw57x1";
 
 class CreatePost extends StatefulWidget {
   const CreatePost({super.key});
@@ -21,11 +33,35 @@ class CreatePost extends StatefulWidget {
 
 class _CreatePostState extends State<CreatePost> {
   String _selectedPrivacy = 'Public';
-  List<String> _selectedFiles = [];
+  List<dynamic> _selectedFiles = [];
   List<String> _selectedVids = []; // store selected video files
   DateTime _selectedDate = DateTime(2025, 2, 19);
   TimeOfDay _selectedTime = const TimeOfDay(hour: 16, minute: 0);
   TextEditingController _postController = TextEditingController();
+
+  // void pickGif(BuildContext context) async {
+  //   showModalBottomSheet(
+  //       context: context,
+  //       constraints: BoxConstraints(
+  //         minHeight: 80.h,
+  //       ),
+  //       builder: (context) {
+  //         return
+  //       });
+  //   // GiphyGif? gif = await GiphyGet.getGif(
+  //   //   context: context,
+  //   //   apiKey: giphyAPIKey,
+  //   //   lang: GiphyLanguage.english,
+  //   //   randomID: Uuid().v4(),
+  //   //   tabColor: appTheme.primaryColor,
+  //   //   debounceTimeInMilliseconds: 350,
+  //   //   showEmojis: false,
+  //   //   showStickers: false,
+  //   // );
+  //   // setState(() {
+  //   //   _selectedFiles.add(gif);
+  //   // });
+  // }
 
   void _showScheduleBottomSheet(BuildContext context) {
     showModalBottomSheet(
@@ -72,7 +108,7 @@ class _CreatePostState extends State<CreatePost> {
             // });
           } else {
             setState(() {
-              _selectedFiles.add(file.path!);
+              _selectedFiles.add(file.xFile);
             });
           }
         }
@@ -109,6 +145,12 @@ class _CreatePostState extends State<CreatePost> {
         return OptionsBottomSheet();
       },
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    GiphyFlutterSDK.configure(apiKey: giphyAPIKey);
   }
 
   @override
@@ -239,16 +281,20 @@ class _CreatePostState extends State<CreatePost> {
                         children: _selectedFiles.map((sfile) {
                           return Stack(
                             children: [
-                              Container(
-                                height: 33.h,
-                                decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                    image: FileImage(File(sfile)),
-                                    fit: BoxFit.cover,
+                              if (sfile.runtimeType == GiphyMedia) ...{
+                                GiphyMediaView(media: sfile)
+                              } else ...{
+                                Container(
+                                  height: 400,
+                                  decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                      image: FileImage(File(sfile.path)),
+                                      fit: BoxFit.cover,
+                                    ),
+                                    borderRadius: BorderRadius.circular(3),
                                   ),
-                                  borderRadius: BorderRadius.circular(3),
                                 ),
-                              ),
+                              },
                               Positioned(
                                 top: 10,
                                 right: 10,
@@ -306,7 +352,15 @@ class _CreatePostState extends State<CreatePost> {
                     ),
                   ),
                   InkWell(
-                    onTap: () {},
+                    onTap: () async {
+                      GiphyMedia result = await Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => GifScreen()));
+                      if (result != null) {
+                        setState(() {
+                          _selectedFiles.add(result);
+                        });
+                      }
+                    },
                     child: SvgPicture.asset(
                       iconPathGen('gif'),
                     ),
