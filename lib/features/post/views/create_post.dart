@@ -5,21 +5,19 @@ import 'package:anime_nexa/features/post/views/gif_screen.dart';
 import 'package:anime_nexa/features/post/widgets/options_bottom_sheet.dart';
 import 'package:anime_nexa/features/post/widgets/privacy_options_bottom_sheet.dart';
 import 'package:anime_nexa/features/post/widgets/schedule_bottom_sheet.dart';
+import 'package:anime_nexa/models/mediaitem.dart';
 import 'package:anime_nexa/shared/constants/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:anime_nexa/shared/constants/app_typography.dart';
 import 'package:anime_nexa/shared/utils.dart';
-import 'package:giphy_flutter_sdk/dto/giphy_content_request.dart';
+import 'package:giphy_flutter_sdk/dto/giphy_asset.dart';
 import 'package:giphy_flutter_sdk/dto/giphy_media.dart';
-import 'package:giphy_flutter_sdk/dto/giphy_media_type.dart';
 import 'package:giphy_flutter_sdk/giphy_flutter_sdk.dart';
-import 'package:giphy_flutter_sdk/giphy_grid_view.dart';
 import 'package:giphy_flutter_sdk/giphy_media_view.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sizer/sizer.dart';
-import 'package:uuid/uuid.dart';
 
 // no need to hide, it's free😂
 const giphyAPIKey = "LrjKIV019iAkmubcMpunGTW1tvLw57x1";
@@ -33,12 +31,10 @@ class CreatePost extends StatefulWidget {
 
 class _CreatePostState extends State<CreatePost> {
   String _selectedPrivacy = 'Public';
-  List<dynamic> _selectedFiles = [];
-  List<String> _selectedVids = []; // store selected video files
+  List<MediaItem> _selectedFiles = [];
   DateTime _selectedDate = DateTime(2025, 2, 19);
   TimeOfDay _selectedTime = const TimeOfDay(hour: 16, minute: 0);
   TextEditingController _postController = TextEditingController();
-
 
   void _showScheduleBottomSheet(BuildContext context) {
     showModalBottomSheet(
@@ -78,14 +74,17 @@ class _CreatePostState extends State<CreatePost> {
             file.path!.endsWith('.png') ||
             file.path!.endsWith('.mp4')) {
           if (file.path!.endsWith('.mp4')) {
-            _selectedVids.add(file.path!);
             final thumbnail = await generateThumbnail(File(file.path!));
             setState(() {
-              _selectedFiles.add(thumbnail!);
+              _selectedFiles.add(MediaItem(
+                  type: MediaType.video,
+                  mediaPath: file.path!,
+                  thumnailPath: thumbnail!.path));
             });
           } else {
             setState(() {
-              _selectedFiles.add(file.xFile);
+              _selectedFiles
+                  .add(MediaItem(type: MediaType.image, mediaPath: file.path!));
             });
           }
         }
@@ -138,9 +137,10 @@ class _CreatePostState extends State<CreatePost> {
         leading: IconButton(
           icon: const Icon(Icons.close, size: 30),
           onPressed: () {
-            _postController.text.isEmpty
-                ? context.pop()
-                : _showOptionsBottomSheet(context);
+            log(_selectedFiles.map((e) => e).toString());
+            // _postController.text.isEmpty || _selectedFiles.isEmpty
+            //     ? context.pop()
+            //     : _showOptionsBottomSheet(context);
           },
         ),
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -258,22 +258,40 @@ class _CreatePostState extends State<CreatePost> {
                         enableSplash: false,
                         children: _selectedFiles.map((sfile) {
                           return Stack(
+                            alignment: Alignment.center,
                             children: [
-                              if (sfile.runtimeType == GiphyMedia) ...{
-                                GiphyMediaView(media: sfile)
+                              if (sfile.type == MediaType.gif) ...{
+                                GiphyMediaView(mediaId: sfile.mediaPath)
                               } else ...{
                                 Container(
                                   height: 35.h,
                                   decoration: BoxDecoration(
                                     image: DecorationImage(
-                                      image: FileImage(File(sfile.path)),
+                                      image: FileImage(File(
+                                        sfile.type == MediaType.video
+                                            ? sfile.thumnailPath!
+                                            : sfile.mediaPath!,
+                                      )),
                                       fit: BoxFit.cover,
                                     ),
                                     borderRadius: BorderRadius.circular(6),
                                   ),
                                 ),
                               },
-                              if (sfile.runtimeType == GiphyMedia)
+                              if (sfile.type == MediaType.video)
+                                Container(
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Colors.black.withValues(alpha: 0.5),
+                                  ),
+                                  padding: EdgeInsets.all(8),
+                                  child: Icon(
+                                    Icons.play_arrow,
+                                    color: Colors.white,
+                                    size: 20,
+                                  ),
+                                ),
+                              if (sfile.type == MediaType.gif)
                                 Positioned(
                                   bottom: 10,
                                   left: 10,
@@ -356,7 +374,8 @@ class _CreatePostState extends State<CreatePost> {
                           MaterialPageRoute(builder: (context) => GifScreen()));
                       if (result != null) {
                         setState(() {
-                          _selectedFiles.add(result);
+                          _selectedFiles.add(MediaItem(
+                              type: MediaType.gif, mediaPath: result.id));
                         });
                       }
                     },

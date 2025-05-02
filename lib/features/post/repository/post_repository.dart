@@ -20,17 +20,17 @@ class PostRepository implements IPostRepository {
       if (post.media!.isNotEmpty) {
         List<String> mediaUrls = [];
 
-        for (String mediaPath in post.media!) {
-          final storageRef = _storage.ref().child(
-              'posts/${post.pid}/${DateTime.now().millisecondsSinceEpoch}_${mediaPath.split('/').last}');
+        // for (String mediaPath in post.media!) {
+        //   final storageRef = _storage.ref().child(
+        //       'posts/${post.pid}/${DateTime.now().millisecondsSinceEpoch}_${mediaPath.split('/').last}');
 
-          final file = File(mediaPath);
-          await storageRef.putFile(file);
-          final downloadUrl = await storageRef.getDownloadURL();
-          mediaUrls.add(downloadUrl);
-        }
+        //   final file = File(mediaPath);
+        //   await storageRef.putFile(file);
+        //   final downloadUrl = await storageRef.getDownloadURL();
+        //   mediaUrls.add(downloadUrl);
+        // }
 
-        post.media = mediaUrls;
+        // post.media = mediaUrls;
       }
 
       await _firestore
@@ -46,10 +46,10 @@ class PostRepository implements IPostRepository {
   Future<void> deletePost(Post post) async {
     try {
       await _firestore.collection(CollectionsPaths.posts).doc(post.pid).delete();
-      for (String mediaUrl in post.media!) {
-        final storageRef = _storage.ref().child(mediaUrl);
-        await storageRef.delete();
-      }
+      // for (String mediaUrl in post.media!) {
+      //   final storageRef = _storage.ref().child(mediaUrl);
+      //   await storageRef.delete();
+      // }
     } catch (e) {
       throw Exception('Failed to delete post: $e');
     }

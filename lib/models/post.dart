@@ -1,9 +1,10 @@
+import 'package:anime_nexa/models/mediaitem.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Post {
   String? pid;
   String? uid;
-  List<String>? media;
+  List<MediaItem>? media;
   String? text;
   DateTime? createdAt;
   List<String>? likes;
@@ -35,8 +36,9 @@ class Post {
     return Post(
       pid: json['pid'] as String?,
       uid: json['uid'] as String?,
-      media:
-          (json['media'] as List<dynamic>?)?.map((e) => e as String).toList(),
+      media: (json['media'] as List<dynamic>?)
+          ?.map((e) => MediaItem.fromMap(e))
+          .toList(),
       text: json['text'] as String?,
       createdAt: (json['createdAt'] as Timestamp).toDate(),
       likes:
