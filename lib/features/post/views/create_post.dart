@@ -137,10 +137,9 @@ class _CreatePostState extends State<CreatePost> {
         leading: IconButton(
           icon: const Icon(Icons.close, size: 30),
           onPressed: () {
-            log(_selectedFiles.map((e) => e).toString());
-            // _postController.text.isEmpty || _selectedFiles.isEmpty
-            //     ? context.pop()
-            //     : _showOptionsBottomSheet(context);
+            _postController.text.isEmpty || _selectedFiles.isEmpty
+                ? context.pop()
+                : _showOptionsBottomSheet(context);
           },
         ),
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
