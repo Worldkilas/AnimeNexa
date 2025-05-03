@@ -11,22 +11,39 @@ class MessageRepository implements IMessageRepository, IChatRepository {
   MessageRepository(this._firestore);
 
   @override
-  Future<void> sendMessage(Message message, Chat chat,
-      {String? replyToMessageId}) async {
+  Future<void> sendMessage(Message message, String chatId) async {
     try {
-      if (message.chatID == null) {
-        final newChat = await createChat(chat);
-        message = message.copyWith(chatID: newChat.id);
+      if (chatId.isEmpty) {
+        final newChat = Chat(
+            id: _firestore.collection(CollectionsPaths.chats).doc().id,
+            isGroup: false,
+            members: [message.senderId!, message.receiverId!]);
+        chatId = (await createChat(newChat)).id;
       }
+
+      final messageId = message.id ??
+          _firestore
+              .collection(CollectionsPaths.chats)
+              .doc(chatId)
+              .collection(CollectionsPaths.messages)
+              .doc()
+              .id;
+      message = message.copyWith(id: messageId, timeSent: DateTime.now());
+
       await _firestore.runTransaction((transaction) async {
         transaction.set(
-          _firestore.collection(CollectionsPaths.messages).doc(message.id),
+          _firestore
+              .collection(CollectionsPaths.chats)
+              .doc(chatId)
+              .collection(CollectionsPaths.messages)
+              .doc(messageId),
           message.toJson(),
         );
+
         transaction.update(
-          _firestore.collection(CollectionsPaths.chats).doc(message.chatID),
+          _firestore.collection(CollectionsPaths.chats).doc(chatId),
           {
-            'lastMessage': message.id,
+            'lastMessage': message.message,
             'lastMessageTimestamp': message.timeSent,
           },
         );
@@ -37,35 +54,45 @@ class MessageRepository implements IMessageRepository, IChatRepository {
   }
 
   @override
-  Future<void> deleteMessage(String messageId, Chat chat) async {
+  Future<void> deleteMessage(String messageId, String chatId) async {
     try {
       await _firestore.runTransaction((transaction) async {
-        // Delete the message
         transaction.delete(
-          _firestore.collection(CollectionsPaths.messages).doc(messageId),
+          _firestore
+              .collection(CollectionsPaths.chats)
+              .doc(chatId)
+              .collection(CollectionsPaths.messages)
+              .doc(messageId),
         );
 
-        // Check if the deleted message was the latest
         final chatRef =
-            _firestore.collection(CollectionsPaths.chats).doc(chat.id);
+            _firestore.collection(CollectionsPaths.chats).doc(chatId);
         final chatSnapshot = await transaction.get(chatRef);
+
         if (chatSnapshot.exists &&
-            chatSnapshot.data()!['lastMessage'] == messageId) {
-          // Find the next-latest message
-          final nextMessageSnapshot = await _firestore
+            chatSnapshot.data()?['lastMessageTimestamp'] != null &&
+            chatSnapshot.data()?['lastMessage'] != null) {
+          final messagesQuery = await _firestore
+              .collection(CollectionsPaths.chats)
+              .doc(chatId)
               .collection(CollectionsPaths.messages)
-              .where('chatID', isEqualTo: chat.id)
               .orderBy('timeSent', descending: true)
               .limit(1)
               .get();
-          final nextMessage = nextMessageSnapshot.docs.isNotEmpty
-              ? nextMessageSnapshot.docs.first.data()
-              : null;
-          transaction.update(chatRef, {
-            'lastMessage': nextMessage != null ? nextMessage['id'] : null,
-            'lastMessageTimestamp':
-                nextMessage != null ? nextMessage['timeSent'] : null,
-          });
+
+          if (messagesQuery.docs.isNotEmpty) {
+            final newLastMessage =
+                Message.fromJson(messagesQuery.docs.first.data());
+            transaction.update(chatRef, {
+              'lastMessage': newLastMessage.message,
+              'lastMessageTimestamp': newLastMessage.timeSent,
+            });
+          } else {
+            transaction.update(chatRef, {
+              'lastMessage': null,
+              'lastMessageTimestamp': null,
+            });
+          }
         }
       });
     } catch (e) {
@@ -74,34 +101,42 @@ class MessageRepository implements IMessageRepository, IChatRepository {
   }
 
   @override
-  Stream<List<Message>> getMessages(String chatID,
+  Stream<List<Message>> getMessages(String chatId,
       {int limit = 20, String? lastMessageId}) {
-    return _firestore
+    Query<Map<String, dynamic>> query = _firestore
+        .collection(CollectionsPaths.chats)
+        .doc(chatId)
         .collection(CollectionsPaths.messages)
-        .where('chatID', isEqualTo: chatID)
         .orderBy('timeSent', descending: true)
-        .limit(limit)
-        .snapshots()
-        .map((snapshot) {
-      return snapshot.docs.map((doc) => Message.fromJson(doc.data())).toList();
-    });
+        .limit(limit);
+
+     if (lastMessageId != null) {
+      query = query.startAfter([
+        _firestore
+            .collection(CollectionsPaths.chats)
+            .doc(chatId)
+            .collection(CollectionsPaths.messages)
+            .doc(lastMessageId)
+            .get()
+            .then((doc) => doc['timeSent']),
+      ]);
+    }
+
+    return query.snapshots().map((snapshot) =>
+        snapshot.docs.map((doc) => Message.fromJson(doc.data())).toList());
   }
 
-  // @override
-  // Future<void> markMessageAsRead(String messageId, String userId) {
-  //   return _firestore
-  //       .collection(CollectionsPaths.messages)
-  //       .doc(messageId)
-  //       .update({
-  //     'isRead': true,
-  //   });
-  // }
-
-  @override
-  Future<void> addParticipant(String chatID, String uid) async {
-    await _firestore.collection(CollectionsPaths.chats).doc(chatID).update({
-      'members': FieldValue.arrayUnion([uid]),
-    });
+  Future<void> markMessageAsRead(String messageId, String chatId) async {
+    try {
+      await _firestore
+          .collection(CollectionsPaths.chats)
+          .doc(chatId)
+          .collection(CollectionsPaths.messages)
+          .doc(messageId)
+          .update({'isRead': true});
+    } catch (e) {
+      throw Exception('Failed to mark message as read: $e');
+    }
   }
 
   @override
@@ -118,15 +153,23 @@ class MessageRepository implements IMessageRepository, IChatRepository {
     return _firestore
         .collection(CollectionsPaths.chats)
         .where('members', arrayContains: uid)
+        .orderBy('lastMessageTimestamp', descending: true)
         .snapshots()
-        .map((snap) =>
-            snap.docs.map((doc) => Chat.fromJson(doc.data())).toList());
+        .map((snapshot) =>
+            snapshot.docs.map((doc) => Chat.fromJson(doc.data())).toList());
   }
 
   @override
-  Future<void> removeParticipant(String chatID, String uid) async {
-    await _firestore.collection(CollectionsPaths.chats).doc(chatID).update({
-      'members': FieldValue.arrayRemove([uid])
+  Future<void> addParticipant(String chatId, String uid) async {
+    await _firestore.collection(CollectionsPaths.chats).doc(chatId).update({
+      'members': FieldValue.arrayUnion([uid]),
+    });
+  }
+
+  @override
+  Future<void> removeParticipant(String chatId, String uid) async {
+    await _firestore.collection(CollectionsPaths.chats).doc(chatId).update({
+      'members': FieldValue.arrayRemove([uid]),
     });
   }
 
@@ -135,6 +178,6 @@ class MessageRepository implements IMessageRepository, IChatRepository {
     await _firestore
         .collection(CollectionsPaths.chats)
         .doc(chat.id)
-        .set(chat.toJson());
+        .update(chat.toJson());
   }
 }

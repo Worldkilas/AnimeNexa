@@ -5,7 +5,6 @@ class Message {
   String? senderId;
   String? receiverId;
   String? message;
-  String? chatID;
   DateTime? timeSent;
   String? replyToMessageId;
 
@@ -15,7 +14,6 @@ class Message {
     this.receiverId,
     this.message,
     this.timeSent,
-    this.chatID,
     this.replyToMessageId,
   });
 
@@ -26,7 +24,6 @@ class Message {
       'receiverId': receiverId,
       'message': message,
       'timeSent': timeSent,
-      'chatID': chatID,
       'replyToMessageId': replyToMessageId,
     };
   }
@@ -38,7 +35,7 @@ class Message {
       receiverId: json['receiverId'] as String?,
       message: json['message'] as String?,
       timeSent: (json['timeSent'] as Timestamp).toDate(),
-      chatID: json['chatID'] as String?,
+     
       replyToMessageId: json['replyToMessageId'] as String?,
     );
   }
@@ -58,7 +55,6 @@ class Message {
       senderId: senderId ?? this.senderId,
       receiverId: receiverId ?? this.receiverId,
       message: message ?? this.message,
-      chatID: chatID ?? this.chatID,
       timeSent: timeSent ?? this.timeSent,
       replyToMessageId: replyToMessageId ?? this.replyToMessageId,
     );
@@ -66,6 +62,6 @@ class Message {
 
   @override
   String toString() {
-    return 'Messaging(id: $id, senderId: $senderId, receiverId: $receiverId, message: $message, replyToMessageId: $replyToMessageId, timeSent: $timeSent, chatID: $chatID)';
+    return 'Messaging(id: $id, senderId: $senderId, receiverId: $receiverId, message: $message, replyToMessageId: $replyToMessageId, timeSent: $timeSent)';
   }
 }
