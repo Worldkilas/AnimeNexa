@@ -41,7 +41,7 @@ class CustomButton extends StatelessWidget {
       width: width ?? double.infinity,
       height: height ?? 7.h,
       child: ElevatedButton(
-        onPressed: onPressed,
+        onPressed: isLoading ? null : onPressed,
         style: ElevatedButton.styleFrom(
           backgroundColor: backgroundColor ??
               theme.elevatedButtonTheme.style?.backgroundColor?.resolve({}) ??
@@ -57,15 +57,17 @@ class CustomButton extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             leadingIcon ?? const SizedBox.shrink(),
-            Text(
-              text,
-              style: textStyle ??
-                  theme.textTheme.labelLarge?.copyWith(
-                    color: textColor ?? Colors.white,
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w600,
+            isLoading
+                ? CircularProgressIndicator()
+                : Text(
+                    text,
+                    style: textStyle ??
+                        theme.textTheme.labelLarge?.copyWith(
+                          color: textColor ?? Colors.white,
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w600,
+                        ),
                   ),
-            ),
           ],
         ),
       ),
