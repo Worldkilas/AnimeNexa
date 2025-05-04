@@ -1,3 +1,4 @@
+import 'package:anime_nexa/shared/constants/app_typography.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
@@ -63,6 +64,7 @@ class Homepage extends ConsumerWidget {
       ),
     );
   }
+
 
   Widget _buildStoryRow() {
     return SizedBox(
