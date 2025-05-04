@@ -156,7 +156,7 @@ class _CreatePostState extends State<CreatePost> {
           ),
         ),
         centerTitle: true,
-        actionsPadding: const EdgeInsets.only(right: 22),
+        // actionsPadding: const EdgeInsets.only(right: 22),
         actions: [
           ValueListenableBuilder(
               valueListenable: _postController,
