@@ -40,7 +40,7 @@ class _NameScreenState extends ConsumerState<NameScreen> {
             e.toString(),
           ),
           data: (_) {
-            context.push('/home');
+            context.go('/home');
           },
         );
       },
