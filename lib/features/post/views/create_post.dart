@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:anime_nexa/features/post/widgets/options_bottom_sheet.dart';
@@ -21,11 +20,11 @@ class CreatePost extends StatefulWidget {
 
 class _CreatePostState extends State<CreatePost> {
   String _selectedPrivacy = 'Public';
-  List<String> _selectedFiles = [];
-  List<String> _selectedVids = []; // store selected video files
+  final List<String> _selectedFiles = [];
+  final List<String> _selectedVids = []; // store selected video files
   DateTime _selectedDate = DateTime(2025, 2, 19);
   TimeOfDay _selectedTime = const TimeOfDay(hour: 16, minute: 0);
-  TextEditingController _postController = TextEditingController();
+  final TextEditingController _postController = TextEditingController();
 
   void _showScheduleBottomSheet(BuildContext context) {
     showModalBottomSheet(
@@ -138,7 +137,7 @@ class _CreatePostState extends State<CreatePost> {
           ),
         ),
         centerTitle: true,
-        actionsPadding: const EdgeInsets.only(right: 22),
+        // actionsPadding: const EdgeInsets.only(right: 22),
         actions: [
           ValueListenableBuilder(
               valueListenable: _postController,

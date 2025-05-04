@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../shared/constants/app_colors.dart';
 
-class PasswordRequirementItem extends StatelessWidget {
+class PasswordRequirementItem extends ConsumerWidget {
   final String text;
   final bool isMet;
 
@@ -13,7 +14,7 @@ class PasswordRequirementItem extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
