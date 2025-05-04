@@ -86,7 +86,6 @@ class _SignInState extends ConsumerState<SignIn> {
                 textAlign: TextAlign.center,
                 style: theme.textTheme.bodyMedium,
               ),
-
               SizedBox(height: 3.h),
               CustomTextField(
                 labelText: 'Email',
@@ -115,9 +114,7 @@ class _SignInState extends ConsumerState<SignIn> {
                 showVisibilityToggle: true,
                 onVisibilityToggle: togglePasswordVisibility,
               ),
-
               SizedBox(height: 2.h),
-
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -159,7 +156,6 @@ class _SignInState extends ConsumerState<SignIn> {
                 },
               ),
               SizedBox(height: 2.h),
-
               Row(
                 children: [
                   Expanded(
@@ -184,26 +180,24 @@ class _SignInState extends ConsumerState<SignIn> {
                   ),
                 ],
               ),
-
               SizedBox(height: 4.h),
-
-              // Row(
-              //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              //   children: [
-              //     getSocialLoginButton(
-              //       path: 'lib/assets/icons/twitter_icon.png',
-              //       onTap: () {},
-              //     ),
-              //     getSocialLoginButton(
-              //       path: 'lib/assets/icons/google_icon.png',
-              //       onTap: () {},
-              //     ),
-              //     getSocialLoginButton(
-              //       path: 'lib/assets/icons/apple_icon.png',
-              //       onTap: () {},
-              //     ),
-              //   ],
-              // )
+              CustomButton(
+                text: 'Sign in with Google',
+                leadingIcon: Padding(
+                  padding: const EdgeInsets.only(right: 20.0),
+                  child: Image.asset(
+                    'lib/assets/icons/google_icon.png',
+                    height: 24,
+                    width: 24,
+                  ),
+                ),
+                height: 6.h,
+                backgroundColor: Colors.black,
+                textColor: Colors.white,
+                onPressed: () {
+                  ref.read(authViewModelProvider.notifier).signInWithGoogle();
+                },
+              ),
             ],
           ),
         ),

@@ -13,6 +13,8 @@ class CustomButton extends StatelessWidget {
   final EdgeInsets? padding;
   final BorderSide? borderSide;
   final double? elevation;
+  final bool isLoading;
+  final Widget? leadingIcon;
 
   const CustomButton({
     super.key,
@@ -27,6 +29,8 @@ class CustomButton extends StatelessWidget {
     this.padding,
     this.borderSide,
     this.elevation,
+    this.isLoading = false,
+    this.leadingIcon,
   });
 
   @override
@@ -49,14 +53,20 @@ class CustomButton extends StatelessWidget {
             side: borderSide ?? BorderSide.none,
           ),
         ).merge(theme.elevatedButtonTheme.style),
-        child: Text(
-          text,
-          style: textStyle ??
-              theme.textTheme.labelLarge?.copyWith(
-                color: textColor ?? Colors.white,
-                fontSize: 16.sp,
-                fontWeight: FontWeight.w600,
-              ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            leadingIcon ?? const SizedBox.shrink(),
+            Text(
+              text,
+              style: textStyle ??
+                  theme.textTheme.labelLarge?.copyWith(
+                    color: textColor ?? Colors.white,
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w600,
+                  ),
+            ),
+          ],
         ),
       ),
     );
