@@ -516,7 +516,7 @@ packages:
       sha256: f143adf4a98a1fc0b9dc1a600382a9de08c4213cb491268ccb5255d42dce4953
       url: "https://pub.dev"
     source: hosted
-    version: "3.6.1"
+    version: "3.6.0"
   glob:
     dependency: transitive
     description:

@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "963490850832",
+    "project_id": "animenexa-e3fe1",
+    "storage_bucket": "animenexa-e3fe1.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:963490850832:android:a09b400815953053d48295",
+        "android_client_info": {
+          "package_name": "com.example.anime_nexa"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "963490850832-03fi654gtidelcgb6p3h2d0ft3t5lp3g.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.anime_nexa",
+            "certificate_hash": "e05e1bd9bdf3dfd3da004881bd51274b28b13822"
+          }
+        },
+        {
+          "client_id": "963490850832-entq8gc25crf1931ob82n4voumlq5c5i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDxYY8ojWX7DmekfVR-JqQ5K-BsaESu5L8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "963490850832-entq8gc25crf1931ob82n4voumlq5c5i.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
