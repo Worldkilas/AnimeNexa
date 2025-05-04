@@ -30,13 +30,8 @@ class _CreateAccountState extends ConsumerState<CreateAccount> {
       TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
-  bool isObscure = true;
-
-  void togglePasswordVisibility() {
-    setState(() {
-      isObscure = !isObscure;
-    });
-  }
+  bool _isPasswordObscure = true;
+  bool _isConfirmPasswordObscure = true;
 
   @override
   void initState() {
@@ -61,8 +56,8 @@ class _CreateAccountState extends ConsumerState<CreateAccount> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final passwordValidation = ref.watch(passwordValidationProvider);
-    final authViewModel = ref.read(authViewModelProvider.notifier);
-
+    final authViewModelNotifier = ref.read(authViewModelProvider.notifier);
+    final authViewModel = ref.watch(authViewModelProvider);
     ref.listen<AsyncValue<AnimeNexaUser?>>(
       authViewModelProvider,
       (_, next) {
@@ -138,7 +133,7 @@ class _CreateAccountState extends ConsumerState<CreateAccount> {
                 height: 6.h,
                 keyboardType: TextInputType.visiblePassword,
                 controller: _passwordController,
-                obscureText: isObscure,
+                obscureText: _isPasswordObscure,
                 onChanged: (val) {
                   ref.read(passwordValidationProvider.notifier).state =
                       PasswordValidation.fromPassword(val);
@@ -146,7 +141,11 @@ class _CreateAccountState extends ConsumerState<CreateAccount> {
                   ref.read(originalPasswordProvider.notifier).state = val;
                 },
                 showVisibilityToggle: true,
-                onVisibilityToggle: togglePasswordVisibility,
+                onVisibilityToggle: () {
+                  setState(() {
+                    _isPasswordObscure = !_isPasswordObscure;
+                  });
+                },
                 validator: (val) {
                   if (val == null || val.isEmpty) {
                     return 'Please enter your password';
@@ -163,10 +162,14 @@ class _CreateAccountState extends ConsumerState<CreateAccount> {
                 controller: _confirmPasswordController,
                 height: 6.h,
                 keyboardType: TextInputType.visiblePassword,
-                obscureText: isObscure,
+                obscureText: _isConfirmPasswordObscure,
                 onChanged: (val) {},
                 showVisibilityToggle: true,
-                onVisibilityToggle: togglePasswordVisibility,
+                onVisibilityToggle: () {
+                  setState(() {
+                    _isConfirmPasswordObscure = !_isConfirmPasswordObscure;
+                  });
+                },
                 validator: (val) {
                   if (val == null || val.isEmpty) {
                     return 'Please enter your password';
@@ -192,9 +195,10 @@ class _CreateAccountState extends ConsumerState<CreateAccount> {
               SizedBox(height: 3.3.h),
               CustomButton(
                 text: 'Create an account',
+                isLoading: authViewModel.isLoading,
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
-                    authViewModel.signUpWithEmailandPassword(
+                    authViewModelNotifier.signUpWithEmailandPassword(
                       email: _emailController.text.trim(),
                       password: _passwordController.text.trim(),
                     );
@@ -227,6 +231,24 @@ class _CreateAccountState extends ConsumerState<CreateAccount> {
                     ),
                   ),
                 ],
+              ),
+              CustomButton(
+                text: 'Continue with Google',
+                isLoading: authViewModel.isLoading,
+                leadingIcon: Padding(
+                  padding: const EdgeInsets.only(right: 20.0),
+                  child: Image.asset(
+                    'lib/assets/icons/google_icon.png',
+                    height: 24,
+                    width: 24,
+                  ),
+                ),
+                height: 6.h,
+                backgroundColor: Colors.black,
+                textColor: Colors.white,
+                onPressed: () {
+                  ref.read(authViewModelProvider.notifier).signInWithGoogle();
+                },
               ),
             ],
           ),

@@ -46,6 +46,7 @@ class _SignInState extends ConsumerState<SignIn> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final authViewModel = ref.watch(authViewModelProvider);
     ref.listen<AsyncValue<AnimeNexaUser?>>(
       authViewModelProvider,
       (_, next) {
@@ -143,6 +144,7 @@ class _SignInState extends ConsumerState<SignIn> {
               SizedBox(height: 2.h),
               CustomButton(
                 text: 'Sign in',
+                isLoading: authViewModel.isLoading,
                 height: 6.h,
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
@@ -182,7 +184,7 @@ class _SignInState extends ConsumerState<SignIn> {
               ),
               SizedBox(height: 4.h),
               CustomButton(
-                text: 'Sign in with Google',
+                text: 'Continue with Google',
                 leadingIcon: Padding(
                   padding: const EdgeInsets.only(right: 20.0),
                   child: Image.asset(
@@ -191,6 +193,7 @@ class _SignInState extends ConsumerState<SignIn> {
                     width: 24,
                   ),
                 ),
+                isLoading: authViewModel.isLoading,
                 height: 6.h,
                 backgroundColor: Colors.black,
                 textColor: Colors.white,
