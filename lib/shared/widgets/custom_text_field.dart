@@ -2,6 +2,8 @@
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 
+import '../constants/app_colors.dart';
+
 class CustomTextField extends StatelessWidget {
   final String labelText;
   final bool obscureText;
@@ -15,6 +17,7 @@ class CustomTextField extends StatelessWidget {
   final bool isError;
   final double? width;
   final double? height;
+  final String? Function(String?)? validator;
 
   const CustomTextField({
     super.key,
@@ -24,6 +27,7 @@ class CustomTextField extends StatelessWidget {
     this.width,
     this.keyboardType,
     this.obscureText = false,
+    this.validator,
     this.controller,
     this.errorText,
     this.onChanged,
@@ -37,7 +41,7 @@ class CustomTextField extends StatelessWidget {
     return SizedBox(
       width: width ?? 100.w,
       height: height ?? 7.h,
-      child: TextField(
+      child: TextFormField(
         onTapOutside: (event) => FocusScope.of(context).unfocus(),
         keyboardType: keyboardType ?? TextInputType.text,
         controller: controller,
@@ -49,23 +53,23 @@ class CustomTextField extends StatelessWidget {
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8),
             borderSide: BorderSide(
-              color: isError ? Colors.orange : Colors.grey,
+              color: isError ? AppColors.error : Colors.grey,
             ),
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8),
             borderSide: BorderSide(
-              color: isError ? Colors.orange : Colors.grey,
+              color: isError ? AppColors.error : Colors.grey,
             ),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(6),
             borderSide: BorderSide(
-              color: isError ? Colors.orange : Colors.purple,
+              color: isError ? AppColors.error : Colors.purple,
             ),
           ),
           errorText: errorText,
-          errorStyle: const TextStyle(color: Colors.orange),
+          errorStyle: const TextStyle(color: AppColors.error),
           contentPadding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
           suffixIcon: showVisibilityToggle
               ? IconButton(

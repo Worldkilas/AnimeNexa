@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../../shared/constants/app_colors.dart';
 import '../../../shared/widgets/custom_button.dart';
+import '../../auth/view_model/auth_view_model.dart';
 
 final List<String> storyAvatars =
     List.generate(10, (index) => 'lib/assets/images/post.png');
@@ -24,13 +26,33 @@ final List<Map<String, String>> posts = [
   },
 ];
 
-class Homepage extends StatelessWidget {
+class Homepage extends ConsumerWidget {
   const Homepage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      appBar: _buildAppBar(),
+      appBar: AppBar(
+          backgroundColor: Colors.white,
+          elevation: 0,
+          title: SvgPicture.asset(
+            "lib/assets/icons/Logo.svg",
+            color: AppColors.primary,
+          ),
+          actions: [
+            CustomButton(
+              onPressed: () {
+                ref.read(authViewModelProvider.notifier).signout();
+              },
+              text: 'Connect wallet',
+              width: 40.w,
+              height: 30,
+            ),
+            IconButton(
+              icon: Icon(Icons.menu, color: Colors.black),
+              onPressed: () {},
+            ),
+          ]),
       body: Column(
         children: [
           _buildStoryRow(),
@@ -40,28 +62,6 @@ class Homepage extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  AppBar _buildAppBar() {
-    return AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        title: SvgPicture.asset(
-          "lib/assets/icons/Logo.svg",
-          color: AppColors.primary,
-        ),
-        actions: [
-          CustomButton(
-            onPressed: () {},
-            text: 'Connect wallet',
-            width: 40.w,
-            height: 30,
-          ),
-          IconButton(
-            icon: Icon(Icons.menu, color: Colors.black),
-            onPressed: () {},
-          ),
-        ]);
   }
 
   Widget _buildStoryRow() {

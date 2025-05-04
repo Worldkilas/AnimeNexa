@@ -1,6 +1,8 @@
 //method to shorten wallet address
 //e.g 3rLojDoVPUKBXnr2vybXJA3Lh3wKBxxDHx7fxJn8m3ZM to 3rLo...8m3ZM
 
+import 'package:flutter/material.dart';
+
 String shortenWalletAddress(String address,
     {int prefixLength = 5, int suffixLength = 3}) {
   if (address.length <= prefixLength + suffixLength) return address;
@@ -9,3 +11,10 @@ String shortenWalletAddress(String address,
   final suffix = address.substring(address.length - suffixLength);
   return '$prefix...$suffix';
 }
+
+void utilitySnackBar(BuildContext ctx, String error) =>
+    ScaffoldMessenger.of(ctx).showSnackBar(
+      SnackBar(
+        content: Text(error),
+      ),
+    );
