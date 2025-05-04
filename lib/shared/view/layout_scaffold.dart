@@ -15,13 +15,15 @@ class LayoutScaffold extends StatelessWidget {
       bottomNavigationBar: NavigationBar(
           backgroundColor: Colors.white,
           surfaceTintColor: null,
-          labelTextStyle: WidgetStateTextStyle.resolveWith((states) {
-            if (states.contains(WidgetState.selected)) {
-              return AppTypography.textXSmall
-                  .copyWith(color: appTheme.primaryColor);
-            }
-            return AppTypography.textXSmall.copyWith(color: Colors.grey);
-          }),
+          // labelTextStyle: WidgetStateTextStyle.resolveWith((states) {
+          //   if (states.contains(WidgetState.selected)) {
+          //     return AppTypography.textXSmall
+          //         .copyWith(color: appTheme.primaryColor);
+          //   }
+
+          //   return AppTypography.textXSmall.copyWith(color: Colors.grey);
+          // }),
+          labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
           selectedIndex: statefulNavigationShell.currentIndex,
           onDestinationSelected: (index) => index == 2
               ? context.push('/post')

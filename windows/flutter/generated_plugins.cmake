@@ -6,11 +6,9 @@ list(APPEND FLUTTER_PLUGIN_LIST
   cloud_firestore
   firebase_auth
   firebase_core
-<<<<<<< HEAD
-=======
   firebase_storage
->>>>>>> pr/mustapha-amin/5
   url_launcher_windows
+  window_to_front
 )
 
 list(APPEND FLUTTER_FFI_PLUGIN_LIST

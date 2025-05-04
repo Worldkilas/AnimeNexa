@@ -56,5 +56,56 @@ final authStateChangesProvider = StreamProvider<AnimeNexaUser>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef AuthStateChangesRef = StreamProviderRef<AnimeNexaUser>;
+String _$appwriteClientHash() => r'd7cbcb3481235d0ea0ec21193f219d75a7a96e92';
+
+/// See also [appwriteClient].
+@ProviderFor(appwriteClient)
+final appwriteClientProvider = Provider<Client>.internal(
+  appwriteClient,
+  name: r'appwriteClientProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$appwriteClientHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef AppwriteClientRef = ProviderRef<Client>;
+String _$appwriteAccountHash() => r'2485699bc6ce16ba91ed9098cf939cc16eefaf6e';
+
+/// See also [appwriteAccount].
+@ProviderFor(appwriteAccount)
+final appwriteAccountProvider = Provider<Account>.internal(
+  appwriteAccount,
+  name: r'appwriteAccountProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$appwriteAccountHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef AppwriteAccountRef = ProviderRef<Account>;
+String _$appwriteStorageHash() => r'90a8b54b4762b8eaa665b466ee906f11f7ff7c02';
+
+/// See also [appwriteStorage].
+@ProviderFor(appwriteStorage)
+final appwriteStorageProvider = Provider<Storage>.internal(
+  appwriteStorage,
+  name: r'appwriteStorageProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$appwriteStorageHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef AppwriteStorageRef = ProviderRef<Storage>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
