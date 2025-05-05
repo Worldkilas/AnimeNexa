@@ -41,13 +41,19 @@ class Homepage extends ConsumerWidget {
             color: AppColors.primary,
           ),
           actions: [
-            CustomButton(
-              onPressed: () {
-                ref.read(authViewModelProvider.notifier).signout();
-              },
-              text: 'Connect wallet',
-              width: 40.w,
-              height: 30,
+            Container(
+              padding: EdgeInsets.symmetric(vertical: 9, horizontal: 11),
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                )),
+                onPressed: () {},
+                child: Text(
+                  "Connect wallet",
+                  style: AppTypography.textXSmall.copyWith(color: Colors.white),
+                ),
+              ),
             ),
             IconButton(
               icon: Icon(Icons.menu, color: Colors.black),
@@ -64,7 +70,6 @@ class Homepage extends ConsumerWidget {
       ),
     );
   }
-
 
   Widget _buildStoryRow() {
     return SizedBox(
