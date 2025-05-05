@@ -12,9 +12,13 @@ String shortenWalletAddress(String address,
   return '$prefix...$suffix';
 }
 
-void utilitySnackBar(BuildContext ctx, String error) =>
-    ScaffoldMessenger.of(ctx).showSnackBar(
-      SnackBar(
-        content: Text(error),
-      ),
-    );
+void utilitySnackBar(BuildContext context, String message) {
+  ScaffoldMessenger.of(context).clearSnackBars();
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text(message),
+      behavior: SnackBarBehavior.floating,
+      duration: const Duration(seconds: 3),
+    ),
+  );
+}

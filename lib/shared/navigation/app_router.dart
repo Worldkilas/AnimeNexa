@@ -36,27 +36,27 @@ final appRouterProvider = Provider<GoRouter>(
         final isLoggedIn = auth.currentUser != null;
         final isAuthRoute = state.uri.path.startsWith('/auth');
         // Force refresh the current user to ensure we have the latest state from Firebase
-        // try {
-        //   if (isLoggedIn) {
-        //     await auth.currentUser?.reload();
-        //     // If user was deleted on server, this might change isLoggedIn to false
-        //     if (auth.currentUser == null) {
-        //       return '/auth';
-        //     }
-        //   }
-        // } catch (e) {
-        //   // If reload fails (e.g., user was deleted), force logout and go to auth
-        //   await auth.signOut();
-        //   return '/auth';
-        // }
+        try {
+          if (isLoggedIn) {
+            await auth.currentUser?.reload();
+            // If user was deleted on server, this might change isLoggedIn to false
+            if (auth.currentUser == null) {
+              return '/auth';
+            }
+          }
+        } catch (e) {
+          // If reload fails (e.g., user was deleted), force logout and go to auth
+          await auth.signOut();
+          return '/auth';
+        }
         // If not logged in, force to /auth
         if (!isLoggedIn && !isAuthRoute) {
           return '/auth';
         }
         // // If logged in but trying to access auth flow, send to /home
-        // if (isLoggedIn && isAuthRoute) {
-        //   return '/home';
-        // }
+        if (isLoggedIn && isAuthRoute) {
+          return '/home';
+        }
 
         // Allow navigation
         return null;

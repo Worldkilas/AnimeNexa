@@ -56,7 +56,7 @@ class LayoutScaffold extends StatelessWidget {
             ),
             NavigationDestination(
               icon: SvgPicture.asset('lib/assets/icons/messages.svg'),
-              label: 'Messages',
+              label: 'Message',
               selectedIcon: SvgPicture.asset(
                 'lib/assets/icons/messages.svg',
                 colorFilter:

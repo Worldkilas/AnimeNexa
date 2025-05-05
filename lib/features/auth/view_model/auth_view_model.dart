@@ -38,7 +38,7 @@ class AuthViewModel extends _$AuthViewModel {
 
   FutureVoid signUpWithEmailandPassword({
     required String email,
-    required password,
+    required String password,
   }) async {
     state = const AsyncValue.loading();
     final result = await ref
