@@ -1,6 +1,5 @@
 import 'package:anime_nexa/core/typedefs.dart';
 import 'package:anime_nexa/models/anime_nexa_user.dart';
-import 'package:fpdart/fpdart.dart';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 

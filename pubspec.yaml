@@ -44,6 +44,7 @@ dependencies:
   flutter_dotenv: ^5.2.1
   flutter_riverpod: ^2.6.1
   flutter_svg: ^2.0.17
+
   fpdart: ^1.1.1
   get_it: ^8.0.3
   get_thumbnail_video: ^0.7.3
@@ -74,6 +75,9 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   riverpod_generator: ^2.6.4
+
+dependency_overrides:
+  flutter_web_auth_2: 4.1.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
