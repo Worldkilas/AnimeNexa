@@ -5,11 +5,13 @@ class MediaItem {
   final MediaType type;
   final String? mediaPath;
   final String? thumnailPath;
-  
+  final String? appwriteID;
+
   MediaItem({
     required this.type,
     required this.mediaPath,
     this.thumnailPath,
+    this.appwriteID,
   });
 
   Map<String, dynamic> toMap() {
@@ -17,6 +19,7 @@ class MediaItem {
       'type': type.name,
       'mediaPath': mediaPath,
       'thumnailPath': thumnailPath,
+      'appwriteID' : appwriteID,
     };
   }
 
@@ -25,22 +28,25 @@ class MediaItem {
       type: MediaType.values.firstWhere((item) => item.name == map['type']),
       mediaPath: map['media'],
       thumnailPath: map['thumbnailPath'],
+      appwriteID: map['appwriteID']
     );
   }
-
 
   MediaItem copyWith({
     MediaType? type,
     String? mediaPath,
     String? thumnailPath,
+    String? appwriteID
   }) {
     return MediaItem(
       type: type ?? this.type,
       mediaPath: mediaPath ?? this.mediaPath,
       thumnailPath: thumnailPath ?? this.thumnailPath,
+      appwriteID: appwriteID ?? this.appwriteID,
     );
   }
 
   @override
-  String toString() => 'MediaItem(type: $type, mediaPath: $mediaPath, thumnailPath: $thumnailPath)';
+  String toString() =>
+      'MediaItem(type: $type, mediaPath: $mediaPath, thumnailPath: $thumnailPath, appwriteID: $appwriteID)';
 }

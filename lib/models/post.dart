@@ -53,4 +53,24 @@ class Post {
   String toString() {
     return 'Post(pid: $pid, uid: $uid, media: $media, text: $text, createdAt: $createdAt, likes: $likes, comments: $comments)';
   }
+
+  Post copyWith({
+    String? pid,
+    String? uid,
+    List<MediaItem>? media,
+    String? text,
+    DateTime? createdAt,
+    List<String>? likes,
+    List<String>? comments,
+  }) {
+    return Post(
+      pid: pid ?? this.pid,
+      uid: uid ?? this.uid,
+      media: media ?? this.media,
+      text: text ?? this.text,
+      createdAt: createdAt ?? this.createdAt,
+      likes: likes ?? this.likes,
+      comments: comments ?? this.comments,
+    );
+  }
 }

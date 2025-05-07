@@ -1,12 +1,17 @@
+import 'dart:developer';
 import 'dart:io';
 
+import 'package:anime_nexa/features/post/viewmodel/post_vm.dart';
 import 'package:anime_nexa/features/post/views/gif_screen.dart';
 import 'package:anime_nexa/features/post/widgets/options_bottom_sheet.dart';
 import 'package:anime_nexa/features/post/widgets/privacy_options_bottom_sheet.dart';
 import 'package:anime_nexa/features/post/widgets/schedule_bottom_sheet.dart';
 import 'package:anime_nexa/models/mediaitem.dart';
+import 'package:anime_nexa/models/post.dart';
+import 'package:anime_nexa/providers/global_providers.dart';
 import 'package:anime_nexa/shared/constants/app_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:anime_nexa/shared/constants/app_typography.dart';
@@ -17,21 +22,21 @@ import 'package:giphy_flutter_sdk/giphy_flutter_sdk.dart';
 import 'package:giphy_flutter_sdk/giphy_media_view.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sizer/sizer.dart';
+import 'package:uuid/uuid.dart';
 
 // no need to hide, it's free😂
 const giphyAPIKey = "LrjKIV019iAkmubcMpunGTW1tvLw57x1";
 
-class CreatePost extends StatefulWidget {
+class CreatePost extends ConsumerStatefulWidget {
   const CreatePost({super.key});
 
   @override
-  State<CreatePost> createState() => _CreatePostState();
+  ConsumerState<CreatePost> createState() => _CreatePostState();
 }
 
-class _CreatePostState extends State<CreatePost> {
+class _CreatePostState extends ConsumerState<CreatePost> {
   String _selectedPrivacy = 'Public';
   List<MediaItem> _selectedFiles = [];
-  List<String> _selectedVids = []; // store selected video files
   DateTime _selectedDate = DateTime(2025, 2, 19);
   TimeOfDay _selectedTime = const TimeOfDay(hour: 16, minute: 0);
   final TextEditingController _postController = TextEditingController();
@@ -129,15 +134,44 @@ class _CreatePostState extends State<CreatePost> {
     GiphyFlutterSDK.configure(apiKey: giphyAPIKey);
   }
 
+  Future<void> _handlePostCreation(WidgetRef ref, BuildContext context) async {
+    if (_postController.text.isEmpty && _selectedFiles.isEmpty) return;
+
+    final post = Post(
+      pid: const Uuid().v4(),
+      uid: ref.watch(firebaseAuthProvider).currentUser!.uid,
+      text: _postController.text,
+      media: _selectedFiles,
+      createdAt: DateTime.now(),
+      likes: [],
+      comments: [],
+    );
+
+    try {
+      await ref.read(postNotifierProvider.notifier).createPost(ref, post);
+      if (context.mounted) {
+        context.pop();
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to create post: $e')),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final isCreating = ref.watch(isCreatingPostProvider);
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.close, size: 30),
           onPressed: () {
-            _postController.text.isEmpty || _selectedFiles.isEmpty
+            _postController.text.isEmpty && _selectedFiles.isEmpty
                 ? context.pop()
                 : _showOptionsBottomSheet(context);
           },
@@ -156,28 +190,46 @@ class _CreatePostState extends State<CreatePost> {
           ),
         ),
         centerTitle: true,
-        // actionsPadding: const EdgeInsets.only(right: 22),
+        actionsPadding: const EdgeInsets.only(right: 15),
         actions: [
           ValueListenableBuilder(
               valueListenable: _postController,
               builder: (context, value, _) {
-                return Container(
-                  padding: EdgeInsets.symmetric(
-                    vertical: 7.5,
-                    horizontal: 8,
-                  ),
-                  decoration: BoxDecoration(
-                    color: value.text.isEmpty
-                        ? Color(0xffaf80df)
-                        : Theme.of(context).primaryColor,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Text(
-                    'Post Now',
-                    style: AppTypography.textSmall.copyWith(
-                      fontWeight: FontWeight.w700,
-                      color: Theme.of(context).scaffoldBackgroundColor,
+                final isCreating = ref.watch(isCreatingPostProvider);
+                final canPost =
+                    value.text.isNotEmpty || _selectedFiles.isNotEmpty;
+
+                return InkWell(
+                  onTap: isCreating || !canPost
+                      ? null
+                      : () => _handlePostCreation(ref, context),
+                  child: Container(
+                    padding: EdgeInsets.symmetric(
+                      vertical: 7.5,
+                      horizontal: 8,
                     ),
+                    decoration: BoxDecoration(
+                      color: !canPost
+                          ? Color(0xffaf80df)
+                          : Theme.of(context).primaryColor,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: isCreating
+                        ? SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: Theme.of(context).scaffoldBackgroundColor,
+                            ),
+                          )
+                        : Text(
+                            'Post Now',
+                            style: AppTypography.textSmall.copyWith(
+                              fontWeight: FontWeight.w700,
+                              color: Theme.of(context).scaffoldBackgroundColor,
+                            ),
+                          ),
                   ),
                 );
               }),
@@ -228,6 +280,7 @@ class _CreatePostState extends State<CreatePost> {
                   TextField(
                     controller: _postController,
                     maxLines: null,
+                    textCapitalization: TextCapitalization.sentences,
                     onTapOutside: (event) => FocusScope.of(context).unfocus(),
                     style: AppTypography.textMedium.copyWith(
                       color: const Color(0xff555555),
