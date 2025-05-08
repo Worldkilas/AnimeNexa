@@ -43,11 +43,12 @@ class Homepage extends ConsumerWidget {
           actions: [
             CustomButton(
               onPressed: () {
-                ref.read(authViewModelProvider.notifier).signout();
+                //TODO: Connect wallet
+                // ref.read(authViewModelProvider.notifier).signout();
               },
               text: 'Connect wallet',
               width: 40.w,
-              height: 30,
+              height: 40,
             ),
             IconButton(
               icon: Icon(Icons.menu, color: Colors.black),
@@ -64,7 +65,6 @@ class Homepage extends ConsumerWidget {
       ),
     );
   }
-
 
   Widget _buildStoryRow() {
     return SizedBox(
