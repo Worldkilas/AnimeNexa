@@ -123,6 +123,21 @@ class PostRepository implements IPostRepository {
   }
 
   @override
+  Stream<List<Post>> getPostsFromDrafts(String? uid) {
+    try {
+      return _firestore
+          .collection(CollectionsPaths.posts)
+          .where('uid', isEqualTo: uid)
+          .where('isDraft', isEqualTo: true)
+          .snapshots()
+          .map((snapshot) =>
+              snapshot.docs.map((doc) => Post.fromJson(doc.data())).toList());
+    } catch (e) {
+      throw Exception('Failed to get posts stream: $e');
+    }
+  }
+
+  @override
   Future<void> likePost(String postId, String userId) async {
     try {
       await _firestore.collection(CollectionsPaths.posts).doc(postId).update({

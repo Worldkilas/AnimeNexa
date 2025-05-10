@@ -9,6 +9,7 @@ class Post {
   DateTime? createdAt;
   List<String>? likes;
   List<String>? comments;
+  bool? isDraft;
 
   Post({
     this.pid,
@@ -18,17 +19,39 @@ class Post {
     this.createdAt,
     this.likes,
     this.comments,
+    this.isDraft = false,
   });
+
+  factory Post.draft({
+    String? pid,
+    String? uid,
+    List<MediaItem>? media,
+    String? text,
+    DateTime? createdAt,
+    List<String>? likes,
+    List<String>? comments,
+  }) =>
+      Post(
+        uid: uid,
+        pid: pid,
+        media: media,
+        text: text,
+        createdAt: createdAt,
+        likes: likes,
+        comments: comments,
+        isDraft: true,
+      );
 
   Map<String, dynamic> toJson() {
     return {
       'pid': pid,
       'uid': uid,
-      'media': media,
+      'media': media!.map((media) => media.toMap()).toList(),
       'text': text,
       'createdAt': createdAt,
       'likes': likes,
       'comments': comments,
+      'isDraft': isDraft,
     };
   }
 
@@ -46,12 +69,13 @@ class Post {
       comments: (json['comments'] as List<dynamic>?)
           ?.map((e) => e as String)
           .toList(),
+      isDraft: json['isDraft'] ?? false,
     );
   }
 
   @override
   String toString() {
-    return 'Post(pid: $pid, uid: $uid, media: $media, text: $text, createdAt: $createdAt, likes: $likes, comments: $comments)';
+    return 'Post(pid: $pid, uid: $uid, media: $media, text: $text, createdAt: $createdAt, likes: $likes, comments: $comments, isDraft: $isDraft)';
   }
 
   Post copyWith({

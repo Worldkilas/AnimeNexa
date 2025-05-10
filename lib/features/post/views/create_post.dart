@@ -148,10 +148,7 @@ class _CreatePostState extends ConsumerState<CreatePost> {
     );
 
     try {
-      await ref.read(postNotifierProvider.notifier).createPost(ref, post);
-      if (context.mounted) {
-        context.pop();
-      }
+      ref.read(postNotifierProvider.notifier).createPost(context, ref, post);
     } catch (e) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -166,7 +163,7 @@ class _CreatePostState extends ConsumerState<CreatePost> {
     final isCreating = ref.watch(isCreatingPostProvider);
 
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.close, size: 30),
@@ -235,219 +232,226 @@ class _CreatePostState extends ConsumerState<CreatePost> {
               }),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.only(bottom: 15.0),
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Row(
-                children: [
-                  const CircleAvatar(
-                    radius: 18,
-                    backgroundColor: Colors.purple,
-                    child: Text(
-                      'M',
-                      style: TextStyle(color: Colors.white, fontSize: 20),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Row(
-                    spacing: 5,
-                    crossAxisAlignment: CrossAxisAlignment.start,
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            child: ListView(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Row(
                     children: [
-                      Text(
-                        _selectedPrivacy,
-                        style: const TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 2),
-                        child: InkWell(
-                          onTap: () => _showPrivacyOptions(context),
-                          child: SvgPicture.asset(iconPathGen('dropdown')),
+                      const CircleAvatar(
+                        radius: 18,
+                        backgroundColor: Colors.purple,
+                        child: Text(
+                          'M',
+                          style: TextStyle(color: Colors.white, fontSize: 20),
                         ),
+                      ),
+                      const SizedBox(width: 10),
+                      Row(
+                        spacing: 5,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            _selectedPrivacy,
+                            style: const TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 2),
+                            child: InkWell(
+                              onTap: () => _showPrivacyOptions(context),
+                              child: SvgPicture.asset(iconPathGen('dropdown')),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Column(
-                children: [
-                  TextField(
-                    controller: _postController,
-                    maxLines: null,
-                    textCapitalization: TextCapitalization.sentences,
-                    onTapOutside: (event) => FocusScope.of(context).unfocus(),
-                    style: AppTypography.textMedium.copyWith(
-                      color: const Color(0xff555555),
-                    ),
-                    decoration: InputDecoration(
-                      hintText: "What's on your mind?",
-                      hintStyle: AppTypography.textMedium.copyWith(
-                        color: const Color(0xff555555),
-                      ),
-                      border: InputBorder.none,
-                      fillColor: Theme.of(context).scaffoldBackgroundColor,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  if (_selectedFiles.isNotEmpty)
-                    ConstrainedBox(
-                      constraints: BoxConstraints(
-                        maxHeight: 35.h,
-                      ),
-                      child: CarouselView(
-                        itemSnapping: true,
-                        itemExtent: _selectedFiles.length > 1 ? 320 : 100.w,
-                        shrinkExtent: 200,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Column(
+                    children: [
+                      TextField(
+                        controller: _postController,
+                        maxLines: null,
+                        textCapitalization: TextCapitalization.sentences,
+                        onTapOutside: (event) =>
+                            FocusScope.of(context).unfocus(),
+                        style: AppTypography.textMedium.copyWith(
+                          color: const Color(0xff555555),
                         ),
-                        enableSplash: false,
-                        children: _selectedFiles.map((sfile) {
-                          return Stack(
-                            alignment: Alignment.center,
-                            children: [
-                              if (sfile.type == MediaType.gif) ...{
-                                GiphyMediaView(mediaId: sfile.mediaPath)
-                              } else ...{
-                                Container(
-                                  height: 35.h,
-                                  decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                      image: FileImage(File(
-                                        sfile.type == MediaType.video
-                                            ? sfile.thumnailPath!
-                                            : sfile.mediaPath!,
-                                      )),
-                                      fit: BoxFit.cover,
+                        decoration: InputDecoration(
+                          hintText: "What's on your mind?",
+                          hintStyle: AppTypography.textMedium.copyWith(
+                            color: const Color(0xff555555),
+                          ),
+                          border: InputBorder.none,
+                          fillColor: Theme.of(context).scaffoldBackgroundColor,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      if (_selectedFiles.isNotEmpty)
+                        ConstrainedBox(
+                          constraints: BoxConstraints(
+                            maxHeight: 35.h,
+                          ),
+                          child: CarouselView(
+                            itemSnapping: true,
+                            itemExtent: _selectedFiles.length > 1 ? 320 : 100.w,
+                            shrinkExtent: 200,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            enableSplash: false,
+                            children: _selectedFiles.map((sfile) {
+                              return Stack(
+                                alignment: Alignment.center,
+                                children: [
+                                  if (sfile.type == MediaType.gif) ...{
+                                    GiphyMediaView(mediaId: sfile.mediaPath)
+                                  } else ...{
+                                    Container(
+                                      height: 35.h,
+                                      decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                          image: FileImage(File(
+                                            sfile.type == MediaType.video
+                                                ? sfile.thumnailPath!
+                                                : sfile.mediaPath!,
+                                          )),
+                                          fit: BoxFit.cover,
+                                        ),
+                                        borderRadius: BorderRadius.circular(6),
+                                      ),
                                     ),
-                                    borderRadius: BorderRadius.circular(6),
-                                  ),
-                                ),
-                              },
-                              if (sfile.type == MediaType.video)
-                                Container(
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: Colors.black.withValues(alpha: 0.5),
-                                  ),
-                                  padding: EdgeInsets.all(8),
-                                  child: Icon(
-                                    Icons.play_arrow,
-                                    color: Colors.white,
-                                    size: 20,
-                                  ),
-                                ),
-                              if (sfile.type == MediaType.gif)
-                                Positioned(
-                                  bottom: 10,
-                                  left: 10,
-                                  child: Container(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 8, vertical: 2),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(4),
-                                      color:
-                                          Colors.black.withValues(alpha: 0.3),
+                                  },
+                                  if (sfile.type == MediaType.video)
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color:
+                                            Colors.black.withValues(alpha: 0.5),
+                                      ),
+                                      padding: EdgeInsets.all(8),
+                                      child: Icon(
+                                        Icons.play_arrow,
+                                        color: Colors.white,
+                                        size: 20,
+                                      ),
                                     ),
-                                    child: Text(
-                                      "GIF",
-                                      style: AppTypography.textXSmall.copyWith(
-                                        color: Colors.grey[200],
-                                        fontWeight: FontWeight.w700,
+                                  if (sfile.type == MediaType.gif)
+                                    Positioned(
+                                      bottom: 10,
+                                      left: 10,
+                                      child: Container(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 8, vertical: 2),
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(4),
+                                          color: Colors.black
+                                              .withValues(alpha: 0.3),
+                                        ),
+                                        child: Text(
+                                          "GIF",
+                                          style:
+                                              AppTypography.textXSmall.copyWith(
+                                            color: Colors.grey[200],
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  Positioned(
+                                    top: 10,
+                                    right: 10,
+                                    child: IconButton.filled(
+                                      style: IconButton.styleFrom(
+                                        backgroundColor: Colors.black54,
+                                        padding: const EdgeInsets.all(0),
+                                      ),
+                                      onPressed: () {
+                                        setState(() {
+                                          _selectedFiles.remove(sfile);
+                                        });
+                                      },
+                                      icon: Icon(
+                                        Icons.close,
+                                        color: Colors.white,
+                                        size: 25,
                                       ),
                                     ),
                                   ),
-                                ),
-                              Positioned(
-                                top: 10,
-                                right: 10,
-                                child: IconButton.filled(
-                                  style: IconButton.styleFrom(
-                                    backgroundColor: Colors.black54,
-                                    padding: const EdgeInsets.all(0),
-                                  ),
-                                  onPressed: () {
-                                    setState(() {
-                                      _selectedFiles.remove(sfile);
-                                    });
-                                  },
-                                  icon: Icon(
-                                    Icons.close,
-                                    color: Colors.white,
-                                    size: 25,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          );
-                        }).toList(),
-                      ),
-                    ),
-                  const SizedBox(height: 16),
-                  // Row(
-                  //   children: [
-                  //     SvgPicture.asset(iconPathGen('followers')),
-                  //     const SizedBox(width: 10),
-                  //     Text(
-                  //       'Tag People',
-                  //       style: AppTypography.textMedium.copyWith(
-                  //         color: const Color(0xff555555),
-                  //       ),
-                  //     ),
-                  //   ],
-                  // ),
-                ],
-              ),
+                                ],
+                              );
+                            }).toList(),
+                          ),
+                        ),
+                      const SizedBox(height: 16),
+                      // Row(
+                      //   children: [
+                      //     SvgPicture.asset(iconPathGen('followers')),
+                      //     const SizedBox(width: 10),
+                      //     Text(
+                      //       'Tag People',
+                      //       style: AppTypography.textMedium.copyWith(
+                      //         color: const Color(0xff555555),
+                      //       ),
+                      //     ),
+                      //   ],
+                      // ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-            const Spacer(),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Row(
-                spacing: 12,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  InkWell(
-                    onTap: () {
-                      pickFile();
-                    },
-                    child: SvgPicture.asset(
-                      iconPathGen('image'),
-                    ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Row(
+              spacing: 12,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                InkWell(
+                  onTap: () {
+                    pickFile();
+                  },
+                  child: SvgPicture.asset(
+                    iconPathGen('image'),
                   ),
-                  InkWell(
-                    onTap: () async {
-                      GiphyMedia result = await Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => GifScreen()));
-                      if (result != null) {
-                        setState(() {
-                          _selectedFiles.add(MediaItem(
-                              type: MediaType.gif, mediaPath: result.id));
-                        });
-                      }
-                    },
-                    child: SvgPicture.asset(
-                      iconPathGen('gif'),
-                    ),
+                ),
+                InkWell(
+                  onTap: () async {
+                    GiphyMedia result = await Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => GifScreen()));
+                    if (result != null) {
+                      setState(() {
+                        _selectedFiles.add(MediaItem(
+                            type: MediaType.gif, mediaPath: result.id));
+                      });
+                    }
+                  },
+                  child: SvgPicture.asset(
+                    iconPathGen('gif'),
                   ),
-                  InkWell(
-                    onTap: () {
-                      _showScheduleBottomSheet(context);
-                    },
-                    child: SvgPicture.asset(
-                      iconPathGen('history'),
-                    ),
+                ),
+                InkWell(
+                  onTap: () {
+                    _showScheduleBottomSheet(context);
+                  },
+                  child: SvgPicture.asset(
+                    iconPathGen('history'),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

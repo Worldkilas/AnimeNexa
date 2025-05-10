@@ -4,7 +4,9 @@ import 'package:anime_nexa/features/post/repository/post_repository.dart';
 import 'package:anime_nexa/models/comment.dart';
 import 'package:anime_nexa/models/post.dart';
 import 'package:anime_nexa/models/reply.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 final postNotifierProvider =
     StreamNotifierProvider<PostNotifier, List<Post>>(() {
@@ -26,14 +28,17 @@ class PostNotifier extends StreamNotifier<List<Post>> {
     return _repository.getPosts();
   }
 
-  Future<void> createPost(WidgetRef ref, Post post) async {
+  Future<void> createPost(BuildContext ctx, WidgetRef ref, Post post) async {
     try {
       toggleCreatePostLoadingStatus(ref, true);
       await _repository.createPost(post);
       toggleCreatePostLoadingStatus(ref, false);
-    } catch (e) {
-      state = AsyncError(e, StackTrace.current);
-      log(e.toString(), stackTrace: StackTrace.current);
+      if(ctx.mounted) {
+        ctx.pop();
+      }
+    } catch (e, stk) {
+      state = AsyncError(e, stk);
+      log(e.toString(), stackTrace: stk);
       toggleCreatePostLoadingStatus(ref, false);
     }
   }
