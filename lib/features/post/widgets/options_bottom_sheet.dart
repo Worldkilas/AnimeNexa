@@ -1,23 +1,25 @@
+import 'package:anime_nexa/features/post/views/create_post.dart';
 import 'package:anime_nexa/shared/constants/app_typography.dart';
 import 'package:anime_nexa/shared/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
-class OptionsBottomSheet extends StatelessWidget {
-  const OptionsBottomSheet({super.key});
+class OptionsBottomSheet extends ConsumerWidget {
+  final VoidCallback onDraftSelected;
+  const OptionsBottomSheet({super.key, required this.onDraftSelected});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Save as Draft Option
           InkWell(
             onTap: () {
-              // Handle "Save as Draft" tap
+              onDraftSelected.call();
               Navigator.pop(context);
             },
             child: Padding(
@@ -39,6 +41,7 @@ class OptionsBottomSheet extends StatelessWidget {
           // Delete Option
           InkWell(
             onTap: () {
+              ref.read(canPopProvider.notifier).state = true;
               Navigator.pop(context);
               context.pop();
             },

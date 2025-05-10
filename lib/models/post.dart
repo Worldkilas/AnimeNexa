@@ -86,6 +86,7 @@ class Post {
     DateTime? createdAt,
     List<String>? likes,
     List<String>? comments,
+    bool? isDraft,
   }) {
     return Post(
       pid: pid ?? this.pid,
@@ -95,6 +96,7 @@ class Post {
       createdAt: createdAt ?? this.createdAt,
       likes: likes ?? this.likes,
       comments: comments ?? this.comments,
+      isDraft: isDraft,
     );
   }
 }

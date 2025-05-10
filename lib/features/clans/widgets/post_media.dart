@@ -1,0 +1,101 @@
+import 'package:anime_nexa/models/mediaitem.dart';
+import 'package:anime_nexa/shared/utils.dart';
+import 'package:figma_squircle/figma_squircle.dart';
+import 'package:flutter/material.dart';
+import 'package:giphy_flutter_sdk/giphy_media_view.dart';
+
+class PostMedia extends StatelessWidget {
+  final List<MediaItem> media;
+
+  const PostMedia({super.key, required this.media});
+
+  @override
+  Widget build(BuildContext context) {
+    Widget mediaTile(
+      MediaItem mediaItem,
+    ) {
+      return switch (mediaItem.type) {
+        MediaType.image || MediaType.video => Container(
+            height: double.infinity,
+            width: double.infinity,
+            margin: EdgeInsets.all(1),
+            decoration: ShapeDecoration(
+              shape: SmoothRectangleBorder(
+                borderRadius: SmoothBorderRadius(
+                  cornerRadius: 10,
+                  cornerSmoothing: 0.8,
+                ),
+              ),
+              image: DecorationImage(
+                  image: NetworkImage(getFileUrl(
+                      mediaItem.type == MediaType.video
+                          ? mediaItem.thumnailPath!
+                          : mediaItem.appwriteID!)),
+                  fit: BoxFit.cover),
+            ),
+          ),
+        MediaType.gif => GiphyMediaView(mediaId: mediaItem.mediaPath)
+      };
+    }
+
+    return SizedBox(
+      height: 220,
+      child: switch (media.length) {
+        1 => mediaTile(media[0]),
+        2 => Row(
+            children: [
+              Expanded(child: mediaTile(media[0])),
+              Expanded(child: mediaTile(media[1])),
+            ],
+          ),
+        3 => Row(
+            children: [
+              Expanded(child: mediaTile(media[0])),
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.48,
+                child: Column(
+                  children: [
+                    Expanded(child: mediaTile(media[1])),
+                    const SizedBox(height: 4),
+                    Expanded(child: mediaTile(media[2])),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        _ => GridView.builder(
+            physics: const NeverScrollableScrollPhysics(),
+            padding: EdgeInsets.zero,
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              childAspectRatio: 1.8,
+            ),
+            itemCount: 4,
+            itemBuilder: (context, index) {
+              return Stack(
+                fit: StackFit.expand,
+                children: [
+                  mediaTile(
+                    media[index],
+                  ),
+                  if (index == 3 && media.length > 4)
+                    Container(
+                      color: Colors.black.withOpacity(0.6),
+                      alignment: Alignment.center,
+                      child: Text(
+                        '+${media.length - 4}',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                ],
+              );
+            },
+          )
+      },
+    );
+  }
+}

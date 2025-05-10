@@ -13,10 +13,19 @@ final postNotifierProvider =
   return PostNotifier();
 });
 
+final postsDraftProvider = StreamProvider.family<List<Post>?, String>((ref, uid) {
+   return ref.watch(postRepoProvider).getPostsFromDrafts(uid);
+});
+
 final isCreatingPostProvider = StateProvider<bool>((ref) => false);
+final isCreatingPostDraftProvider = StateProvider<bool>((ref) => false);
 
 void toggleCreatePostLoadingStatus(WidgetRef ref, bool state) {
   ref.read(isCreatingPostProvider.notifier).state = state;
+}
+
+void toggleCreatePostDraftLoadingStatus(WidgetRef ref, bool state) {
+  ref.read(isCreatingPostDraftProvider.notifier).state = state;
 }
 
 class PostNotifier extends StreamNotifier<List<Post>> {
@@ -30,10 +39,14 @@ class PostNotifier extends StreamNotifier<List<Post>> {
 
   Future<void> createPost(BuildContext ctx, WidgetRef ref, Post post) async {
     try {
-      toggleCreatePostLoadingStatus(ref, true);
+      post.isDraft!
+          ? toggleCreatePostDraftLoadingStatus(ref, true)
+          : toggleCreatePostLoadingStatus(ref, true);
       await _repository.createPost(post);
-      toggleCreatePostLoadingStatus(ref, false);
-      if(ctx.mounted) {
+      post.isDraft!
+          ? toggleCreatePostDraftLoadingStatus(ref, false)
+          : toggleCreatePostLoadingStatus(ref, false);
+      if (ctx.mounted) {
         ctx.pop();
       }
     } catch (e, stk) {

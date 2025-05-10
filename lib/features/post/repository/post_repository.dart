@@ -35,7 +35,8 @@ class PostRepository implements IPostRepository {
         for (var mediaItem in post.media!) {
           if (mediaItem.mediaPath != null &&
               (mediaItem.type == MediaType.image ||
-                  mediaItem.type == MediaType.video)) {
+                  mediaItem.type == MediaType.video) &&
+              mediaItem.appwriteID == null) {
             final file = File(mediaItem.mediaPath!);
             final fileName =
                 '${DateTime.now().millisecondsSinceEpoch}_${file.path.split('/').last}';
@@ -68,7 +69,7 @@ class PostRepository implements IPostRepository {
       await _firestore
           .collection(CollectionsPaths.posts)
           .doc(post.pid)
-          .set(post.toJson());
+          .set(post.copyWith(isDraft: false).toJson());
     } on (AppwriteException, FirebaseException, Exception) catch (e) {
       throw Exception('Failed to create post: $e');
     }
@@ -122,8 +123,7 @@ class PostRepository implements IPostRepository {
     }
   }
 
-  @override
-  Stream<List<Post>> getPostsFromDrafts(String? uid) {
+  Stream<List<Post>?> getPostsFromDrafts(String? uid) {
     try {
       return _firestore
           .collection(CollectionsPaths.posts)
