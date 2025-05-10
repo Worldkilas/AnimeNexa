@@ -1,3 +1,4 @@
+import 'package:anime_nexa/core/typedefs.dart';
 import 'package:anime_nexa/features/create/views/create_reels.dart';
 import 'package:anime_nexa/features/discover/views/discover_page.dart';
 import 'package:anime_nexa/features/home/views/homepage.dart';
@@ -10,6 +11,7 @@ import 'package:anime_nexa/shared/view/layout_scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../features/auth/views/auth_screen.dart';
 import '../../features/auth/views/create_account.dart';
 import '../../features/auth/views/genre_selection.dart';
@@ -18,6 +20,8 @@ import '../../features/auth/views/sign_in.dart';
 import '../../features/auth/views/verify_email.dart';
 import '../../features/messaging/views/chat_view.dart';
 import '../../features/messaging/views/inbox.dart';
+import '../../features/onboarding/viewmodels/onboarding_view_model.dart'
+    show onboardingCompleteProvider;
 import '../../features/onboarding/views/onboarding_screen.dart';
 import '../../features/settings/view/accounts.dart';
 import '../../features/settings/view/settings_screen.dart';
@@ -33,29 +37,28 @@ final appRouterProvider = Provider<GoRouter>(
       refreshListenable: GoRouterRefreshStream(auth.authStateChanges()),
       initialLocation: '/',
       redirect: (ctx, state) async {
-        final isLoggedIn = auth.currentUser != null;
+        final hasCompletedOnboarding =
+            await ref.read(onboardingCompleteProvider.future);
+
         final isAuthRoute = state.uri.path.startsWith('/auth');
-        // Force refresh the current user to ensure we have the latest state from Firebase
-        try {
-          if (isLoggedIn) {
-            await auth.currentUser?.reload();
-            // If user was deleted on server, this might change isLoggedIn to false
-            if (auth.currentUser == null) {
-              return '/auth';
-            }
+
+        final isOnboardingRoute = state.uri.path == '/';
+        final user = auth.currentUser;
+        //Onboarding check
+        if (!hasCompletedOnboarding && !isOnboardingRoute) return '/';
+
+        if (hasCompletedOnboarding) {
+          try {
+            await user?.reload();
+          } catch (_) {
+            await auth.signOut();
+            return '/auth';
           }
-        } catch (e) {
-          // If reload fails (e.g., user was deleted), force logout and go to auth
-          await auth.signOut();
-          return '/auth';
-        }
-        // If not logged in, force to /auth
-        if (!isLoggedIn && !isAuthRoute) {
-          return '/auth';
-        }
-        // // If logged in but trying to access auth flow, send to /home
-        if (isLoggedIn && isAuthRoute) {
-          return '/home';
+
+          final isLoggedIn = auth.currentUser != null;
+
+          if (!isLoggedIn && !isAuthRoute) return '/auth';
+          if (isLoggedIn && isAuthRoute) return '/home';
         }
 
         // Allow navigation
@@ -65,35 +68,33 @@ final appRouterProvider = Provider<GoRouter>(
         GoRoute(
           path: '/',
           builder: (context, state) => const OnboardingScreen(),
+        ),
+        GoRoute(
+          path: '/auth',
+          builder: (context, state) => const AuthScreen(),
           routes: [
             GoRoute(
-              path: '/auth',
-              builder: (context, state) => const AuthScreen(),
-              routes: [
-                GoRoute(
-                    path: '/createAcct',
-                    builder: (context, state) => const CreateAccount(),
-                    routes:[
+                path: '/createAcct',
+                builder: (context, state) => const CreateAccount(),
+                routes:[
 
                   ]
                 ),
+            GoRoute(
+              path: '/signIn',
+              builder: (context, state) => const SignIn(),
+            ),
+            GoRoute(
+              path: '/verifyEmail',
+              builder: (context, state) => const EmailVerificationScreen(),
+            ),
+            GoRoute(
+              path: '/setNameAndUsername',
+              builder: (context, state) => NameScreen(),
+              routes: [
                 GoRoute(
-                  path: '/signIn',
-                  builder: (context, state) => const SignIn(),
-                ),
-                GoRoute(
-                  path: '/verifyEmail',
-                  builder: (context, state) => const EmailVerificationScreen(),
-                ),
-                GoRoute(
-                  path: '/setNameAndUsername',
-                  builder: (context, state) => NameScreen(),
-                  routes: [
-                    GoRoute(
-                      path: '/genre',
-                      builder: (context, state) => const GenresScreen(),
-                    ),
-                  ],
+                  path: '/genre',
+                  builder: (context, state) => const GenresScreen(),
                 ),
               ],
             ),

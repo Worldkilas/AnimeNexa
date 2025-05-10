@@ -1,3 +1,4 @@
+import 'package:anime_nexa/models/auth_state.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -5,13 +6,11 @@ import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sizer/sizer.dart';
 
-import '../../../models/anime_nexa_user.dart';
 import '../../../shared/constants/app_colors.dart';
 import '../../../shared/utils/utils.dart';
 import '../../../shared/widgets/custom_button.dart';
 import '../../../shared/widgets/custom_text_field.dart';
 import '../view_model/auth_view_model.dart';
-import '../widgets/password_requirement.dart';
 
 class SignIn extends ConsumerStatefulWidget {
   const SignIn({super.key});
@@ -24,8 +23,10 @@ class _SignInState extends ConsumerState<SignIn> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+
   late GestureRecognizer _gestureRecognizer;
   bool isObscure = false;
+  BuildContext? _progressIndicatorContext;
 
   @override
   void initState() {
@@ -44,21 +45,54 @@ class _SignInState extends ConsumerState<SignIn> {
   }
 
   @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    _gestureRecognizer.dispose();
+    if (_progressIndicatorContext != null &&
+        _progressIndicatorContext!.mounted) {
+      context.pop();
+      _progressIndicatorContext = null;
+    }
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final authViewModel = ref.watch(authViewModelProvider);
-    ref.listen<AsyncValue<AnimeNexaUser?>>(
+
+    ref.listen<AuthState>(
       authViewModelProvider,
-      (_, next) {
-        next.whenOrNull(
-          error: (e, _) => utilitySnackBar(
-            context,
-            e.toString(),
-          ),
-          data: (user) {
-            if (user != null) context.go('/auth/setNameAndUsername');
-          },
-        );
+      (_, authState) {
+        if (authState is Authenticating) {
+          showDialog(
+            context: context,
+            barrierDismissible: false,
+            useRootNavigator: true,
+            builder: (context) {
+              _progressIndicatorContext = context;
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            },
+          );
+          return;
+        }
+        // close circular progress indicator after rebuild to guarantee that the
+        // context is still valid
+        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+          if (_progressIndicatorContext != null &&
+              _progressIndicatorContext!.mounted) {
+            Navigator.of(_progressIndicatorContext!, rootNavigator: true).pop();
+            _progressIndicatorContext = null;
+          }
+        });
+        if (authState is Authenticated) {
+          context.go('/home');
+        }
+        if (authState is Unauthenticated) {
+          utilitySnackBar(context, authState.error!);
+        }
       },
     );
 
@@ -144,7 +178,6 @@ class _SignInState extends ConsumerState<SignIn> {
               SizedBox(height: 2.h),
               CustomButton(
                 text: 'Sign in',
-                isLoading: authViewModel.isLoading,
                 height: 6.h,
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
@@ -193,7 +226,6 @@ class _SignInState extends ConsumerState<SignIn> {
                     width: 24,
                   ),
                 ),
-                isLoading: authViewModel.isLoading,
                 height: 6.h,
                 backgroundColor: Colors.black,
                 textColor: Colors.white,

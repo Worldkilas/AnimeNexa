@@ -1,5 +1,6 @@
+import 'package:anime_nexa/models/auth_state.dart';
 import 'package:anime_nexa/features/auth/view_model/auth_view_model.dart';
-import 'package:anime_nexa/models/anime_nexa_user.dart';
+import 'package:anime_nexa/shared/utils/utils.dart';
 import 'package:anime_nexa/shared/widgets/custom_button.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +9,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sizer/sizer.dart';
 import '../../../shared/utils/live_password_checker.dart';
-import '../../../shared/utils/utils.dart';
 import '../../../shared/widgets/custom_text_field.dart';
 import '../widgets/password_requirement.dart';
 
@@ -29,6 +29,7 @@ class _CreateAccountState extends ConsumerState<CreateAccount> {
   final TextEditingController _confirmPasswordController =
       TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  BuildContext? _progressIndicatorContext;
 
   bool _isPasswordObscure = true;
   bool _isConfirmPasswordObscure = true;
@@ -49,6 +50,11 @@ class _CreateAccountState extends ConsumerState<CreateAccount> {
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
+    if (_progressIndicatorContext != null &&
+        _progressIndicatorContext!.mounted) {
+      context.pop();
+      _progressIndicatorContext = null;
+    }
     super.dispose();
   }
 
@@ -57,21 +63,42 @@ class _CreateAccountState extends ConsumerState<CreateAccount> {
     final theme = Theme.of(context);
     final passwordValidation = ref.watch(passwordValidationProvider);
     final authViewModelNotifier = ref.read(authViewModelProvider.notifier);
-    final authViewModel = ref.watch(authViewModelProvider);
-    ref.listen<AsyncValue<AnimeNexaUser?>>(
+
+    ref.listen<AuthState>(
       authViewModelProvider,
-      (_, next) {
-        next.whenOrNull(
-          error: (e, _) => utilitySnackBar(
-            context,
-            e.toString(),
-          ),
-          data: (user) {
-            if (user != null) context.go('/auth/setNameAndUsername');
-          },
-        );
+      (_, authState) {
+        if (authState is Authenticating) {
+          showDialog(
+            context: context,
+            barrierDismissible: false,
+            useRootNavigator: true,
+            builder: (context) {
+              _progressIndicatorContext = context;
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            },
+          );
+          return;
+        }
+        // close circular progress indicator after rebuild to guarantee that the
+        // context is still valid
+        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+          if (_progressIndicatorContext != null &&
+              _progressIndicatorContext!.mounted) {
+            Navigator.of(_progressIndicatorContext!, rootNavigator: true).pop();
+            _progressIndicatorContext = null;
+          }
+        });
+        if (authState is Authenticated) {
+          context.go('/home');
+        }
+        if (authState is Unauthenticated) {
+          utilitySnackBar(context, authState.error!);
+        }
       },
     );
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Padding(
@@ -195,7 +222,6 @@ class _CreateAccountState extends ConsumerState<CreateAccount> {
               SizedBox(height: 3.3.h),
               CustomButton(
                 text: 'Create an account',
-                isLoading: authViewModel.isLoading,
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
                     authViewModelNotifier.signUpWithEmailandPassword(
@@ -234,7 +260,6 @@ class _CreateAccountState extends ConsumerState<CreateAccount> {
               ),
               CustomButton(
                 text: 'Continue with Google',
-                isLoading: authViewModel.isLoading,
                 leadingIcon: Padding(
                   padding: const EdgeInsets.only(right: 20.0),
                   child: Image.asset(

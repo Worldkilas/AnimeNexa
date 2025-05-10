@@ -95,9 +95,11 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                       text: (currentPage == onboardingItems.length - 1)
                           ? 'Get Started'
                           : 'Next',
-                      onPressed: () {
+                      onPressed: () async {
                         if (currentPage == onboardingItems.length - 1) {
-                          // If it's the last page, navigate to the login screen
+                          // Mark onboarding as complete via shared preference
+                          await markOnboardingComplete();
+                          // Navigate to the login screen
                           context.go('/auth');
                         } else {
                           // Otherwise, go to the next page

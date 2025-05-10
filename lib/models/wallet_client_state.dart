@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:solana/solana.dart';
 import 'package:solana_mobile_client/solana_mobile_client.dart';
 part 'wallet_client_state.freezed.dart';

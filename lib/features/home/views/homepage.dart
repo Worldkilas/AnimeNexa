@@ -5,8 +5,10 @@ import 'package:flutter_svg/svg.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../../shared/constants/app_colors.dart';
+import '../../../shared/utils/utils.dart';
 import '../../../shared/widgets/custom_button.dart';
 import '../../auth/view_model/auth_view_model.dart';
+import '../../wallet/wallet_view_model.dart';
 
 final List<String> storyAvatars =
     List.generate(10, (index) => 'lib/assets/images/post.png');
@@ -32,6 +34,11 @@ class Homepage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final walletViewModel = ref.read(walletViewModelProvider.notifier);
+    final walletState = ref.watch(walletViewModelProvider);
+    final displayText = walletState.address != null
+        ? shortenWalletAddress(walletState.address!)
+        : 'Connect wallet';
     return Scaffold(
       appBar: AppBar(
           backgroundColor: Colors.white,
@@ -42,11 +49,23 @@ class Homepage extends ConsumerWidget {
           ),
           actions: [
             CustomButton(
-              onPressed: () {
-                //TODO: Connect wallet
-                // ref.read(authViewModelProvider.notifier).signout();
+              onPressed: () async {
+                final address = walletState.address;
+                final isWalletConnected = address != null;
+
+                final isAvailable = await walletViewModel.isWalletAvailable();
+                if (!isAvailable) {
+                  print('No wallet found');
+                  return;
+                }
+                await walletViewModel.requestCapabilities();
+                print('connectiong wallet');
+
+                await walletViewModel.authorizeWallet();
+                print('wallet connected');
+                print(walletState.address);
               },
-              text: 'Connect wallet',
+              text: displayText,
               width: 40.w,
               height: 40,
             ),

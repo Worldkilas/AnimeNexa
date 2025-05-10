@@ -1,3 +1,4 @@
+import 'package:anime_nexa/firebase_options.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fpdart/fpdart.dart';
@@ -119,7 +120,10 @@ class FirebaseAuthRepo implements AuthRepository {
   @override
   FutureEither<AnimeNexaUser> sinInWithGoogle() async {
     try {
-      final GoogleSignInAccount? gooogleUser = await GoogleSignIn().signIn();
+      final GoogleSignIn googleSignIn = GoogleSignIn(
+        clientId: DefaultFirebaseOptions.android.androidClientId,
+      );
+      final GoogleSignInAccount? gooogleUser = await googleSignIn.signIn();
       if (gooogleUser == null) return left('Google sign in cancelled');
       final GoogleSignInAuthentication googleAuth =
           await gooogleUser.authentication;
