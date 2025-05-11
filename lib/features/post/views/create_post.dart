@@ -401,9 +401,9 @@ class _CreatePostState extends ConsumerState<CreatePost> {
                                         decoration: BoxDecoration(
                                           image: DecorationImage(
                                             image: sfile.appwriteID != null
-                                                ? NetworkImage(getFileUrl(
+                                                ? NetworkImage(
                                                     sfile.thumnailPath ??
-                                                        sfile.appwriteID!))
+                                                        sfile.mediaPath!)
                                                 : FileImage(File(
                                                     sfile.type ==
                                                             MediaType.video

@@ -4,6 +4,7 @@ import 'package:anime_nexa/models/mediaitem.dart';
 import 'package:anime_nexa/models/post.dart';
 import 'package:anime_nexa/models/reply.dart';
 import 'package:anime_nexa/providers/global_providers.dart';
+import 'package:anime_nexa/shared/utils.dart';
 import 'package:appwrite/appwrite.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -53,7 +54,7 @@ class PostRepository implements IPostRepository {
             uploadedMedia.add(
               mediaItem.copyWith(
                 appwriteID: result.$id,
-                mediaPath: result.$id,
+                mediaPath: getFileUrl(result.$id),
                 thumnailPath: null,
               ),
             );

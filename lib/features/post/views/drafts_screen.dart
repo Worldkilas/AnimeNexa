@@ -63,10 +63,10 @@ class DraftsScreen extends ConsumerWidget {
                                       ),
                                       image: NetworkImage(
                                         post.media![0].type == MediaType.video
-                                            ? getFileUrl(
-                                                post.media![0].thumnailPath!)
-                                            : getFileUrl(
-                                                post.media![0].appwriteID!),
+                                            ? 
+                                                post.media![0].thumnailPath!
+                                            : 
+                                                post.media![0].mediaPath!,
                                       ),
                                     ),
                                   ),
