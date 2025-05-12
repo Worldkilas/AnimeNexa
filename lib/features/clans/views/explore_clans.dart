@@ -1,4 +1,4 @@
-import 'package:anime_nexa/features/clans/widgets/clan_post_card.dart';
+import 'package:anime_nexa/features/clans/widgets/post_card.dart';
 import 'package:anime_nexa/features/clans/widgets/discover_clan_card.dart';
 import 'package:anime_nexa/shared/constants/app_theme.dart';
 import 'package:anime_nexa/shared/constants/app_typography.dart';
@@ -57,20 +57,20 @@ class ExploreClans extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 16),
-              ClanPostCard(
-                imagePath: [
-                  imagePathGen('clanpost1'),
-                  imagePathGen('clanpost2'),
-                  imagePathGen('clanpost3'),
-                  imagePathGen('clanpost3'),
-                ],
-                clanName: "The Sakura Society",
-                posterName: "Sakura Haruno",
-                posterUsername: "@sakura_haruno",
-                text:
-                    "For fans of Studio Ghibli magic.\n#animefan #actionanime",
-                withinClan: false,
-              ),
+              // ClanPostCard(
+              //   imagePath: [
+              //     imagePathGen('clanpost1'),
+              //     imagePathGen('clanpost2'),
+              //     imagePathGen('clanpost3'),
+              //     imagePathGen('clanpost3'),
+              //   ],
+              //   clanName: "The Sakura Society",
+              //   posterName: "Sakura Haruno",
+              //   posterUsername: "@sakura_haruno",
+              //   text:
+              //       "For fans of Studio Ghibli magic.\n#animefan #actionanime",
+              //   withinClan: false,
+              // ),
               const SizedBox(height: 38),
               Row(
                 children: [
