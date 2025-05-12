@@ -1,4 +1,4 @@
-import 'package:anime_nexa/features/clans/widgets/post_card.dart';
+import 'package:anime_nexa/features/clans/widgets/clan_post_card.dart';
 import 'package:anime_nexa/features/clans/widgets/society_page_header.dart';
 import 'package:anime_nexa/shared/constants/app_theme.dart';
 import 'package:anime_nexa/shared/constants/app_typography.dart';
@@ -114,40 +114,40 @@ class _SocietyPageState extends State<SocietyPage>
                 ListView(
                   padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 2.h),
                   children: [
-                    // ClanPostCard(
-                    //   imagePath: [
-                    //     imagePathGen('clanpost1'),
-                    //     imagePathGen('clanpost2'),
-                    //     imagePathGen('clanpost3'),
-                    //     imagePathGen('clanpost4'),
-                    //   ],
-                    //   clanName: "The Sakura Society",
-                    //   posterName: "Mini_Key",
-                    //   posterUsername: "mini_kay",
-                    //   withinClan: true,
-                    //   text:
-                    //       "For fans of Studio Ghibli magic.\n#animefan #actionanime",
-                    // ),
-                    // Divider(),
-                    // ClanPostCard(
-                    //   text:
-                    //       "Have y’all ever stopped watching anime at some point, like a break or something?",
-                    //   posterName: "Big.Alpha",
-                    //   posterUsername: "Alpha",
-                    //   withinClan: true,
-                    //   clanName: "The Sakura Society",
-                    //   imagePath: [],
-                    // ),
-                    // Divider(),
-                    // ClanPostCard(
-                    //   text:
-                    //       "Have y’all ever stopped watching anime at some point, like a break or something?",
-                    //   posterName: "Big.Alpha",
-                    //   posterUsername: "Alpha",
-                    //   withinClan: true,
-                    //   clanName: "The Sakura Society",
-                    //   imagePath: [],
-                    // ),
+                    ClanPostCard(
+                      imagePath: [
+                        imagePathGen('clanpost1'),
+                        imagePathGen('clanpost2'),
+                        imagePathGen('clanpost3'),
+                        imagePathGen('clanpost4'),
+                      ],
+                      clanName: "The Sakura Society",
+                      posterName: "Mini_Key",
+                      posterUsername: "mini_kay",
+                      withinClan: true,
+                      text:
+                          "For fans of Studio Ghibli magic.\n#animefan #actionanime",
+                    ),
+                    Divider(),
+                    ClanPostCard(
+                      text:
+                          "Have y’all ever stopped watching anime at some point, like a break or something?",
+                      posterName: "Big.Alpha",
+                      posterUsername: "Alpha",
+                      withinClan: true,
+                      clanName: "The Sakura Society",
+                      imagePath: [],
+                    ),
+                    Divider(),
+                    ClanPostCard(
+                      text:
+                          "Have y’all ever stopped watching anime at some point, like a break or something?",
+                      posterName: "Big.Alpha",
+                      posterUsername: "Alpha",
+                      withinClan: true,
+                      clanName: "The Sakura Society",
+                      imagePath: [],
+                    ),
                   ],
                 ),
                 const Center(child: Text('Events Coming Soon')),

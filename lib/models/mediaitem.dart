@@ -4,55 +4,43 @@ enum MediaType { image, video, gif }
 class MediaItem {
   final MediaType type;
   final String? mediaPath;
-  final String? thumbnailPath;
-  final String? appwriteID;
-  final String? thumbnailAppwriteID;
-
+  final String? thumnailPath;
+  
   MediaItem({
     required this.type,
     required this.mediaPath,
-    this.thumbnailPath,
-    this.appwriteID,
-    this.thumbnailAppwriteID,
+    this.thumnailPath,
   });
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'type': type.name,
       'mediaPath': mediaPath,
-      'thumbnailPath': thumbnailPath,
-      'appwriteID': appwriteID,
-      'thumbnailAppwriteID': thumbnailAppwriteID,
+      'thumnailPath': thumnailPath,
     };
   }
 
   factory MediaItem.fromMap(Map<String, dynamic> map) {
     return MediaItem(
       type: MediaType.values.firstWhere((item) => item.name == map['type']),
-      mediaPath: map['mediaPath'],
-      thumbnailPath: map['thumbnailPath'],
-      appwriteID: map['appwriteID'],
-      thumbnailAppwriteID: map['thumbnailAppwriteID'],
+      mediaPath: map['media'],
+      thumnailPath: map['thumbnailPath'],
     );
   }
+
 
   MediaItem copyWith({
     MediaType? type,
     String? mediaPath,
-    String? thumbnailPath,
-    String? appwriteID,
-    String? thumbnailAppwriteID,
+    String? thumnailPath,
   }) {
     return MediaItem(
       type: type ?? this.type,
       mediaPath: mediaPath ?? this.mediaPath,
-      thumbnailPath: thumbnailPath ?? this.thumbnailPath,
-      appwriteID: appwriteID ?? this.appwriteID,
-      thumbnailAppwriteID: thumbnailAppwriteID ?? this.thumbnailAppwriteID,
+      thumnailPath: thumnailPath ?? this.thumnailPath,
     );
   }
 
   @override
-  String toString() =>
-      'MediaItem(type: $type, mediaPath: $mediaPath, thumnailPath: $thumbnailPath, appwriteID: $appwriteID, thumbnailAppwriteID: $thumbnailAppwriteID)';
+  String toString() => 'MediaItem(type: $type, mediaPath: $mediaPath, thumnailPath: $thumnailPath)';
 }

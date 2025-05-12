@@ -48,19 +48,26 @@ class Homepage extends ConsumerWidget {
             color: AppColors.primary,
           ),
           actions: [
-            Container(
-              padding: EdgeInsets.symmetric(vertical: 9, horizontal: 11),
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                )),
-                onPressed: () {},
-                child: Text(
-                  "Connect wallet",
-                  style: AppTypography.textXSmall.copyWith(color: Colors.white),
-                ),
-              ),
+            CustomButton(
+              onPressed: () async {
+                final address = walletState.address;
+                final isWalletConnected = address != null;
+
+                final isAvailable = await walletViewModel.isWalletAvailable();
+                if (!isAvailable) {
+                  print('No wallet found');
+                  return;
+                }
+                await walletViewModel.requestCapabilities();
+                print('connectiong wallet');
+
+                await walletViewModel.authorizeWallet();
+                print('wallet connected');
+                print(walletState.address);
+              },
+              text: displayText,
+              width: 40.w,
+              height: 40,
             ),
             IconButton(
               icon: Icon(Icons.menu, color: Colors.black),
