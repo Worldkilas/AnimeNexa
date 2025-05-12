@@ -1,6 +1,9 @@
+import 'dart:typed_data';
+
 import 'package:anime_nexa/core/configs.dart';
 import 'package:anime_nexa/core/typedefs.dart';
 import 'package:anime_nexa/models/wallet_client_state.dart';
+import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:solana/solana.dart';
 import 'package:solana_mobile_client/solana_mobile_client.dart';
@@ -23,6 +26,8 @@ class WalletViewModel extends _$WalletViewModel {
       websocketUrl: Uri.parse(websocketUrl),
     );
   }
+
+
 
   // queries the android to find if there is a solana wallet installed
   FutureBool isWalletAvailable() => LocalAssociationScenario.isAvailable();
@@ -84,4 +89,7 @@ class WalletViewModel extends _$WalletViewModel {
 
     return result != null;
   }
+
+  
+
 }

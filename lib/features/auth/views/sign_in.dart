@@ -50,8 +50,9 @@ class _SignInState extends ConsumerState<SignIn> {
     _passwordController.dispose();
     _gestureRecognizer.dispose();
     if (_progressIndicatorContext != null &&
-        _progressIndicatorContext!.mounted) {
-      context.pop();
+        Navigator.of(_progressIndicatorContext!, rootNavigator: true)
+            .canPop()) {
+      Navigator.of(_progressIndicatorContext!, rootNavigator: true);
       _progressIndicatorContext = null;
     }
     super.dispose();
