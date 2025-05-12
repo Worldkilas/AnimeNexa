@@ -1,43 +1,100 @@
 import 'package:anime_nexa/features/post/repository/i_post_repository.dart';
 import 'package:anime_nexa/models/comment.dart';
+import 'package:anime_nexa/models/mediaitem.dart';
 import 'package:anime_nexa/models/post.dart';
 import 'package:anime_nexa/models/reply.dart';
+import 'package:anime_nexa/providers/global_providers.dart';
+import 'package:anime_nexa/shared/utils.dart';
+import 'package:appwrite/appwrite.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:io';
 
 import '../../../shared/constants/collections_paths.dart';
 
+final postRepoProvider = Provider((ref) {
+  return PostRepository(
+    ref.watch(firebaseFirestoreProvider),
+    ref.watch(appwriteStorageProvider),
+  );
+});
+
 class PostRepository implements IPostRepository {
   final FirebaseFirestore _firestore;
-  final FirebaseStorage _storage;
+  final Storage _storage;
 
   PostRepository(this._firestore, this._storage);
 
   @override
   Future<void> createPost(Post post) async {
     try {
-      if (post.media!.isNotEmpty) {
-        List<String> mediaUrls = [];
+      if (post.media != null && post.media!.isNotEmpty) {
+        List<MediaItem> uploadedMedia = [];
 
-        // for (String mediaPath in post.media!) {
-        //   final storageRef = _storage.ref().child(
-        //       'posts/${post.pid}/${DateTime.now().millisecondsSinceEpoch}_${mediaPath.split('/').last}');
+        for (var mediaItem in post.media!) {
+          if (mediaItem.mediaPath != null &&
+              (mediaItem.type == MediaType.image ||
+                  mediaItem.type == MediaType.video) &&
+              mediaItem.appwriteID == null) {
+            final file = File(mediaItem.mediaPath!);
+            final fileName =
+                '${DateTime.now().millisecondsSinceEpoch}_${file.path.split('/').last}';
 
-        //   final file = File(mediaPath);
-        //   await storageRef.putFile(file);
-        //   final downloadUrl = await storageRef.getDownloadURL();
-        //   mediaUrls.add(downloadUrl);
-        // }
+            // Upload main media file
+            final result = await _storage.createFile(
+              bucketId: dotenv.env['APPWRITE_BUCKET_ID']!,
+              fileId: ID.unique(),
+              file: InputFile.fromPath(
+                path: file.path,
+                filename: fileName,
+              ),
+            );
 
-        // post.media = mediaUrls;
+            String? thumbnailUrl;
+            String? thumbnailAppwriteID;
+            if (mediaItem.type == MediaType.video &&
+                mediaItem.thumbnailPath != null) {
+              final thumbnailFile = File(mediaItem.thumbnailPath!);
+              final thumbnailFileName =
+                  '${DateTime.now().millisecondsSinceEpoch}_thumbnail_${thumbnailFile.path.split('/').last}';
+
+              final thumbnailResult = await _storage.createFile(
+                bucketId: dotenv.env['APPWRITE_BUCKET_ID']!,
+                fileId: ID.unique(),
+                file: InputFile.fromPath(
+                  path: thumbnailFile.path,
+                  filename: thumbnailFileName,
+                ),
+              );
+
+              thumbnailUrl = getFileUrl(thumbnailResult.$id);
+              thumbnailAppwriteID = thumbnailResult.$id;
+            }
+
+            uploadedMedia.add(
+              mediaItem.copyWith(
+                appwriteID: result.$id,
+                mediaPath: getFileUrl(result.$id),
+                thumbnailPath: thumbnailUrl,
+                thumbnailAppwriteID: thumbnailAppwriteID,
+              ),
+            );
+          } else {
+            uploadedMedia.add(mediaItem);
+          }
+        }
+
+        // Update post with uploaded media information
+        post = post.copyWith(media: uploadedMedia);
       }
 
       await _firestore
           .collection(CollectionsPaths.posts)
           .doc(post.pid)
           .set(post.toJson());
-    } catch (e) {
+    } on (AppwriteException, FirebaseException, Exception) catch (e) {
       throw Exception('Failed to create post: $e');
     }
   }
@@ -45,11 +102,37 @@ class PostRepository implements IPostRepository {
   @override
   Future<void> deletePost(Post post) async {
     try {
-      await _firestore.collection(CollectionsPaths.posts).doc(post.pid).delete();
-      // for (String mediaUrl in post.media!) {
-      //   final storageRef = _storage.ref().child(mediaUrl);
-      //   await storageRef.delete();
-      // }
+      if (post.media != null && post.media!.isNotEmpty) {
+        for (var mediaItem in post.media!) {
+          // Delete main media file
+          if (mediaItem.appwriteID != null) {
+            try {
+              await _storage.deleteFile(
+                bucketId: dotenv.env['APPWRITE_BUCKET_ID']!,
+                fileId: mediaItem.appwriteID!,
+              );
+            } catch (e) {
+              print('Error deleting media file: $e');
+            }
+          }
+
+          // Delete thumbnail if it exists
+          if (mediaItem.thumbnailAppwriteID != null) {
+            try {
+              await _storage.deleteFile(
+                bucketId: dotenv.env['APPWRITE_BUCKET_ID']!,
+                fileId: mediaItem.thumbnailAppwriteID!,
+              );
+            } catch (e) {
+              print('Error deleting thumbnail file: $e');
+            }
+          }
+        }
+      }
+      await _firestore
+          .collection(CollectionsPaths.posts)
+          .doc(post.pid)
+          .delete();
     } catch (e) {
       throw Exception('Failed to delete post: $e');
     }
@@ -58,10 +141,8 @@ class PostRepository implements IPostRepository {
   @override
   Future<Post> getPostById(String id) async {
     try {
-      final doc = await _firestore
-          .collection(CollectionsPaths.posts)
-          .doc(id)
-          .get();
+      final doc =
+          await _firestore.collection(CollectionsPaths.posts).doc(id).get();
       return Post.fromJson(doc.data() as Map<String, dynamic>);
     } catch (e) {
       throw Exception('Failed to get post by ID: $e');
@@ -71,12 +152,23 @@ class PostRepository implements IPostRepository {
   @override
   Stream<List<Post>> getPosts() {
     try {
+      return _firestore.collection(CollectionsPaths.posts).snapshots().map(
+          (snapshot) =>
+              snapshot.docs.map((doc) => Post.fromJson(doc.data())).toList());
+    } catch (e) {
+      throw Exception('Failed to get posts stream: $e');
+    }
+  }
+
+  Stream<List<Post>?> getPostsFromDrafts(String? uid) {
+    try {
       return _firestore
           .collection(CollectionsPaths.posts)
+          .where('uid', isEqualTo: uid)
+          .where('isDraft', isEqualTo: true)
           .snapshots()
-          .map((snapshot) => snapshot.docs
-              .map((doc) => Post.fromJson(doc.data()))
-              .toList());
+          .map((snapshot) =>
+              snapshot.docs.map((doc) => Post.fromJson(doc.data())).toList());
     } catch (e) {
       throw Exception('Failed to get posts stream: $e');
     }
@@ -160,10 +252,8 @@ class PostRepository implements IPostRepository {
   @override
   Future<Comment> getCommentById(String id) async {
     try {
-      final snapshot = await _firestore
-          .collection(CollectionsPaths.comments)
-          .doc(id)
-          .get();
+      final snapshot =
+          await _firestore.collection(CollectionsPaths.comments).doc(id).get();
       return Comment.fromJson(snapshot.data() as Map<String, dynamic>);
     } catch (e) {
       throw Exception('Failed to get comment by ID: $e');

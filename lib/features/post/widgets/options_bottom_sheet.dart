@@ -1,24 +1,30 @@
+import 'package:anime_nexa/features/post/views/create_post.dart';
 import 'package:anime_nexa/shared/constants/app_typography.dart';
 import 'package:anime_nexa/shared/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
-class OptionsBottomSheet extends StatelessWidget {
-  const OptionsBottomSheet({super.key});
+class OptionsBottomSheet extends ConsumerWidget {
+  final Future<void> Function() onDraftSelected;
+  final Future<void> Function() onDeleteSelected;
+  const OptionsBottomSheet({
+    super.key,
+    required this.onDraftSelected,
+    required this.onDeleteSelected,
+  });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Save as Draft Option
           InkWell(
-            onTap: () {
-              // Handle "Save as Draft" tap
-              Navigator.pop(context);
+            onTap: () async {
+              await onDraftSelected();
             },
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 12.0),
@@ -38,9 +44,9 @@ class OptionsBottomSheet extends StatelessWidget {
           ),
           // Delete Option
           InkWell(
-            onTap: () {
+            onTap: () async {
               Navigator.pop(context);
-              context.pop();
+              await onDeleteSelected();
             },
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 12.0),
@@ -68,7 +74,7 @@ class OptionsBottomSheet extends StatelessWidget {
               },
               style: OutlinedButton.styleFrom(
                 side: BorderSide(
-                  color: Theme.of(context).primaryColor, // Purple border
+                  color: Theme.of(context).primaryColor,
                   width: 1.5,
                 ),
                 padding: const EdgeInsets.symmetric(vertical: 14),
@@ -81,7 +87,7 @@ class OptionsBottomSheet extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
-                  color: Theme.of(context).primaryColor, // Purple text
+                  color: Theme.of(context).primaryColor,
                 ),
               ),
             ),
