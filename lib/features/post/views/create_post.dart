@@ -28,10 +28,6 @@ import 'package:go_router/go_router.dart';
 import 'package:sizer/sizer.dart';
 import 'package:uuid/uuid.dart';
 
-final canPopProvider = StateProvider<bool>((ref) {
-  return false;
-});
-
 // no need to hide, it's free😂
 const giphyAPIKey = "LrjKIV019iAkmubcMpunGTW1tvLw57x1";
 
@@ -133,17 +129,20 @@ class _CreatePostState extends ConsumerState<CreatePost> {
       ),
       builder: (BuildContext context) {
         return OptionsBottomSheet(
-          onDraftSelected: () =>
-              _handlePostCreation(ref, context, isDraft: true),
+          onDraftSelected: () async {
+            await _handlePostCreation(ref, context, isDraft: true).then((_) {
+              Navigator.pop(context);
+              Navigator.pop(context);
+            });
+          },
+          onDeleteSelected: () async {
+            if (context.mounted) {
+              context.pop();
+            }
+          },
         );
       },
     );
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    GiphyFlutterSDK.configure(apiKey: giphyAPIKey);
   }
 
   Future<void> _handlePostCreation(WidgetRef ref, BuildContext context,
@@ -162,8 +161,9 @@ class _CreatePostState extends ConsumerState<CreatePost> {
     );
 
     try {
-      ref.read(canPopProvider.notifier).state = true;
-      ref.read(postNotifierProvider.notifier).createPost(context, ref, post);
+      _postController.clear();
+      FocusScope.of(context).unfocus();
+      await ref.read(postNotifierProvider.notifier).createPost(ref, post);
     } catch (e) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -174,14 +174,23 @@ class _CreatePostState extends ConsumerState<CreatePost> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    GiphyFlutterSDK.configure(apiKey: giphyAPIKey);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return PopScope(
-      canPop: ref.watch(canPopProvider),
+      canPop: false,
       onPopInvokedWithResult: (didpop, __) {
+        if (didpop) {
+          return;
+        }
         if (_postController.text.isNotEmpty) {
           _showOptionsBottomSheet(ref, context);
+          context.pop();
         } else {
-          ref.read(canPopProvider.notifier).state = true;
           context.pop();
         }
       },
@@ -190,78 +199,95 @@ class _CreatePostState extends ConsumerState<CreatePost> {
         appBar: AppBar(
           leading: IconButton(
             icon: const Icon(Icons.close, size: 30),
-            onPressed: () {
-              _postController.text.isEmpty && _selectedFiles.isEmpty
-                  ? context.pop()
-                  : _showOptionsBottomSheet(ref, context);
+            onPressed: () async {
+              if (_postController.text.isNotEmpty) {
+                _showOptionsBottomSheet(ref, context);
+              } else {
+                context.pop();
+              }
             },
           ),
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          title: Consumer(builder: (context, ref, _) {
-            bool isLoading = ref.watch(isCreatingPostDraftProvider);
-            return isLoading
-                ? SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      color: Theme.of(context).scaffoldBackgroundColor,
-                    ),
-                  )
-                : ref
-                    .watch(postsDraftProvider(
-                        FirebaseAuth.instance.currentUser!.uid))
-                    .when(data: (data) {
-                    return InkWell(
-                      onTap: () async {
-                        if (data == null) {
-                          if (_postController.text.isNotEmpty) {
-                            _handlePostCreation(ref, context, isDraft: true);
-                          }
-                        } else {
-                          final result = await Navigator.push(context,
-                              MaterialPageRoute(builder: (context) {
-                            return DraftsScreen();
-                          }));
-                          if (result != null) {
-                            setState(() {
-                              _postController.clear();
-                              _selectedFiles.clear();
-                              postFromDraft = result;
-                              _postController.text = postFromDraft!.text!;
-                              _selectedFiles = postFromDraft!.media!
-                                  .map((e) => e.copyWith())
-                                  .toList();
-                            });
-                          }
-                        }
-                      },
-                      child: Text(
-                        data == null ? 'Save as draft' : "Drafts",
-                        style: AppTypography.textSmall.copyWith(
-                          fontWeight: FontWeight.w700,
-                          color: Theme.of(context).primaryColor,
-                        ),
-                      ),
-                    );
-                  }, error: (_, __) {
-                    return Text(
-                      'Save as draft',
-                      style: AppTypography.textSmall.copyWith(
-                        fontWeight: FontWeight.w700,
-                        color: Theme.of(context).primaryColor,
-                      ),
-                    );
-                  }, loading: () {
-                    return Text(
-                      'Loading',
-                      style: AppTypography.textSmall.copyWith(
-                        fontWeight: FontWeight.w700,
-                        color: Theme.of(context).primaryColor,
-                      ),
-                    );
-                  });
-          }),
+          title: ValueListenableBuilder(
+              valueListenable: _postController,
+              builder: (context, ctrl, _) {
+                return Consumer(builder: (context, ref, _) {
+                  bool isLoading = ref.watch(isCreatingPostDraftProvider);
+                  return isLoading
+                      ? InkWell(
+                          onTap: () =>
+                              toggleCreatePostDraftLoadingStatus(ref, false),
+                          child: SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: appTheme.primaryColor,
+                            ),
+                          ),
+                        )
+                      : ref
+                          .watch(postsDraftProvider(
+                              FirebaseAuth.instance.currentUser!.uid))
+                          .when(data: (data) {
+                          return InkWell(
+                            onTap: () async {
+                              if (ctrl.text.isNotEmpty || data.isNotEmpty) {
+                                if (data.isEmpty) {
+                                  _showOptionsBottomSheet(ref, context);
+                                } else {
+                                  final result = await Navigator.push(context,
+                                      MaterialPageRoute(builder: (context) {
+                                    return DraftsScreen();
+                                  }));
+                                  if (result != null) {
+                                    setState(() {
+                                      _postController.clear();
+                                      _selectedFiles.clear();
+                                      postFromDraft = result;
+                                      _postController.text =
+                                          postFromDraft!.text!;
+                                      _selectedFiles = postFromDraft!.media!
+                                          .map((e) => e.copyWith())
+                                          .toList();
+                                    });
+                                  }
+                                }
+                              }
+                            },
+                            child: Text(
+                              data!.isEmpty ? 'Save as draft' : "Drafts",
+                              style: AppTypography.textSmall.copyWith(
+                                fontWeight: FontWeight.w700,
+                                color: Theme.of(context)
+                                    .primaryColor
+                                    .withValues(
+                                        alpha:
+                                            (ctrl.text.isEmpty && data.isEmpty)
+                                                ? 0.5
+                                                : 1),
+                              ),
+                            ),
+                          );
+                        }, error: (_, __) {
+                          return Text(
+                            'Save as draft',
+                            style: AppTypography.textSmall.copyWith(
+                              fontWeight: FontWeight.w700,
+                              color: Theme.of(context).primaryColor,
+                            ),
+                          );
+                        }, loading: () {
+                          return Text(
+                            'Loading',
+                            style: AppTypography.textSmall.copyWith(
+                              fontWeight: FontWeight.w700,
+                              color: Theme.of(context).primaryColor,
+                            ),
+                          );
+                        });
+                });
+              }),
           centerTitle: true,
           actionsPadding: const EdgeInsets.only(right: 15),
           actions: [

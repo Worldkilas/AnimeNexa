@@ -7,8 +7,13 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
 class OptionsBottomSheet extends ConsumerWidget {
-  final VoidCallback onDraftSelected;
-  const OptionsBottomSheet({super.key, required this.onDraftSelected});
+  final Future<void> Function() onDraftSelected;
+  final Future<void> Function() onDeleteSelected;
+  const OptionsBottomSheet({
+    super.key,
+    required this.onDraftSelected,
+    required this.onDeleteSelected,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -18,9 +23,8 @@ class OptionsBottomSheet extends ConsumerWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           InkWell(
-            onTap: () {
-              onDraftSelected.call();
-              Navigator.pop(context);
+            onTap: () async {
+              await onDraftSelected();
             },
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 12.0),
@@ -40,10 +44,9 @@ class OptionsBottomSheet extends ConsumerWidget {
           ),
           // Delete Option
           InkWell(
-            onTap: () {
-              ref.read(canPopProvider.notifier).state = true;
+            onTap: () async {
               Navigator.pop(context);
-              context.pop();
+              await onDeleteSelected();
             },
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 12.0),
@@ -71,7 +74,7 @@ class OptionsBottomSheet extends ConsumerWidget {
               },
               style: OutlinedButton.styleFrom(
                 side: BorderSide(
-                  color: Theme.of(context).primaryColor, // Purple border
+                  color: Theme.of(context).primaryColor,
                   width: 1.5,
                 ),
                 padding: const EdgeInsets.symmetric(vertical: 14),
@@ -84,7 +87,7 @@ class OptionsBottomSheet extends ConsumerWidget {
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
-                  color: Theme.of(context).primaryColor, // Purple text
+                  color: Theme.of(context).primaryColor,
                 ),
               ),
             ),

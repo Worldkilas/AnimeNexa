@@ -70,7 +70,7 @@ class PostRepository implements IPostRepository {
       await _firestore
           .collection(CollectionsPaths.posts)
           .doc(post.pid)
-          .set(post.copyWith(isDraft: false).toJson());
+          .set(post.toJson());
     } on (AppwriteException, FirebaseException, Exception) catch (e) {
       throw Exception('Failed to create post: $e');
     }
