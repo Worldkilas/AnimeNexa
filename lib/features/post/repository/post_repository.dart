@@ -42,6 +42,7 @@ class PostRepository implements IPostRepository {
             final fileName =
                 '${DateTime.now().millisecondsSinceEpoch}_${file.path.split('/').last}';
 
+            // Upload main media file
             final result = await _storage.createFile(
               bucketId: dotenv.env['APPWRITE_BUCKET_ID']!,
               fileId: ID.unique(),
@@ -51,11 +52,33 @@ class PostRepository implements IPostRepository {
               ),
             );
 
+            String? thumbnailUrl;
+            String? thumbnailAppwriteID;
+            if (mediaItem.type == MediaType.video &&
+                mediaItem.thumbnailPath != null) {
+              final thumbnailFile = File(mediaItem.thumbnailPath!);
+              final thumbnailFileName =
+                  '${DateTime.now().millisecondsSinceEpoch}_thumbnail_${thumbnailFile.path.split('/').last}';
+
+              final thumbnailResult = await _storage.createFile(
+                bucketId: dotenv.env['APPWRITE_BUCKET_ID']!,
+                fileId: ID.unique(),
+                file: InputFile.fromPath(
+                  path: thumbnailFile.path,
+                  filename: thumbnailFileName,
+                ),
+              );
+
+              thumbnailUrl = getFileUrl(thumbnailResult.$id);
+              thumbnailAppwriteID = thumbnailResult.$id;
+            }
+
             uploadedMedia.add(
               mediaItem.copyWith(
                 appwriteID: result.$id,
                 mediaPath: getFileUrl(result.$id),
-                thumnailPath: null,
+                thumbnailPath: thumbnailUrl,
+                thumbnailAppwriteID: thumbnailAppwriteID,
               ),
             );
           } else {
@@ -81,14 +104,27 @@ class PostRepository implements IPostRepository {
     try {
       if (post.media != null && post.media!.isNotEmpty) {
         for (var mediaItem in post.media!) {
+          // Delete main media file
           if (mediaItem.appwriteID != null) {
             try {
               await _storage.deleteFile(
-                bucketId: dotenv.env['APPWRITE_STORAGE_BUCKET_ID']!,
+                bucketId: dotenv.env['APPWRITE_BUCKET_ID']!,
                 fileId: mediaItem.appwriteID!,
               );
             } catch (e) {
               print('Error deleting media file: $e');
+            }
+          }
+
+          // Delete thumbnail if it exists
+          if (mediaItem.thumbnailAppwriteID != null) {
+            try {
+              await _storage.deleteFile(
+                bucketId: dotenv.env['APPWRITE_BUCKET_ID']!,
+                fileId: mediaItem.thumbnailAppwriteID!,
+              );
+            } catch (e) {
+              print('Error deleting thumbnail file: $e');
             }
           }
         }

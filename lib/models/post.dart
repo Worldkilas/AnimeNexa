@@ -96,7 +96,7 @@ class Post {
       createdAt: createdAt ?? this.createdAt,
       likes: likes ?? this.likes,
       comments: comments ?? this.comments,
-      isDraft: isDraft,
+      isDraft: isDraft ?? isDraft,
     );
   }
 }

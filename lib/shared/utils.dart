@@ -24,10 +24,8 @@ Future<XFile?> generateThumbnail(File videoFile) async {
     return thumbnailPath;
   } catch (e) {
     print('Error generating thumbnail: $e');
-    return null;
   }
 }
-
 
 String getFileUrl(String fileId) {
   return 'https://cloud.appwrite.io/v1/storage/buckets/${dotenv.get('APPWRITE_BUCKET_ID')}/files/$fileId/view?project=${dotenv.get('APPWRITE_PROJECT_ID')}';

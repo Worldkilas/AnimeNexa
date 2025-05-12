@@ -29,7 +29,7 @@ class PostMedia extends StatelessWidget {
               image: DecorationImage(
                   image: NetworkImage(
                       mediaItem.type == MediaType.video
-                          ? mediaItem.thumnailPath!
+                          ? mediaItem.thumbnailPath!
                           : mediaItem.mediaPath!),
                   fit: BoxFit.cover),
             ),
