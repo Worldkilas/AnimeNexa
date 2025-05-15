@@ -1,19 +1,21 @@
+import 'package:anime_nexa/features/auth/view_model/auth_view_model.dart';
 import 'package:anime_nexa/shared/constants/app_typography.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../../shared/constants/app_colors.dart';
 import '../../../shared/widgets/custom_button.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
   final String banner =
       'https://images.unsplash.com/photo-1607746882042-944635dfe10e';
   final String avatar = 'https://i.pravatar.cc/150?img=12';
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return DefaultTabController(
       length: 4,
       child: Scaffold(
@@ -53,7 +55,7 @@ class ProfileScreen extends StatelessWidget {
             SliverToBoxAdapter(
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16, vertical: 25),
-                child: buildProfileHeader(context),
+                child: buildProfileHeader(context, ref),
               ),
             ),
             SliverPersistentHeader(
@@ -87,7 +89,8 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget buildProfileHeader(BuildContext context) {
+  Widget buildProfileHeader(BuildContext context, WidgetRef ref) {
+    final user = ref.watch(authViewModelProvider.notifier).user;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -106,13 +109,14 @@ class ProfileScreen extends StatelessWidget {
           ),
         ),
         Text(
-          "Mini_Kay",
+          user?.displayName ?? 'fallback',
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
-        Text("@mini_kay", style: TextStyle(color: Colors.grey)),
+        Text("@${user?.username}?? kaska",
+            style: TextStyle(color: Colors.grey)),
         SizedBox(height: 10),
         Text(
-          "Anime enthusiast, world-builder, and part-time dreamer. Leveling up one episode at a time.",
+          user?.bio ?? '',
           style: TextStyle(color: Colors.black),
         ),
         SizedBox(height: 14),

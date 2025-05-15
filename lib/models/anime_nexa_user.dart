@@ -11,6 +11,7 @@ class AnimeNexaUser {
   final int xps;
   final String? walletAddress;
   final DateTime? createdAt;
+  final String? bio;
 
   AnimeNexaUser({
     required this.userId,
@@ -20,13 +21,14 @@ class AnimeNexaUser {
     required this.avatarUrl,
     this.xps = 0,
     this.backgroundImageUrl,
+    this.bio,
     required this.walletAddress,
     required this.createdAt,
   });
 
   //convert from firebase user model to AnimeNexaUser
   factory AnimeNexaUser.fromFirebaseUser(User user,
-      {int xps = 0, String? walletAddress}) {
+      {int xps = 0, String? walletAddress, String? bio}) {
     return AnimeNexaUser(
       userId: user.uid,
       email: user.email ?? '',
@@ -34,6 +36,7 @@ class AnimeNexaUser {
       displayName: user.displayName ?? '',
       avatarUrl: user.photoURL,
       xps: xps,
+      bio: bio,
       walletAddress: walletAddress ?? '',
       createdAt: user.metadata.creationTime,
     );
@@ -49,6 +52,7 @@ class AnimeNexaUser {
       backgroundImageUrl: json['backgroundImageUrl'] as String?,
       avatarUrl: json['avatarUrl'] as String?,
       xps: (json['xps'] ?? 0) as int,
+      bio: json['bio'] as String?,
       walletAddress: json['walletAddress'] as String?,
       createdAt: json['createdAt'] != null
           ? (json['createdAt'] as Timestamp).toDate()
@@ -68,6 +72,7 @@ class AnimeNexaUser {
       'xps': xps,
       'walletAddress': walletAddress,
       'createdAt': createdAt,
+      'bio': bio,
     };
   }
 
@@ -80,6 +85,7 @@ class AnimeNexaUser {
     String? backgroundImageUrl,
     String? avatarUrl,
     int? xps,
+    String? bio,
     String? walletAddress,
     DateTime? createdAt,
   }) {
@@ -93,6 +99,7 @@ class AnimeNexaUser {
       xps: xps ?? this.xps,
       walletAddress: walletAddress ?? this.walletAddress,
       createdAt: createdAt ?? this.createdAt,
+      bio: bio ?? this.bio,
     );
   }
 }

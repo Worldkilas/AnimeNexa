@@ -107,5 +107,22 @@ final appwriteStorageProvider = Provider<Storage>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef AppwriteStorageRef = ProviderRef<Storage>;
+String _$reownAppKitModalHash() => r'3498cff7778585d48e703f4b1676a1894423560a';
+
+/// See also [reownAppKitModal].
+@ProviderFor(reownAppKitModal)
+final reownAppKitModalProvider = Provider<ReownAppKitModal>.internal(
+  reownAppKitModal,
+  name: r'reownAppKitModalProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$reownAppKitModalHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef ReownAppKitModalRef = ProviderRef<ReownAppKitModal>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

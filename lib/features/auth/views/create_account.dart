@@ -91,7 +91,12 @@ class _CreateAccountState extends ConsumerState<CreateAccount> {
           }
         });
         if (authState is Authenticated) {
-          context.go('/home');
+          if (authState.user!.username.isEmpty &&
+              authState.user!.displayName.isEmpty) {
+            context.go('/auth/setUsername');
+          } else {
+            context.go('/home');
+          }
         }
         if (authState is Unauthenticated) {
           utilitySnackBar(context, authState.error!);

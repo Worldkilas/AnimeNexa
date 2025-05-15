@@ -7,7 +7,6 @@ import 'package:anime_nexa/providers/global_providers.dart';
 import 'package:anime_nexa/shared/utils.dart';
 import 'package:appwrite/appwrite.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:io';

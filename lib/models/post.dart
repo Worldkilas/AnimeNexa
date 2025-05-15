@@ -49,8 +49,8 @@ class Post {
       'media': media!.map((media) => media.toMap()).toList(),
       'text': text,
       'createdAt': createdAt,
-      'likes': likes,
-      'comments': comments,
+      'likes': likes ?? [],
+      'comments': comments ?? [],
       'isDraft': isDraft,
     };
   }
@@ -65,10 +65,12 @@ class Post {
       text: json['text'] as String?,
       createdAt: (json['createdAt'] as Timestamp).toDate(),
       likes:
-          (json['likes'] as List<dynamic>?)?.map((e) => e as String).toList(),
+          (json['likes'] as List<dynamic>?)?.map((e) => e as String).toList() ??
+              [],
       comments: (json['comments'] as List<dynamic>?)
-          ?.map((e) => e as String)
-          .toList(),
+              ?.map((e) => e as String)
+              .toList() ??
+          [],
       isDraft: json['isDraft'] ?? false,
     );
   }

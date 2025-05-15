@@ -160,32 +160,4 @@ class FirebaseAuthRepo implements AuthRepository {
       return left(error);
     }
   }
-
-  FutureEither<AnimeNexaUser> setUsernameandFullname({
-    required String username,
-    required String fullname,
-  }) async {
-    try {
-      final user = _firebaseAuth.currentUser;
-      if (user == null) return left('User not authenticated');
-      final userRef = _firebaseFirestore.collection('users').doc(user.uid);
-      //check if username is taken
-      final usernameTaken = await _firebaseFirestore
-          .collection('users')
-          .where('username', isEqualTo: username)
-          .get();
-
-      if (usernameTaken.docs.isNotEmpty) {
-        return left('Username already taken');
-      }
-      await userRef.update({
-        'username': username,
-        'fullname': fullname,
-      });
-      final userDoc = await userRef.get();
-      return right(AnimeNexaUser.fromJson(userDoc.data()!));
-    } catch (e) {
-      return left('Failed to set username: ${e.toString()}');
-    }
-  }
 }

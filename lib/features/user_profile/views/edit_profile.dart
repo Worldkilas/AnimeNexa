@@ -1,32 +1,49 @@
+import 'package:anime_nexa/features/auth/view_model/auth_view_model.dart';
 import 'package:anime_nexa/shared/constants/app_theme.dart';
 import 'package:anime_nexa/shared/constants/app_typography.dart';
+import 'package:anime_nexa/shared/utils/utils.dart';
 import 'package:anime_nexa/shared/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:sizer/sizer.dart';
 
-class EditProfileScreen extends StatefulWidget {
+import '../../../models/auth_state.dart';
+import '../view_models/profile_view_models.dart/edit_profile_vm.dart';
+
+class EditProfileScreen extends ConsumerStatefulWidget {
   const EditProfileScreen({super.key});
 
   @override
-  State<EditProfileScreen> createState() => _EditProfileScreenState();
+  ConsumerState<EditProfileScreen> createState() => _EditProfileScreenState();
 }
 
-class _EditProfileScreenState extends State<EditProfileScreen> {
-  TextEditingController _nameController =
-      TextEditingController(text: "Mini_kay");
-  TextEditingController _usernameController =
-      TextEditingController(text: "@minikay");
-  TextEditingController _bioController = TextEditingController(
-      text:
-          "Anime enthusiast, world-builder, and part-time dreamer. Leveling up one episode at a time.");
-  TextEditingController _emailController =
-      TextEditingController(text: "Minikay@gmail.com");
-  TextEditingController _locationController =
-      TextEditingController(text: "Nigeria");
-  TextEditingController _birthdayController =
-      TextEditingController(text: "00/00/0000");
+class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
+  final _nameController = TextEditingController();
+  final _usernameController = TextEditingController();
+  final _bioController = TextEditingController();
+  bool _controllersInitialized = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_controllersInitialized) {
+      final authState = ref.watch(authViewModelProvider);
+      if (authState is Authenticated && authState.user != null) {
+        final user = authState.user!;
+        if (_nameController.text.isEmpty) {
+          _nameController.text = user.displayName;
+        }
+        if (_usernameController.text.isEmpty) {
+          _usernameController.text = user.username;
+        }
+        if (_bioController.text.isEmpty) {
+          _bioController.text = user.bio ?? "";
+        }
+      }
+      _controllersInitialized = true;
+    }
+  }
 
   Widget customTextField(TextEditingController ctrl, String label) {
     return Padding(
@@ -49,35 +66,35 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               "Bio" => TextCapitalization.sentences,
               _ => TextCapitalization.none,
             },
-            onTap: label == "Birthday"
-                ? () {
-                    showDatePicker(
-                      context: context,
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime(1900),
-                      lastDate: DateTime.now(),
-                      builder: (context, child) {
-                        return Theme(
-                          data: ThemeData.light().copyWith(
-                            primaryColor: appTheme.primaryColor,
-                            colorScheme: appTheme.colorScheme,
-                            buttonTheme: ButtonThemeData(
-                              textTheme: ButtonTextTheme.primary,
-                            ),
-                          ),
-                          child: child!,
-                        );
-                      },
-                    ).then(
-                      (value) {
-                        if (value != null) {
-                          _birthdayController.text =
-                              DateFormat('dd/MM/yyy').format(value);
-                        }
-                      },
-                    );
-                  }
-                : null,
+            // onTap: label == "Birthday"
+            //     ? () {
+            //         showDatePicker(
+            //           context: context,
+            //           initialDate: DateTime.now(),
+            //           firstDate: DateTime(1900),
+            //           lastDate: DateTime.now(),
+            //           builder: (context, child) {
+            //             return Theme(
+            //               data: ThemeData.light().copyWith(
+            //                 primaryColor: appTheme.primaryColor,
+            //                 colorScheme: appTheme.colorScheme,
+            //                 buttonTheme: ButtonThemeData(
+            //                   textTheme: ButtonTextTheme.primary,
+            //                 ),
+            //               ),
+            //               child: child!,
+            //             );
+            //           },
+            //     //     ).then(
+            //     //       (value) {
+            //     //         if (value != null) {
+            //     //           _birthdayController.text =
+            //     //               DateFormat('dd/MM/yyy').format(value);
+            //     //         }
+            //     //       },
+            //     //     );
+            //     //   }
+            //     // : null,
             decoration: InputDecoration(
               isDense: true,
               fillColor: Theme.of(context).scaffoldBackgroundColor,
@@ -95,8 +112,31 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     );
   }
 
+  void _updateProfile() {
+    ref.read(editProfileVmProvider.notifier).submitProfile(
+          fullName: _nameController.text,
+          username: _usernameController.text,
+          bio: _bioController.text,
+        );
+  }
+
   @override
   Widget build(BuildContext context) {
+    ref.listen(editProfileVmProvider, (_, next) {
+      next.whenOrNull(
+        error: (e, _) => utilitySnackBar(
+          context,
+          e.toString(),
+        ),
+        data: (_) {
+          utilitySnackBar(
+            context,
+            'Updated profile successfully',
+          );
+          context.replace('/profile');
+        },
+      );
+    });
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -162,9 +202,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 children: [
                   customTextField(_nameController, "Name"),
                   customTextField(_usernameController, "Username"),
-                  customTextField(_locationController, "Location"),
-                  customTextField(_emailController, "Email"),
-                  customTextField(_birthdayController, "Birthday"),
+                  // customTextField(_locationController, "Location"),
+                  // customTextField(_emailController, "Email"),
+                  // customTextField(_birthdayController, "Birthday"),
                   customTextField(_bioController, "Bio"),
                 ],
               ),
@@ -177,9 +217,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               child: CustomButton(
                 height: 48,
                 text: "Done",
-                onPressed: () {
-                  //TODO: Add functionality to save changes
-                },
+                onPressed: _updateProfile,
+                isLoading: ref.watch(editProfileVmProvider).isLoading,
               ),
             )
           ],

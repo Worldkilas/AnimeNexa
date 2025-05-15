@@ -49,12 +49,7 @@ class _SignInState extends ConsumerState<SignIn> {
     _emailController.dispose();
     _passwordController.dispose();
     _gestureRecognizer.dispose();
-    if (_progressIndicatorContext != null &&
-        Navigator.of(_progressIndicatorContext!, rootNavigator: true)
-            .canPop()) {
-      Navigator.of(_progressIndicatorContext!, rootNavigator: true);
-      _progressIndicatorContext = null;
-    }
+
     super.dispose();
   }
 
@@ -89,7 +84,12 @@ class _SignInState extends ConsumerState<SignIn> {
           }
         });
         if (authState is Authenticated) {
-          context.go('/home');
+          if (authState.user!.displayName.isEmpty &&
+              authState.user!.username.isEmpty) {
+            context.go('/auth/setUsername');
+          } else {
+            context.go('/home');
+          }
         }
         if (authState is Unauthenticated) {
           utilitySnackBar(context, authState.error!);

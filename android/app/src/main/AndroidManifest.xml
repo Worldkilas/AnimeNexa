@@ -24,6 +24,16 @@
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <!-- your own custom scheme -->
+                <!-- Should be the same you set on Redirect.native on Flutter side -->
+                <!-- Be mind of removing :// for this step -->
+                <data android:scheme="animenexa" />
+            </intent-filter>
+
         </activity>
         <activity android:exported="true" android:name="com.linusu.flutter_web_auth_2.CallbackActivity" >
             <intent-filter android:label="flutter_web_auth_2">
@@ -49,5 +59,12 @@
             <action android:name="android.intent.action.PROCESS_TEXT"/>
             <data android:mimeType="text/plain"/>
         </intent>
+    </queries>
+      <queries>
+        <package android:name="io.metamask"/>
+        <package android:name="com.wallet.crypto.trustapp"/>
+        <package android:name="io.gnosis.safe"/>
+        <package android:name="me.rainbow"/>
+        <!-- Add other wallet schemes names here -->
     </queries>
 </manifest>

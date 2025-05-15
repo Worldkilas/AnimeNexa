@@ -1,26 +1,26 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'wallet_view_model.dart';
+part of 'edit_profile_vm.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$walletViewModelHash() => r'42035d89bfa24106d99404829c802a602420297b';
+String _$editProfileVmHash() => r'fb422e173a08a1a1a4f99d7c31a8d8b852cc444d';
 
-/// See also [WalletViewModel].
-@ProviderFor(WalletViewModel)
-final walletViewModelProvider =
-    AutoDisposeNotifierProvider<WalletViewModel, AsyncValue<String?>>.internal(
-  WalletViewModel.new,
-  name: r'walletViewModelProvider',
+/// See also [EditProfileVm].
+@ProviderFor(EditProfileVm)
+final editProfileVmProvider =
+    AutoDisposeAsyncNotifierProvider<EditProfileVm, void>.internal(
+  EditProfileVm.new,
+  name: r'editProfileVmProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$walletViewModelHash,
+      : _$editProfileVmHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _$WalletViewModel = AutoDisposeNotifier<AsyncValue<String?>>;
+typedef _$EditProfileVm = AutoDisposeAsyncNotifier<void>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

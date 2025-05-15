@@ -38,7 +38,7 @@ final appRouterProvider = Provider<GoRouter>(
       initialLocation: '/',
       redirect: (ctx, state) async {
         final hasCompletedOnboarding =
-            await ref.read(onboardingCompleteProvider.future);
+            await ref.watch(onboardingCompleteProvider.future);
 
         final isAuthRoute = state.uri.path.startsWith('/auth');
 

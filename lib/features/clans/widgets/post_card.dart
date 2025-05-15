@@ -117,7 +117,7 @@ class _PostCardState extends ConsumerState<PostCard> {
                                   Text(
                                     '2h',
                                     style: AppTypography.textXSmall.copyWith(
-                                      color: const Color(0xff888888),
+                                      color: Colors.black,
                                     ),
                                   ),
                                 ],

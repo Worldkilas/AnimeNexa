@@ -6,7 +6,6 @@ import 'package:anime_nexa/shared/widgets/reusable_confirmation_dialog.dart';
 import 'package:anime_nexa/shared/widgets/reusable_search_bar.dart';
 import 'package:anime_nexa/shared/widgets/reusbale_modal_sheet.dart';
 import 'package:flutter/material.dart';
-import 'package:fpdart/fpdart.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sizer/sizer.dart';
 

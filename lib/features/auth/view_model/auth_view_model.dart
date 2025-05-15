@@ -1,8 +1,10 @@
 import 'package:anime_nexa/core/typedefs.dart';
 import 'package:anime_nexa/models/auth_state.dart';
+import 'package:anime_nexa/providers/global_providers.dart';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../models/anime_nexa_user.dart';
 import '../repos/auth_repo.dart';
 part 'auth_view_model.g.dart';
 
@@ -10,18 +12,38 @@ part 'auth_view_model.g.dart';
 class AuthViewModel extends _$AuthViewModel {
   @override
   AuthState build() {
-    // _checkInitialSession();
+    _checkInitialSession();
     return AuthInitialState();
   }
 
-  // FutureVoid _checkInitialSession() async{
-  //   //check if user is already logged in
-  //   final firebaseUser = ref.watch(firebaseAuthProvider).currentUser;
-  //   if (firebaseUser == null) return null;
-  //   final firestore = ref.watch(firebaseFirestoreProvider);
-  //   final doc = await firestore.collection('users').doc(firebaseUser.uid).get();
-  //   state=Authenticated( doc.exists ? AnimeNexaUser.fromJson(doc.data()!));
-  // }
+  AnimeNexaUser? get user {
+    if (state is Authenticated) {
+      return (state as Authenticated).user!;
+    }
+    return null;
+  }
+
+  void _checkInitialSession() async {
+    final firebaseUser = ref.read(firebaseAuthProvider).currentUser;
+    if (firebaseUser == null) {
+      state = Unauthenticated(error: null);
+      return;
+    }
+
+    final doc = await ref
+        .watch(firebaseFirestoreProvider)
+        .collection('users')
+        .doc(firebaseUser.uid)
+        .get();
+
+    if (!doc.exists) {
+      state = Unauthenticated(error: 'User record missing');
+      return;
+    }
+
+    final user = AnimeNexaUser.fromJson(doc.data()!);
+    state = Authenticated(user: user);
+  }
 
   FutureVoid signInWithEmailandPassword({
     required String email,
@@ -68,7 +90,7 @@ class AuthViewModel extends _$AuthViewModel {
     final result = await ref.read(firebaseAuthRepoProvider).signOut();
     state = result.match(
       (l) => Unauthenticated(error: l),
-      (r) => Authenticated(user: r),
+      (r) => Unauthenticated(error: null),
     );
   }
 

@@ -190,7 +190,7 @@ class _CreatePostState extends ConsumerState<CreatePost> {
     if (_postController.text.isEmpty && _selectedFiles.isEmpty) return;
 
     final post = Post(
-      pid: postFromDraft!.pid ?? Uuid().v4(),
+      pid: postFromDraft?.pid ?? Uuid().v4(),
       uid: ref.watch(firebaseAuthProvider).currentUser!.uid,
       text: _postController.text,
       media: _selectedFiles,
