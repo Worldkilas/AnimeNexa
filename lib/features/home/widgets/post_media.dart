@@ -1,8 +1,10 @@
+import 'package:anime_nexa/features/home/views/media_fullscreen.dart';
 import 'package:anime_nexa/models/mediaitem.dart';
 import 'package:anime_nexa/shared/utils.dart';
 import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/material.dart';
 import 'package:giphy_flutter_sdk/giphy_media_view.dart';
+import 'package:go_router/go_router.dart';
 
 class PostMedia extends StatelessWidget {
   final List<MediaItem> media;
@@ -13,51 +15,59 @@ class PostMedia extends StatelessWidget {
   Widget build(BuildContext context) {
     Widget mediaTile(
       MediaItem mediaItem,
+      int index,
     ) {
-      return switch (mediaItem.type) {
-        MediaType.image || MediaType.video => Container(
-            height: double.infinity,
-            width: double.infinity,
-            margin: EdgeInsets.all(1),
-            decoration: ShapeDecoration(
-              shape: SmoothRectangleBorder(
-                borderRadius: SmoothBorderRadius(
-                  cornerRadius: 10,
-                  cornerSmoothing: 0.8,
-                ),
-              ),
-              image: DecorationImage(
-                  image: NetworkImage(
-                      mediaItem.type == MediaType.video
+      return InkWell(
+        onTap: () {
+          context.push('/mediafullscreen', extra: (media, index));
+        },
+        child: Hero(
+          tag: index,
+          child: switch (mediaItem.type) {
+            MediaType.image || MediaType.video => Container(
+                height: double.infinity,
+                width: double.infinity,
+                margin: EdgeInsets.all(1),
+                decoration: ShapeDecoration(
+                  shape: SmoothRectangleBorder(
+                    borderRadius: SmoothBorderRadius(
+                      cornerRadius: 10,
+                      cornerSmoothing: 0.8,
+                    ),
+                  ),
+                  image: DecorationImage(
+                      image: NetworkImage(mediaItem.type == MediaType.video
                           ? mediaItem.thumbnailPath!
                           : mediaItem.mediaPath!),
-                  fit: BoxFit.cover),
-            ),
-          ),
-        MediaType.gif => GiphyMediaView(mediaId: mediaItem.mediaPath)
-      };
+                      fit: BoxFit.cover),
+                ),
+              ),
+            MediaType.gif => GiphyMediaView(mediaId: mediaItem.mediaPath)
+          },
+        ),
+      );
     }
 
     return SizedBox(
       height: 220,
       child: switch (media.length) {
-        1 => mediaTile(media[0]),
+        1 => mediaTile(media[0], 0),
         2 => Row(
             children: [
-              Expanded(child: mediaTile(media[0])),
-              Expanded(child: mediaTile(media[1])),
+              Expanded(child: mediaTile(media[0], 0)),
+              Expanded(child: mediaTile(media[1], 1)),
             ],
           ),
         3 => Row(
             children: [
-              Expanded(child: mediaTile(media[0])),
+              Expanded(child: mediaTile(media[0], 0)),
               SizedBox(
                 width: MediaQuery.of(context).size.width * 0.48,
                 child: Column(
                   children: [
-                    Expanded(child: mediaTile(media[1])),
+                    Expanded(child: mediaTile(media[1], 1)),
                     const SizedBox(height: 4),
-                    Expanded(child: mediaTile(media[2])),
+                    Expanded(child: mediaTile(media[2], 2)),
                   ],
                 ),
               ),
@@ -77,6 +87,7 @@ class PostMedia extends StatelessWidget {
                 children: [
                   mediaTile(
                     media[index],
+                    index,
                   ),
                   if (index == 3 && media.length > 4)
                     Container(
