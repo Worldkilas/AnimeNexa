@@ -1,3 +1,4 @@
+import 'package:anime_nexa/features/home/widgets/home_popup_menu.dart';
 import 'package:anime_nexa/features/home/widgets/post_card.dart';
 import 'package:anime_nexa/features/post/viewmodel/post_vm.dart';
 import 'package:anime_nexa/shared/constants/app_typography.dart';
@@ -64,10 +65,7 @@ class Homepage extends ConsumerWidget {
                 ),
               ),
             ),
-            IconButton(
-              icon: Icon(Icons.menu, color: Colors.black),
-              onPressed: () {},
-            ),
+            CustomPopupMenu(),
           ]),
       body: SingleChildScrollView(
         child: Column(

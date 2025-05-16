@@ -27,7 +27,7 @@ class PostMedia extends StatelessWidget {
             MediaType.image || MediaType.video => Container(
                 height: double.infinity,
                 width: double.infinity,
-                margin: EdgeInsets.all(1),
+                margin: EdgeInsets.all(0.7),
                 decoration: ShapeDecoration(
                   shape: SmoothRectangleBorder(
                     borderRadius: SmoothBorderRadius(
@@ -49,7 +49,7 @@ class PostMedia extends StatelessWidget {
     }
 
     return SizedBox(
-      height: 220,
+      height: 250,
       child: switch (media.length) {
         1 => mediaTile(media[0], 0),
         2 => Row(
@@ -66,7 +66,6 @@ class PostMedia extends StatelessWidget {
                 child: Column(
                   children: [
                     Expanded(child: mediaTile(media[1], 1)),
-                    const SizedBox(height: 4),
                     Expanded(child: mediaTile(media[2], 2)),
                   ],
                 ),

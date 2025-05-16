@@ -17,6 +17,10 @@ final getPostByIDProvider = StreamProvider.family<Post, String>((ref, id) {
   return ref.read(postRepoProvider).getPostByID(id);
 });
 
+final getUserPostsProvider = StreamProvider.family<List<Post>, String>((ref, uid) {
+  return ref.read(postRepoProvider).fetchPostsByUser(uid);
+});
+
 final postsDraftProvider =
     StreamProvider.family<List<Post>?, String>((ref, uid) {
   return ref.watch(postRepoProvider).getPostsFromDrafts(uid);

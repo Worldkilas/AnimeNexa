@@ -314,4 +314,17 @@ class PostRepository implements IPostRepository {
       throw Exception('Failed to fetch comments');
     }
   }
+
+  Stream<List<Post>> fetchPostsByUser(String? uid) {
+    try {
+      return _firestore
+          .collection(CollectionsPaths.posts)
+          .where('uid', isEqualTo: uid)
+          .snapshots()
+          .map((snap) =>
+              snap.docs.map((doc) => Post.fromJson(doc.data())).toList());
+    } catch (e) {
+      throw Exception("Failed to fetch posts");
+    }
+  }
 }
