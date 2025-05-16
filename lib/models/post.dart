@@ -100,3 +100,14 @@ class Post {
     );
   }
 }
+
+final dummyPost = Post(
+  pid: "post_123",
+  uid: "user_456",
+  media: [MediaItem(type: MediaType.image, mediaPath: "https://placehold.co/600x400")],
+  text: "This is a sample post for testing purposes.",
+  createdAt: DateTime.now(),
+  likes: ["user_789", "user_101"],
+  comments: ["comment_123", "comment_456"],
+  isDraft: false,
+);

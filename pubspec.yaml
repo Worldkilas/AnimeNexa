@@ -63,6 +63,7 @@ dependencies:
   smooth_page_indicator: ^1.2.1
   solana: ^0.31.2+1
   solana_mobile_client: ^0.1.1+1
+  timeago: ^3.7.1
   uuid: ^4.5.1
   video_player: ^2.9.5
 

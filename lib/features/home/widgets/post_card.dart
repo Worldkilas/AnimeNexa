@@ -3,7 +3,7 @@ import 'package:anime_nexa/features/home/widgets/post_media.dart';
 import 'package:anime_nexa/features/post/viewmodel/post_vm.dart';
 import 'package:anime_nexa/models/post.dart';
 import 'package:anime_nexa/providers/global_providers.dart';
-import 'package:anime_nexa/shared/constants/app_theme.dart';
+import 'package:timeago/timeago.dart' as timeago;
 import 'package:anime_nexa/shared/constants/app_typography.dart';
 import 'package:anime_nexa/shared/utils.dart';
 import 'package:flutter/material.dart';
@@ -60,6 +60,19 @@ class _PostCardState extends ConsumerState<PostCard> {
                                 color: Colors.black,
                               ),
                             ),
+                            SizedBox(width: 5),
+                            Text(
+                              "•",
+                              style: AppTypography.textSmall
+                                  .copyWith(color: Color(0xff888888)),
+                            ),
+                            SizedBox(width: 5),
+                            Text(
+                              timeago.format(widget.post.createdAt!,
+                                  locale: 'en_short'),
+                              style: AppTypography.textSmall
+                                  .copyWith(color: Color(0xff888888)),
+                            )
                           ],
                         );
                       },
