@@ -29,7 +29,7 @@ class DraftsScreen extends ConsumerWidget {
             TextButton(
               onPressed: () async {
                 Navigator.pop(context);
-                await ref.read(postNotifierProvider.notifier).deletePost(post);
+                 ref.read(deletePostProvider(post));
               },
               child: Text(
                 'Delete',
@@ -59,9 +59,7 @@ class DraftsScreen extends ConsumerWidget {
               onPressed: () async {
                 Navigator.pop(context);
                 for (var post in posts) {
-                  await ref
-                      .read(postNotifierProvider.notifier)
-                      .deletePost(post);
+                  ref.read(deletePostProvider(post));
                 }
               },
               child: Text(

@@ -47,6 +47,7 @@ class CustomTextField extends StatelessWidget {
         controller: controller,
         obscureText: obscureText,
         onChanged: onChanged,
+        textCapitalization: TextCapitalization.sentences,
         decoration: InputDecoration(
           labelText: labelText,
           labelStyle: labelStyle ?? Theme.of(context).textTheme.bodyMedium,

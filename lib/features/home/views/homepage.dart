@@ -1,4 +1,4 @@
-import 'package:anime_nexa/features/clans/widgets/post_card.dart';
+import 'package:anime_nexa/features/home/widgets/post_card.dart';
 import 'package:anime_nexa/features/post/viewmodel/post_vm.dart';
 import 'package:anime_nexa/shared/constants/app_typography.dart';
 import 'package:flutter/material.dart';
@@ -70,40 +70,37 @@ class Homepage extends ConsumerWidget {
             ),
           ]),
       body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
-          child: Column(
-            children: [
-              // _buildStoryRow(),
-              // _buildTabBar(),
-              // SingleChildScrollView(
-              //   scrollDirection: Axis.horizontal,
-              //   child: Row(
-              //     spacing: 20,
-              //     children: [
-              //       ...List.generate(5, (index) => TrendingPost()),
-              //     ],
-              //   ),
-              // ),
-              // SizedBox(height: 20),
-              ref.watch(postNotifierProvider).when(data: (posts) {
-                return Column(
-                  children: [
-                    ...posts.map((post) => PostCard(post: post)),
-                  ],
-                );
-              }, error: (e, _) {
-                return Column(
-                  children: [
-                    Text(e.toString()),
-                    TextButton(onPressed: () {}, child: Text("Refresh")),
-                  ],
-                );
-              }, loading: () {
-                return Center(child: CircularProgressIndicator());
-              }),
-            ],
-          ),
+        child: Column(
+          children: [
+            // _buildStoryRow(),
+            // _buildTabBar(),
+            // SingleChildScrollView(
+            //   scrollDirection: Axis.horizontal,
+            //   child: Row(
+            //     spacing: 20,
+            //     children: [
+            //       ...List.generate(5, (index) => TrendingPost()),
+            //     ],
+            //   ),
+            // ),
+            // SizedBox(height: 20),
+            ref.watch(postNotifierProvider).when(data: (posts) {
+              return Column(
+                children: [
+                  ...posts.map((post) => PostCard(post: post)),
+                ],
+              );
+            }, error: (e, _) {
+              return Column(
+                children: [
+                  Text(e.toString()),
+                  TextButton(onPressed: () {}, child: Text("Refresh")),
+                ],
+              );
+            }, loading: () {
+              return Center(child: CircularProgressIndicator());
+            }),
+          ],
         ),
       ),
     );

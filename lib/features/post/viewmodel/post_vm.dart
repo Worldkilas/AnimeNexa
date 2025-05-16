@@ -13,6 +13,10 @@ final postNotifierProvider =
   return PostNotifier();
 });
 
+final getPostByIDProvider = StreamProvider.family<Post, String>((ref, id) {
+  return ref.read(postRepoProvider).getPostByID(id);
+});
+
 final postsDraftProvider =
     StreamProvider.family<List<Post>?, String>((ref, uid) {
   return ref.watch(postRepoProvider).getPostsFromDrafts(uid);
@@ -28,6 +32,100 @@ void toggleCreatePostLoadingStatus(WidgetRef ref, bool state) {
 void toggleCreatePostDraftLoadingStatus(WidgetRef ref, bool state) {
   ref.read(isCreatingPostDraftProvider.notifier).state = state;
 }
+
+// Standalone providers for side effects
+final deletePostProvider = FutureProvider.family<void, Post>((ref, post) async {
+  try {
+    await ref.read(postRepoProvider).deletePost(post);
+  } catch (e) {
+    throw Exception('Failed to delete post: $e');
+  }
+});
+
+final likePostProvider =
+    FutureProvider.family<void, ({Post post, String userId})>(
+  (ref, params) async {
+    try {
+      await ref.read(postRepoProvider).likePost(params.post, params.userId);
+    } catch (e) {
+      throw Exception('Failed to like post');
+    }
+  },
+);
+
+final commentOnPostProvider = FutureProvider.family<void, Comment>(
+  (ref, comment) async {
+    try {
+      await ref.read(postRepoProvider).commentOnPost(comment);
+    } catch (e) {
+      throw Exception('Failed to comment on post');
+    }
+  },
+);
+
+final replyToCommentProvider = FutureProvider.family<void, Reply>(
+  (ref, reply) async {
+    try {
+      await ref.read(postRepoProvider).replyToComment(reply);
+    } catch (e) {
+      throw Exception('Failed to reply to comment: $e');
+    }
+  },
+);
+
+final deleteCommentProvider = FutureProvider.family<void, Comment>(
+  (ref, comment) async {
+    try {
+      await ref.read(postRepoProvider).deleteComment(comment);
+    } catch (e) {
+      throw Exception('Failed to delete comment: $e');
+    }
+  },
+);
+
+final deleteReplyProvider = FutureProvider.family<void, Reply>(
+  (ref, reply) async {
+    try {
+      await ref.read(postRepoProvider).deleteReply(reply);
+    } catch (e) {
+      throw Exception('Failed to delete reply: $e');
+    }
+  },
+);
+
+final getPostByIdProvider = FutureProvider.family<Post, String>(
+  (ref, id) async {
+    try {
+      return await ref.read(postRepoProvider).getPostById(id);
+    } catch (e) {
+      throw Exception('Failed to get post by ID: $e');
+    }
+  },
+);
+
+final getCommentByIdProvider = FutureProvider.family<Comment, String>(
+  (ref, id) async {
+    try {
+      return await ref.read(postRepoProvider).getCommentById(id);
+    } catch (e) {
+      throw Exception('Failed to get comment by ID: $e');
+    }
+  },
+);
+
+final getRepliesProvider = FutureProvider.family<List<Reply>, String>(
+  (ref, commentId) async {
+    try {
+      return await ref.read(postRepoProvider).getReplies(commentId);
+    } catch (e) {
+      throw Exception('Failed to get replies: $e');
+    }
+  },
+);
+
+final fetchCommentsByPostProvider = StreamProvider.family<List<Comment>, String>((ref, postID) {
+  return ref.watch(postRepoProvider).fetchCommentsOnPost(postID);
+});
 
 class PostNotifier extends StreamNotifier<List<Post>> {
   late PostRepository _repository;
@@ -52,81 +150,6 @@ class PostNotifier extends StreamNotifier<List<Post>> {
       log(e.toString(), stackTrace: stk);
       toggleCreatePostLoadingStatus(ref, false);
       toggleCreatePostDraftLoadingStatus(ref, false);
-      rethrow;
-    }
-  }
-
-  Future<void> deletePost(Post post) async {
-    try {
-      await _repository.deletePost(post);
-    } catch (e) {
-      state = AsyncError(e, StackTrace.current);
-    }
-  }
-
-  Future<void> likePost(Post post, String userId) async {
-    try {
-      await _repository.likePost(post, userId);
-    } catch (e) {
-      state = AsyncError(e, StackTrace.current);
-    }
-  }
-
-  Future<void> commentOnPost(Comment comment) async {
-    try {
-      await _repository.commentOnPost(comment);
-    } catch (e) {
-      state = AsyncError(e, StackTrace.current);
-    }
-  }
-
-  Future<void> replyToComment(Reply reply) async {
-    try {
-      await _repository.replyToComment(reply);
-    } catch (e) {
-      state = AsyncError(e, StackTrace.current);
-    }
-  }
-
-  Future<void> deleteComment(Comment comment) async {
-    try {
-      await _repository.deleteComment(comment);
-    } catch (e) {
-      state = AsyncError(e, StackTrace.current);
-    }
-  }
-
-  Future<void> deleteReply(Reply reply) async {
-    try {
-      await _repository.deleteReply(reply);
-    } catch (e) {
-      state = AsyncError(e, StackTrace.current);
-    }
-  }
-
-  Future<Post> getPostById(String id) async {
-    try {
-      return await _repository.getPostById(id);
-    } catch (e) {
-      state = AsyncError(e, StackTrace.current);
-      rethrow;
-    }
-  }
-
-  Future<Comment> getCommentById(String id) async {
-    try {
-      return await _repository.getCommentById(id);
-    } catch (e) {
-      state = AsyncError(e, StackTrace.current);
-      rethrow;
-    }
-  }
-
-  Future<List<Reply>> getReplies(String commentId) async {
-    try {
-      return await _repository.getReplies(commentId);
-    } catch (e) {
-      state = AsyncError(e, StackTrace.current);
       rethrow;
     }
   }

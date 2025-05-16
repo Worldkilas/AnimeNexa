@@ -2,6 +2,7 @@ import 'package:anime_nexa/core/typedefs.dart';
 import 'package:anime_nexa/features/create/views/create_reels.dart';
 import 'package:anime_nexa/features/discover/views/discover_page.dart';
 import 'package:anime_nexa/features/home/views/homepage.dart';
+import 'package:anime_nexa/features/home/views/post_detail.dart';
 import 'package:anime_nexa/features/settings/view/notifications_screen.dart';
 import 'package:anime_nexa/features/post/views/create_post.dart';
 import 'package:anime_nexa/features/user_profile/views/edit_profile.dart';
@@ -173,8 +174,14 @@ final appRouterProvider = Provider<GoRouter>(
           builder: (context, state) => const EditProfileScreen(),
         ),
         GoRoute(
-          path: '/post',
+          path: '/createpost',
           builder: (context, state) => const CreatePost(),
+        ),
+        GoRoute(
+          path: '/postdetail/:id',
+          builder: (context, state) => PostDetail(
+            postId: state.pathParameters['id']!,
+          ),
         ),
       ],
     );

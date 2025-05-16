@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:anime_nexa/features/post/repository/i_post_repository.dart';
 import 'package:anime_nexa/models/comment.dart';
 import 'package:anime_nexa/models/mediaitem.dart';
@@ -134,7 +136,8 @@ class PostRepository implements IPostRepository {
           .doc(post.pid)
           .delete();
     } catch (e) {
-      throw Exception('Failed to delete post: $e');
+      log(e.toString());
+      throw Exception('Failed to delete post');
     }
   }
 
@@ -145,7 +148,8 @@ class PostRepository implements IPostRepository {
           await _firestore.collection(CollectionsPaths.posts).doc(id).get();
       return Post.fromJson(doc.data() as Map<String, dynamic>);
     } catch (e) {
-      throw Exception('Failed to get post by ID: $e');
+      log(e.toString());
+      throw Exception('Failed to get post by ID');
     }
   }
 
@@ -159,7 +163,8 @@ class PostRepository implements IPostRepository {
           .map((snapshot) =>
               snapshot.docs.map((doc) => Post.fromJson(doc.data())).toList());
     } catch (e) {
-      throw Exception('Failed to get posts stream: $e');
+      log(e.toString());
+      throw Exception('Failed to get posts stream');
     }
   }
 
@@ -173,7 +178,8 @@ class PostRepository implements IPostRepository {
           .map((snapshot) =>
               snapshot.docs.map((doc) => Post.fromJson(doc.data())).toList());
     } catch (e) {
-      throw Exception('Failed to get posts stream: $e');
+      log(e.toString());
+      throw Exception('Failed to get posts from draft');
     }
   }
 
@@ -181,10 +187,13 @@ class PostRepository implements IPostRepository {
   Future<void> likePost(Post post, String userId) async {
     try {
       await _firestore.collection(CollectionsPaths.posts).doc(post.pid).update({
-        'likes': post.likes!.contains(userId) ? FieldValue.arrayRemove([userId]) : FieldValue.arrayUnion([userId])
+        'likes': post.likes!.contains(userId)
+            ? FieldValue.arrayRemove([userId])
+            : FieldValue.arrayUnion([userId])
       });
     } catch (e) {
-      throw Exception('Failed to like post: $e');
+      log(e.toString());
+      throw Exception('Failed to like post');
     }
   }
 
@@ -196,7 +205,8 @@ class PostRepository implements IPostRepository {
           .doc(post.pid)
           .update(post.toJson());
     } catch (e) {
-      throw Exception('Failed to update post: $e');
+      log(e.toString());
+      throw Exception('Failed to update post');
     }
   }
 
@@ -207,8 +217,15 @@ class PostRepository implements IPostRepository {
           .collection(CollectionsPaths.comments)
           .doc(comment.id)
           .set(comment.toJson());
+      await _firestore
+          .collection(CollectionsPaths.posts)
+          .doc(comment.postID)
+          .update({
+        'comments': FieldValue.arrayUnion([comment.id])
+      });
     } catch (e) {
-      throw Exception('Failed to comment on post: $e');
+      log(e.toString());
+      throw Exception('Failed to comment on post');
     }
   }
 
@@ -274,6 +291,27 @@ class PostRepository implements IPostRepository {
       return snapshot.docs.map((doc) => Reply.fromJson(doc.data())).toList();
     } catch (e) {
       throw Exception('Failed to get replies: $e');
+    }
+  }
+
+  Stream<Post> getPostByID(String? id) {
+    return _firestore
+        .collection(CollectionsPaths.posts)
+        .doc(id)
+        .snapshots()
+        .map((snap) => Post.fromJson(snap.data()!));
+  }
+
+  Stream<List<Comment>> fetchCommentsOnPost(String postID) {
+    try {
+      return _firestore
+          .collection(CollectionsPaths.comments)
+          .where('postID', isEqualTo: postID)
+          .snapshots()
+          .map((snap) =>
+              snap.docs.map((doc) => Comment.fromJson(doc.data())).toList());
+    } catch (e) {
+      throw Exception('Failed to fetch comments');
     }
   }
 }
