@@ -8,7 +8,7 @@ abstract class IPostRepository {
   Future<void> createPost(Post post);
   Future<void> updatePost(Post post);
   Future<void> deletePost(Post post);
-  Future<void> likePost(String postId, String userId);
+  Future<void> likePost(Post post, String userId);
   Future<void> commentOnPost(Comment comment);
   Future<void> deleteComment(Comment comment);
   Future<Comment> getCommentById(String id);

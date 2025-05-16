@@ -1,3 +1,4 @@
+import 'package:anime_nexa/features/auth/repos/auth_repo.dart';
 import 'package:anime_nexa/models/anime_nexa_user.dart';
 import 'package:appwrite/appwrite.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -5,6 +6,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'global_providers.g.dart';
+
+final fetchUserDataProvider = StreamProvider.family<AnimeNexaUser, String>((ref, uid)  {
+  return firebaseAuthRepo(ref).fetchUser(uid);
+});
 
 @Riverpod(keepAlive: true)
 FirebaseFirestore firebaseFirestore(ref) => FirebaseFirestore.instance;

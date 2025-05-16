@@ -1,3 +1,5 @@
+import 'package:anime_nexa/features/clans/widgets/post_card.dart';
+import 'package:anime_nexa/features/post/viewmodel/post_vm.dart';
 import 'package:anime_nexa/shared/constants/app_typography.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -67,13 +69,42 @@ class Homepage extends ConsumerWidget {
               onPressed: () {},
             ),
           ]),
-      body: Column(
-        children: [
-          _buildStoryRow(),
-          _buildTabBar(),
-          TrendingPosts(),
-          Expanded(child: _buildPostList()),
-        ],
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: Column(
+            children: [
+              // _buildStoryRow(),
+              // _buildTabBar(),
+              // SingleChildScrollView(
+              //   scrollDirection: Axis.horizontal,
+              //   child: Row(
+              //     spacing: 20,
+              //     children: [
+              //       ...List.generate(5, (index) => TrendingPost()),
+              //     ],
+              //   ),
+              // ),
+              // SizedBox(height: 20),
+              ref.watch(postNotifierProvider).when(data: (posts) {
+                return Column(
+                  children: [
+                    ...posts.map((post) => PostCard(post: post)),
+                  ],
+                );
+              }, error: (e, _) {
+                return Column(
+                  children: [
+                    Text(e.toString()),
+                    TextButton(onPressed: () {}, child: Text("Refresh")),
+                  ],
+                );
+              }, loading: () {
+                return Center(child: CircularProgressIndicator());
+              }),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -83,15 +114,18 @@ class Homepage extends ConsumerWidget {
       height: 80,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        padding: EdgeInsets.symmetric(horizontal: 8),
         itemCount: storyAvatars.length,
         itemBuilder: (context, index) {
-          return Padding(
-            padding: const EdgeInsets.all(6.0),
-            child: CircleAvatar(
-              radius: 25,
-              backgroundImage: AssetImage(storyAvatars[index]),
-            ),
+          return Row(
+            children: [
+              CircleAvatar(
+                radius: 25,
+                backgroundImage: AssetImage(storyAvatars[index]),
+              ),
+              SizedBox(
+                width: 15,
+              )
+            ],
           );
         },
       ),
@@ -99,104 +133,50 @@ class Homepage extends ConsumerWidget {
   }
 
   Widget _buildTabBar() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
-      child: Row(
-        children: [
-          Text('Trending',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-          SizedBox(width: 16),
-          Text('Following', style: TextStyle(color: Colors.grey, fontSize: 18)),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildPostList() {
-    return ListView.builder(
-      padding: EdgeInsets.all(12),
-      itemCount: posts.length,
-      itemBuilder: (context, index) {
-        final post = posts[index];
-        return _buildPostCard(post);
-      },
-    );
-  }
-
-  Widget _buildPostCard(Map<String, String> post) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return Row(
       children: [
-        Stack(
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Image.asset(
-                post['image']!,
-                fit: BoxFit.cover,
-                width: 100.w,
-                height: 264,
-              ),
-            ),
-            Positioned(
-              bottom: 8,
-              left: 8,
-              child: Row(
-                children: [
-                  CircleAvatar(
-                      radius: 12,
-                      backgroundImage:
-                          AssetImage('lib/assets/images/post.png')),
-                  SizedBox(width: 6),
-                  Text(post['author']!, style: TextStyle(color: Colors.white)),
-                  SizedBox(width: 8),
-                  Text(post['time']!,
-                      style: TextStyle(color: Colors.white70, fontSize: 12)),
-                ],
-              ),
-            ),
-          ],
-        ),
-        Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: Text(post['caption']!, style: TextStyle(fontSize: 16)),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4),
-          child: Row(
-            children: [
-              Icon(Icons.favorite_border, size: 20),
-              SizedBox(width: 4),
-              Text(post['likes']!),
-              Spacer(),
-              Icon(Icons.comment_outlined, size: 20),
-            ],
-          ),
-        ),
+        Text('Trending',
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+        SizedBox(width: 16),
+        Text('Following', style: TextStyle(color: Colors.grey, fontSize: 18)),
       ],
     );
   }
 }
 
-class TrendingPosts extends StatelessWidget {
-  const TrendingPosts({super.key});
+class TrendingPost extends StatelessWidget {
+  const TrendingPost({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       height: 270,
+      width: 60.w,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
-      ),
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          Image.asset(
+        image: DecorationImage(
+          image: AssetImage(
             'lib/assets/images/1dcab71d5f3e9c3ad255c7fd25d6e26a57fbff13.png',
-            fit: BoxFit.cover,
+          ),
+          fit: BoxFit.cover,
+          colorFilter: ColorFilter.mode(
+            Colors.black.withValues(alpha: 0.2),
+            BlendMode.darken,
+          ),
+        ),
+      ),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              IconButton(
+                  onPressed: () {},
+                  icon: Icon(
+                    Icons.bookmark,
+                    color: Colors.white,
+                  ))
+            ],
           )
         ],
       ),

@@ -188,4 +188,12 @@ class FirebaseAuthRepo implements AuthRepository {
       return left('Failed to set username: ${e.toString()}');
     }
   }
+
+  Stream<AnimeNexaUser> fetchUser(String? uid) {
+    return _firebaseFirestore
+        .collection('users')
+        .doc(uid)
+        .snapshots()
+        .map((doc) => AnimeNexaUser.fromJson(doc.data()!));
+  }
 }

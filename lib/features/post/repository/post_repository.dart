@@ -152,8 +152,11 @@ class PostRepository implements IPostRepository {
   @override
   Stream<List<Post>> getPosts() {
     try {
-      return _firestore.collection(CollectionsPaths.posts).snapshots().map(
-          (snapshot) =>
+      return _firestore
+          .collection(CollectionsPaths.posts)
+          .where('isDraft', isEqualTo: false)
+          .snapshots()
+          .map((snapshot) =>
               snapshot.docs.map((doc) => Post.fromJson(doc.data())).toList());
     } catch (e) {
       throw Exception('Failed to get posts stream: $e');
@@ -175,10 +178,10 @@ class PostRepository implements IPostRepository {
   }
 
   @override
-  Future<void> likePost(String postId, String userId) async {
+  Future<void> likePost(Post post, String userId) async {
     try {
-      await _firestore.collection(CollectionsPaths.posts).doc(postId).update({
-        'likes': FieldValue.arrayUnion([userId])
+      await _firestore.collection(CollectionsPaths.posts).doc(post.pid).update({
+        'likes': post.likes!.contains(userId) ? FieldValue.arrayRemove([userId]) : FieldValue.arrayUnion([userId])
       });
     } catch (e) {
       throw Exception('Failed to like post: $e');

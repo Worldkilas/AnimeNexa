@@ -30,7 +30,7 @@ void toggleCreatePostDraftLoadingStatus(WidgetRef ref, bool state) {
 }
 
 class PostNotifier extends StreamNotifier<List<Post>> {
-  late final PostRepository _repository;
+  late PostRepository _repository;
 
   @override
   Stream<List<Post>> build() {
@@ -64,9 +64,9 @@ class PostNotifier extends StreamNotifier<List<Post>> {
     }
   }
 
-  Future<void> likePost(String postId, String userId) async {
+  Future<void> likePost(Post post, String userId) async {
     try {
-      await _repository.likePost(postId, userId);
+      await _repository.likePost(post, userId);
     } catch (e) {
       state = AsyncError(e, StackTrace.current);
     }
