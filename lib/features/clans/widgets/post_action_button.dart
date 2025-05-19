@@ -3,18 +3,27 @@ import 'package:flutter_svg/svg.dart';
 
 class PostActionButton extends StatelessWidget {
   String? imagePath;
+  Icon? icon;
   int? count;
-  PostActionButton({this.imagePath, this.count, super.key});
+  VoidCallback? onTap;
+  PostActionButton({this.imagePath, this.icon, this.count, this.onTap, super.key})
+      : assert(imagePath != null || icon != null,
+            "Must assign either image path or icon");
 
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        SvgPicture.asset(
-          imagePath!,
-          width: 20,
-          height: 20,
+        InkWell(
+          onTap: onTap,
+          child: imagePath != null
+            ? SvgPicture.asset(
+                imagePath!,
+                width: 20,
+                height: 20,
+              )
+            : icon,
         ),
         const SizedBox(width: 2),
         Text(

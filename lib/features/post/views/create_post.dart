@@ -1,8 +1,8 @@
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:anime_nexa/features/clans/widgets/post_card.dart';
-import 'package:anime_nexa/features/clans/widgets/post_media.dart';
+import 'package:anime_nexa/features/home/widgets/post_card.dart';
+import 'package:anime_nexa/features/home/widgets/post_media.dart';
 import 'package:anime_nexa/features/post/viewmodel/post_vm.dart';
 import 'package:anime_nexa/features/post/views/drafts_screen.dart';
 import 'package:anime_nexa/features/post/views/gif_screen.dart';

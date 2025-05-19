@@ -26,7 +26,7 @@ class LayoutScaffold extends StatelessWidget {
           labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
           selectedIndex: statefulNavigationShell.currentIndex,
           onDestinationSelected: (index) => index == 2
-              ? context.push('/post')
+              ? context.push('/createpost')
               : statefulNavigationShell.goBranch(index),
           indicatorColor: Colors.transparent,
           destinations: [

@@ -1,4 +1,7 @@
-import 'package:anime_nexa/features/auth/view_model/auth_view_model.dart';
+import 'package:anime_nexa/features/home/widgets/post_card.dart';
+import 'package:anime_nexa/features/post/viewmodel/post_vm.dart';
+import 'package:anime_nexa/models/anime_nexa_user.dart';
+import 'package:anime_nexa/providers/global_providers.dart';
 import 'package:anime_nexa/shared/constants/app_typography.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,7 +12,7 @@ import 'package:sizer/sizer.dart';
 import '../../../shared/constants/app_colors.dart';
 import '../../../shared/widgets/custom_button.dart';
 
-class ProfileScreen extends ConsumerStatefulWidget {
+class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
 
   @override
@@ -22,90 +25,116 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
   final String avatar = 'https://i.pravatar.cc/150?img=12';
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return DefaultTabController(
       length: 4,
       child: Scaffold(
         backgroundColor: Colors.white,
-        body: NestedScrollView(
-          // clipBehavior: Clip.none,
-          headerSliverBuilder: (context, innerBoxIsScrolled) => [
-            SliverAppBar(
-              expandedHeight: 25.h,
-              // clipBehavior: Clip.none,
-              pinned: true,
-
-              elevation: 0,
-              backgroundColor: Colors.white,
-              flexibleSpace: FlexibleSpaceBar(
-                title: innerBoxIsScrolled ? Text('8 posts') : SizedBox.shrink(),
-                background: Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    Image.network(banner, fit: BoxFit.cover),
-                    Positioned(
-                      left: 16,
-                      bottom: -32,
-                      child: CircleAvatar(
-                        radius: 40,
-                        backgroundColor: Colors.white,
-                        child: CircleAvatar(
-                          radius: 36,
-                          backgroundImage: NetworkImage(avatar),
+        body: SingleChildScrollView(
+          child: ref
+              .watch(fetchUserDataProvider(
+                  ref.watch(firebaseAuthProvider).currentUser!.uid))
+              .when(
+            data: (user) {
+              return Column(
+                children: [
+                  Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      SizedBox(
+                        height: 25.h,
+                        width: double.infinity,
+                        child: Image.network(
+                          banner,
+                          fit: BoxFit.cover,
                         ),
                       ),
+                      // Avatar
+                      Positioned(
+                        left: 16,
+                        bottom: -40,
+                        child: CircleAvatar(
+                          radius: 40,
+                          backgroundColor: Colors.white,
+                          child: CircleAvatar(
+                            radius: 36,
+                            backgroundImage: NetworkImage(avatar),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 40),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                    child: buildProfileHeader(context, user),
+                  ),
+                  // TabBar
+                  Container(
+                    color: Colors.white,
+                    child: TabBar(
+                      labelColor: Theme.of(context).primaryColor,
+                      unselectedLabelColor: Colors.grey,
+                      indicatorColor: Color(0xFF8E2DE2),
+                      tabs: [
+                        Tab(text: 'Posts'),
+                        Tab(text: 'Shared'),
+                        Tab(text: 'NFTs'),
+                        Tab(text: 'Likes'),
+                      ],
                     ),
-                  ],
-                ),
-              ),
-            ),
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 25),
-                child: buildProfileHeader(
-                  context,
-                  ref,
-                ),
-              ),
-            ),
-            SliverPersistentHeader(
-              pinned: true,
-              delegate: _TabBarDelegate(
-                TabBar(
-                  labelColor: Theme.of(context).primaryColor,
-                  unselectedLabelColor: Colors.grey,
-                  indicatorColor: Color(0xFF8E2DE2),
-                  tabs: [
-                    Tab(text: 'Posts'),
-                    Tab(text: 'Shared'),
-                    Tab(text: 'NFTs'),
-                    Tab(text: 'Likes'),
-                  ],
-                ),
-              ),
-            ),
-          ],
-          body: TabBarView(
-            children: List.generate(4, (index) {
-              return ListView.builder(
-                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                itemCount: 2,
-                itemBuilder: (context, i) => buildPostCard(),
+                  ),
+                  SizedBox(
+                    height: 50.h, // Adjust height to fit content
+                    child: TabBarView(
+                      children: List.generate(4, (index) {
+                        return index != 0
+                            ? Center(
+                                child: Text("Coming soon"),
+                              )
+                            : ref.watch(postNotifierProvider).when(
+                                data: (posts) {
+                                return SingleChildScrollView(
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(top: 4.0),
+                                    child: Column(
+                                      children: [
+                                        ...posts
+                                            .map((post) => PostCard(post: post))
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              }, error: (e, _) {
+                                return Text(e.toString());
+                              }, loading: () {
+                                return Center(
+                                  child: CircularProgressIndicator(),
+                                );
+                              });
+                      }),
+                    ),
+                  ),
+                ],
               );
-            }),
+            },
+            error: (e, __) {
+              return Center(
+                child: Text("Failed to fetch user data"),
+              );
+            },
+            loading: () {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            },
           ),
         ),
       ),
     );
   }
 
-  Widget buildProfileHeader(BuildContext context, WidgetRef ref) {
-    final user = ref.watch(authViewModelProvider.notifier).user;
+  Widget buildProfileHeader(BuildContext context, AnimeNexaUser user) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -124,11 +153,10 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
           ),
         ),
         Text(
-          user?.displayName ?? 'fallback',
+          user.username,
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
-        Text("@${user?.username}?? kaska",
-            style: TextStyle(color: Colors.grey)),
+        Text("@${user.username}", style: TextStyle(color: Colors.grey)),
         SizedBox(height: 10),
         Text(
           user?.bio ?? '',
@@ -139,36 +167,29 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
           children: [
             Text("XP", style: TextStyle(fontWeight: FontWeight.bold)),
             Spacer(),
-            Text("300/10,000", style: TextStyle(color: Colors.grey)),
+            Text("${user.xps}/10,000", style: TextStyle(color: Colors.grey)),
           ],
         ),
         SizedBox(height: 6),
         Stack(
           children: [
-            // Background of the progress bar
             LinearProgressIndicator(
-              value: 0.03,
+              value: user.xps.toDouble(),
               backgroundColor: Colors.grey[300],
               borderRadius: BorderRadius.circular(10),
               minHeight: 10,
-              valueColor: AlwaysStoppedAnimation(
-                Colors.transparent,
-              ), // Transparent to avoid interference
+              valueColor: AlwaysStoppedAnimation(Colors.transparent),
             ),
-            // Gradient progress portion
             ShaderMask(
               shaderCallback: (Rect bounds) {
                 return AppColors.gradientPrimary.createShader(bounds);
               },
               child: LinearProgressIndicator(
-                value: 0.4,
-                backgroundColor: Colors.transparent, // Transparent background
-                valueColor: AlwaysStoppedAnimation(
-                  Colors.white,
-                ),
-                minHeight: 10, // White to show gradient
-                borderRadius:
-                    BorderRadius.circular(10), // Optional: rounded edges
+                value: user.xps.toDouble(),
+                backgroundColor: Colors.transparent,
+                valueColor: AlwaysStoppedAnimation(Colors.white),
+                minHeight: 10,
+                borderRadius: BorderRadius.circular(10),
               ),
             ),
           ],
@@ -227,23 +248,4 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
       ],
     );
   }
-}
-
-class _TabBarDelegate extends SliverPersistentHeaderDelegate {
-  final TabBar _tabBar;
-  _TabBarDelegate(this._tabBar);
-
-  @override
-  double get minExtent => _tabBar.preferredSize.height;
-  @override
-  double get maxExtent => _tabBar.preferredSize.height;
-
-  @override
-  Widget build(
-      BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return Container(color: Colors.white, child: _tabBar);
-  }
-
-  @override
-  bool shouldRebuild(_TabBarDelegate oldDelegate) => false;
 }

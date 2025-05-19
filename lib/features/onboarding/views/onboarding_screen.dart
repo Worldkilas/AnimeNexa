@@ -100,7 +100,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                           // Mark onboarding as complete via shared preference
                           await markOnboardingComplete();
                           // Navigate to the login screen
-                          context.go('/auth');
+                          context.go('/auth/createAcct');
                         } else {
                           // Otherwise, go to the next page
                           _pageController.nextPage(

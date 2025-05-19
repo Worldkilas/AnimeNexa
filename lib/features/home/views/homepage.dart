@@ -1,5 +1,11 @@
+<<<<<<< HEAD
 import 'package:anime_nexa/core/services/deep_link_handler.dart';
 import 'package:anime_nexa/features/wallet/wallet_view_model.dart';
+=======
+import 'package:anime_nexa/features/home/widgets/home_popup_menu.dart';
+import 'package:anime_nexa/features/home/widgets/post_card.dart';
+import 'package:anime_nexa/features/post/viewmodel/post_vm.dart';
+>>>>>>> feature/view_posts
 import 'package:anime_nexa/shared/constants/app_typography.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -69,7 +75,7 @@ class _HomepageState extends ConsumerState<Homepage> {
           actions: [
             // appkit.isConnected
             Container(
-              padding: EdgeInsets.symmetric(vertical: 9, horizontal: 11),
+              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 11),
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
@@ -82,29 +88,62 @@ class _HomepageState extends ConsumerState<Homepage> {
                 ),
               ),
             ),
-            IconButton(
-              icon: Icon(Icons.menu, color: Colors.black),
-              onPressed: () {},
-            ),
+            CustomPopupMenu(),
           ]),
-      body: postsAsync.when(
-        data: (posts) {
-          if (posts.isEmpty) {
-            return Center(
-              child: Text(
-                'No posts available',
-                style: Theme.of(context).textTheme.bodyLarge,
-              ),
-            );
-          }
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            // _buildStoryRow(),
+            // _buildTabBar(),
+            // SingleChildScrollView(
+            //   scrollDirection: Axis.horizontal,
+            //   child: Row(
+            //     spacing: 20,
+            //     children: [
+            //       ...List.generate(5, (index) => TrendingPost()),
+            //     ],
+            //   ),
+            // ),
+            // SizedBox(height: 20),
+            ref.watch(postNotifierProvider).when(data: (posts) {
+              return Column(
+                children: [
+                  ...posts.map((post) => PostCard(post: post)),
+                ],
+              );
+            }, error: (e, _) {
+              return Column(
+                children: [
+                  Text(e.toString()),
+                  TextButton(onPressed: () {}, child: Text("Refresh")),
+                ],
+              );
+            }, loading: () {
+              return Center(child: CircularProgressIndicator());
+            }),
+          ],
+        ),
+      ),
+    );
+  }
 
-          return ListView.builder(
-            padding: const EdgeInsets.all(12),
-            itemCount: posts.length,
-            itemBuilder: (context, index) {
-              final post = posts[index];
-              return PostCard(post: post);
-            },
+  Widget _buildStoryRow() {
+    return SizedBox(
+      height: 80,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: storyAvatars.length,
+        itemBuilder: (context, index) {
+          return Row(
+            children: [
+              CircleAvatar(
+                radius: 25,
+                backgroundImage: AssetImage(storyAvatars[index]),
+              ),
+              SizedBox(
+                width: 15,
+              )
+            ],
           );
         },
         loading: () => const Center(
@@ -118,6 +157,7 @@ class _HomepageState extends ConsumerState<Homepage> {
   }
 }
 
+<<<<<<< HEAD
 Widget _buildStoryRow() {
   return SizedBox(
     height: 80,
@@ -189,6 +229,54 @@ Widget _buildPostCard(WidgetRef ref, Post post, String? currentUserId) {
           Text(post.uid!, style: AppTypography.textMedium),
           SizedBox(width: 8),
           Text(timeAgo(post.createdAt!), style: AppTypography.textMedium),
+=======
+  Widget _buildTabBar() {
+    return Row(
+      children: [
+        Text('Trending',
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+        SizedBox(width: 16),
+        Text('Following', style: TextStyle(color: Colors.grey, fontSize: 18)),
+      ],
+    );
+  }
+}
+
+class TrendingPost extends StatelessWidget {
+  const TrendingPost({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 270,
+      width: 60.w,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        image: DecorationImage(
+          image: AssetImage(
+            'lib/assets/images/1dcab71d5f3e9c3ad255c7fd25d6e26a57fbff13.png',
+          ),
+          fit: BoxFit.cover,
+          colorFilter: ColorFilter.mode(
+            Colors.black.withValues(alpha: 0.2),
+            BlendMode.darken,
+          ),
+        ),
+      ),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              IconButton(
+                  onPressed: () {},
+                  icon: Icon(
+                    Icons.bookmark,
+                    color: Colors.white,
+                  ))
+            ],
+          )
+>>>>>>> feature/view_posts
         ],
       ),
       SizedBox(height: 1.h),
