@@ -107,7 +107,7 @@ final appwriteStorageProvider = Provider<Storage>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef AppwriteStorageRef = ProviderRef<Storage>;
-String _$reownAppKitModalHash() => r'3498cff7778585d48e703f4b1676a1894423560a';
+String _$reownAppKitModalHash() => r'5e90a286b57cad643b3f1e4ca79aa574fb5c1a73';
 
 /// See also [reownAppKitModal].
 @ProviderFor(reownAppKitModal)

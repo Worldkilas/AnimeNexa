@@ -81,14 +81,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.1"
-  bip39:
-    dependency: transitive
-    description:
-      name: bip39
-      sha256: de1ee27ebe7d96b84bb3a04a4132a0a3007dcdd5ad27dd14aa87a29d97c45edc
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.6"
   boolean_selector:
     dependency: transitive
     description:
@@ -97,14 +89,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.2"
-  borsh_annotation:
-    dependency: transitive
-    description:
-      name: borsh_annotation
-      sha256: dc73a7fdc6fe4505535657daf8ab3cebe382311fae63a0faaf9315ea1bc30bff
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.3.2"
   bs58:
     dependency: "direct main"
     description:
@@ -385,14 +369,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.7.11"
-  decimal:
-    dependency: transitive
-    description:
-      name: decimal
-      sha256: "4140a688f9e443e2f4de3a1162387bf25e1ac6d51e24c9da263f245210f41440"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.0.2"
   desktop_webview_window:
     dependency: transitive
     description:
@@ -441,14 +417,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.3.1"
-  ed25519_hd_key:
-    dependency: transitive
-    description:
-      name: ed25519_hd_key
-      sha256: "31e191ec97492873067e46dc9cc0c7d55170559c83a478400feffa0627acaccf"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.3.0"
   eip1559:
     dependency: transitive
     description:
@@ -845,14 +813,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.2"
-  hex:
-    dependency: transitive
-    description:
-      name: hex
-      sha256: "4e7cd54e4b59ba026432a6be2dd9d96e4c5205725194997193bf871703b82c4a"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.2.0"
   html:
     dependency: transitive
     description:
@@ -1221,14 +1181,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.0.3"
-  rational:
-    dependency: transitive
-    description:
-      name: rational
-      sha256: cb808fb6f1a839e6fc5f7d8cb3b0a10e1db48b3be102de73938c627f0b636336
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.2.3"
   reown_appkit:
     dependency: "direct main"
     description:
@@ -1402,14 +1354,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.1"
-  solana:
-    dependency: "direct main"
-    description:
-      name: solana
-      sha256: "98d8780dbd9af7e90ff14a6e762a45d77466450304773610317d1fffdea09701"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.31.2+1"
   source_gen:
     dependency: transitive
     description:
@@ -1774,26 +1718,26 @@ packages:
     dependency: transitive
     description:
       name: webview_flutter_android
-      sha256: "6b0eae02b7604954b80ee9a29507ac38f5de74b712faa6fee33abc1cdedc1b21"
+      sha256: be6fa6acf69db65a9feedd9f16ead99668e9d5ea1f9b8d85286cba8da8d12e29
       url: "https://pub.dev"
     source: hosted
-    version: "4.4.2"
+    version: "4.5.0"
   webview_flutter_platform_interface:
     dependency: transitive
     description:
       name: webview_flutter_platform_interface
-      sha256: "18b1640839cf6546784a524c72aded5b6e86b23e7167dc2311cc96f7658b64bd"
+      sha256: e54a2a435144af4e008bea140c06913eeb3f25db421c2ceaa932f314a45d79b9
       url: "https://pub.dev"
     source: hosted
-    version: "2.11.0"
+    version: "2.12.0"
   webview_flutter_wkwebview:
     dependency: transitive
     description:
       name: webview_flutter_wkwebview
-      sha256: c9f9be526fa0d3347374ceaa05c4b3acb85f4f112abd62f7d74b7d301fa515ff
+      sha256: "6af7d1908c9c89311c2dffcc2c9b51b88a6f055ba16fa0aa8a04cbb1c3afc9ce"
       url: "https://pub.dev"
     source: hosted
-    version: "3.20.0"
+    version: "3.21.0"
   win32:
     dependency: transitive
     description:

@@ -63,7 +63,7 @@ ReownAppKitModal reownAppKitModal(ref) {
       description: 'The ultimate web3 hub for anime lovers',
       url: 'https://animenexa.com',
       icons: ['https://imgur.com/a/qkfFlnF'],
-      redirect: Redirect(native: 'animenexa://', linkMode: false),
+      redirect: Redirect(native: 'animenexa://wallet', linkMode: false),
     ),
   );
   // await appKitModal.init();

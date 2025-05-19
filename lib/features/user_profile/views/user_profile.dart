@@ -3,19 +3,31 @@ import 'package:anime_nexa/shared/constants/app_typography.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:reown_appkit/reown_appkit.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../../shared/constants/app_colors.dart';
 import '../../../shared/widgets/custom_button.dart';
 
-class ProfileScreen extends ConsumerWidget {
+class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
+
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() => ProfileScreenState();
+}
+
+class ProfileScreenState extends ConsumerState<ProfileScreen> {
   final String banner =
       'https://images.unsplash.com/photo-1607746882042-944635dfe10e';
   final String avatar = 'https://i.pravatar.cc/150?img=12';
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return DefaultTabController(
       length: 4,
       child: Scaffold(
@@ -55,7 +67,10 @@ class ProfileScreen extends ConsumerWidget {
             SliverToBoxAdapter(
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16, vertical: 25),
-                child: buildProfileHeader(context, ref),
+                child: buildProfileHeader(
+                  context,
+                  ref,
+                ),
               ),
             ),
             SliverPersistentHeader(
@@ -103,7 +118,7 @@ class ProfileScreen extends ConsumerWidget {
             backgroundColor: Colors.white,
             textStyle: AppTypography.linkXSmall,
             borderSide: BorderSide(color: Theme.of(context).primaryColor),
-            onPressed: () {
+            onPressed: () async {
               context.push('/edit');
             },
           ),

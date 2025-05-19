@@ -8,7 +8,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sizer/sizer.dart';
 
-import 'core/services/deep_link_handler.dart';
+// import 'core/services/deep_link_handler.dart';
 import 'shared/constants/app_theme.dart';
 
 import 'shared/navigation/app_router.dart';
@@ -18,7 +18,7 @@ void main() async {
   await dotenv.load(fileName: ".env");
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  DeepLinkHandler.initListener();
+  // DeepLinkHandler.initListener();
 
   runApp(
     ProviderScope(

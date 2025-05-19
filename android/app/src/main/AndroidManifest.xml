@@ -31,7 +31,7 @@
                 <!-- your own custom scheme -->
                 <!-- Should be the same you set on Redirect.native on Flutter side -->
                 <!-- Be mind of removing :// for this step -->
-                <data android:scheme="animenexa" />
+                <data android:scheme="animenexa" android:host="wallet" />
             </intent-filter>
 
         </activity>

@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
 import '../../../models/anime_nexa_user.dart';
-import '../../../providers/global_providers.dart'; // Assuming your global firebaseAuthProvider and firebaseFirestoreProvider are defined here.
+import '../../../providers/global_providers.dart';
 
 class ProfileRepository {
   final FirebaseFirestore firestore;

@@ -1,9 +1,13 @@
+import 'package:anime_nexa/core/services/deep_link_handler.dart';
 import 'package:anime_nexa/features/wallet/wallet_view_model.dart';
 import 'package:anime_nexa/shared/constants/app_typography.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:reown_appkit/modal/appkit_modal_impl.dart';
 import 'package:reown_appkit/reown_appkit.dart';
+// import 'package:reown_appkit/reown_appkit.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../../models/post.dart';
@@ -43,6 +47,7 @@ class Homepage extends ConsumerStatefulWidget {
 }
 
 class _HomepageState extends ConsumerState<Homepage> {
+  // late ReownAppKitModal appkit;
   @override
   void initState() {
     super.initState();
@@ -51,7 +56,7 @@ class _HomepageState extends ConsumerState<Homepage> {
   @override
   Widget build(BuildContext context) {
     final postsAsync = ref.watch(postNotifierProvider);
-    final walletAsync = ref.watch(walletViewModelProvider);
+    // final walletAsync = ref.watch(walletViewModelProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -62,40 +67,19 @@ class _HomepageState extends ConsumerState<Homepage> {
             color: AppColors.primary,
           ),
           actions: [
-            walletAsync.when(
-              data: (pubKey) => pubKey == null
-                  ? Container(
-                      padding:
-                          EdgeInsets.symmetric(vertical: 9, horizontal: 11),
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        )),
-                        onPressed: () async {
-                          final vmNotifier =
-                              ref.read(walletViewModelProvider.notifier);
-                          final state = ref.read(walletViewModelProvider);
-                          if (state is AsyncData) {
-                            await vmNotifier.connect();
-                          } else {
-                            debugPrint('🟩 WalletViewModel not yet ready');
-                          }
-                        },
-                        child: Text(
-                          "Connect wallet",
-                          style: AppTypography.textXSmall
-                              .copyWith(color: Colors.white),
-                        ),
-                      ),
-                    )
-                  : Text(
-                      shortenWalletAddress(pubKey),
-                    ),
-              loading: () => const CircularProgressIndicator(),
-              error: (e, _) => Text(
-                'Error: $e',
-                overflow: TextOverflow.ellipsis,
+            // appkit.isConnected
+            Container(
+              padding: EdgeInsets.symmetric(vertical: 9, horizontal: 11),
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                )),
+                onPressed: () {},
+                child: Text(
+                  "Connect wallet",
+                  style: AppTypography.textXSmall.copyWith(color: Colors.white),
+                ),
               ),
             ),
             IconButton(
