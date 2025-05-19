@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:sizer/sizer.dart';
 
-import '../../../models/post.dart';
 import '../../../shared/constants/app_colors.dart';
 import '../../../shared/constants/app_typography.dart';
 import '../../clans/widgets/post_card.dart';
 import '../../post/viewmodel/post_vm.dart';
-import '../view_models/post_feed_view_model.dart';
-import '../widgets/home_popup_menu.dart';
 import '../widgets/home_popup_menu.dart';
 
 final List<String> storyAvatars =
@@ -32,25 +28,12 @@ final List<Map<String, String>> posts = [
   },
 ];
 
-class Homepage extends ConsumerStatefulWidget {
+class Homepage extends ConsumerWidget {
   const Homepage({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _HomepageState();
-}
-
-class _HomepageState extends ConsumerState<Homepage> {
-  // late ReownAppKitModal appkit;
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final postsAsync = ref.watch(postNotifierProvider);
-    // final walletAsync = ref.watch(walletViewModelProvider);
-
+  Widget build(BuildContext context, WidgetRef ref) {
+    final displayText = 'Connect wallet';
     return Scaffold(
       appBar: AppBar(
           backgroundColor: Colors.white,
@@ -60,7 +43,6 @@ class _HomepageState extends ConsumerState<Homepage> {
             color: AppColors.primary,
           ),
           actions: [
-            // appkit.isConnected
             Container(
               padding: EdgeInsets.symmetric(vertical: 10, horizontal: 11),
               child: ElevatedButton(
@@ -70,7 +52,7 @@ class _HomepageState extends ConsumerState<Homepage> {
                 )),
                 onPressed: () {},
                 child: Text(
-                  "Connect wallet",
+                  displayText,
                   style: AppTypography.textXSmall.copyWith(color: Colors.white),
                 ),
               ),
@@ -149,12 +131,11 @@ Widget _buildTabBar() {
   );
 }
 
-class TrendingPost extends ConsumerWidget {
-  const TrendingPost({super.key, required this.post});
-  final Post post;
+class TrendingPost extends StatelessWidget {
+  const TrendingPost({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return Container(
       height: 270,
       width: 60.w,
@@ -183,72 +164,9 @@ class TrendingPost extends ConsumerWidget {
                     color: Colors.white,
                   ))
             ],
-          ),
-          SizedBox(height: 1.h),
-          if (post.media?.isNotEmpty ?? false)
-            ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: Image.network(
-                post.media![1].mediaPath!,
-                fit: BoxFit.cover,
-                height: 264,
-              ),
-            ),
-          Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Text(post.text ?? '', style: TextStyle(fontSize: 16)),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4),
-            child: Row(
-              children: [
-                IconButton(
-                  onPressed: currentUserId != null
-                      ? () {
-                          ref
-                              .read(postFeedViewModelProvider.notifier)
-                              .toggleLike(post, currentUserId);
-                        }
-                      : null,
-                  icon: Icon(
-                    isLiked ? Icons.favorite : Icons.favorite_border,
-                    size: 20,
-                    color: isLiked ? Colors.red : Colors.black,
-                  ),
-                ),
-                SizedBox(width: 4),
-                Text('${post.likes?.length ?? 0}'),
-                Spacer(),
-                Icon(Icons.comment, size: 20),
-              ],
-            ),
-          ),
+          )
         ],
       ),
     );
   }
 }
-
-// class TrendingPosts extends StatelessWidget {
-//   const TrendingPosts({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container(
-//       margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-//       height: 270,
-//       decoration: BoxDecoration(
-//         borderRadius: BorderRadius.circular(10),
-//       ),
-//       child: Stack(
-//         fit: StackFit.expand,
-//         children: [
-//           Image.asset(
-//             'lib/assets/images/1dcab71d5f3e9c3ad255c7fd25d6e26a57fbff13.png',
-//             fit: BoxFit.cover,
-//           )
-//         ],
-//       ),
-//     );
-//   }
-// }

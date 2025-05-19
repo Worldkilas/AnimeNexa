@@ -1,22 +1,23 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'package:anime_nexa/features/home/widgets/post_card.dart';
 import 'package:anime_nexa/features/post/viewmodel/post_vm.dart';
 import 'package:anime_nexa/models/anime_nexa_user.dart';
 import 'package:anime_nexa/providers/global_providers.dart';
 import 'package:anime_nexa/shared/constants/app_typography.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'package:go_router/go_router.dart';
-import 'package:reown_appkit/reown_appkit.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../../shared/constants/app_colors.dart';
 import '../../../shared/widgets/custom_button.dart';
 
-class ProfileScreen extends ConsumerWidget {
+class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => ProfileScreenState();
+  ConsumerState<ProfileScreen> createState() => ProfileScreenState();
 }
 
 class ProfileScreenState extends ConsumerState<ProfileScreen> {
@@ -25,7 +26,7 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
   final String avatar = 'https://i.pravatar.cc/150?img=12';
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return DefaultTabController(
       length: 4,
       child: Scaffold(
@@ -159,7 +160,7 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
         Text("@${user.username}", style: TextStyle(color: Colors.grey)),
         SizedBox(height: 10),
         Text(
-          user?.bio ?? '',
+          user.bio ?? '',
           style: TextStyle(color: Colors.black),
         ),
         SizedBox(height: 14),
