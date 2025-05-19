@@ -1,30 +1,17 @@
-<<<<<<< HEAD
-import 'package:anime_nexa/core/services/deep_link_handler.dart';
-import 'package:anime_nexa/features/wallet/wallet_view_model.dart';
-=======
-import 'package:anime_nexa/features/home/widgets/home_popup_menu.dart';
-import 'package:anime_nexa/features/home/widgets/post_card.dart';
-import 'package:anime_nexa/features/post/viewmodel/post_vm.dart';
->>>>>>> feature/view_posts
-import 'package:anime_nexa/shared/constants/app_typography.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:reown_appkit/modal/appkit_modal_impl.dart';
-import 'package:reown_appkit/reown_appkit.dart';
-// import 'package:reown_appkit/reown_appkit.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../../models/post.dart';
-import '../../../providers/global_providers.dart';
 import '../../../shared/constants/app_colors.dart';
-import '../../../shared/utils/utils.dart';
-import '../../auth/view_model/auth_view_model.dart';
+import '../../../shared/constants/app_typography.dart';
 import '../../clans/widgets/post_card.dart';
 import '../../post/viewmodel/post_vm.dart';
-import '../view_models/post_feed_view_model.dart'
-    show postFeedViewModelProvider;
+import '../view_models/post_feed_view_model.dart';
+import '../widgets/home_popup_menu.dart';
+import '../widgets/home_popup_menu.dart';
 
 final List<String> storyAvatars =
     List.generate(10, (index) => 'lib/assets/images/post.png');
@@ -146,107 +133,28 @@ class _HomepageState extends ConsumerState<Homepage> {
             ],
           );
         },
-        loading: () => const Center(
-          child: CircularProgressIndicator(),
-        ),
-        error: (error, stackTrace) => Center(
-          child: Text('Error: $error'),
-        ),
       ),
     );
   }
 }
 
-<<<<<<< HEAD
-Widget _buildStoryRow() {
-  return SizedBox(
-    height: 80,
-    child: ListView.builder(
-      scrollDirection: Axis.horizontal,
-      padding: EdgeInsets.symmetric(horizontal: 8),
-      itemCount: storyAvatars.length,
-      itemBuilder: (context, index) {
-        return Padding(
-          padding: const EdgeInsets.all(6.0),
-          child: CircleAvatar(
-            radius: 25,
-            backgroundImage: AssetImage(storyAvatars[index]),
-          ),
-        );
-      },
-    ),
-  );
-}
-
-// Widget _buildTabBar() {
-//   return Padding(
-//     padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
-//     child: Row(
-//       children: [
-//         Text('Trending',
-//             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-//         SizedBox(width: 16),
-//         Text('Following', style: TextStyle(color: Colors.grey, fontSize: 18)),
-//       ],
-//     ),
-//   );
-// }
-
-Widget _buildPostList(WidgetRef ref) {
-  final postsAsync = ref.watch(postFeedViewModelProvider);
-  final user = ref.watch(authViewModelProvider.notifier).user;
-
-  return postsAsync.when(
-    data: (posts) => ListView.builder(
-      padding: EdgeInsets.all(22),
-      itemCount: posts.length,
-      itemBuilder: (context, index) {
-        final post = posts[index];
-        return _buildPostCard(ref, post, user?.userId);
-      },
-    ),
-    loading: () => const Center(child: CircularProgressIndicator()),
-    error: (err, _) => Center(
-      child: Text('Error: $err'),
-    ),
-  );
-}
-
-Widget _buildPostCard(WidgetRef ref, Post post, String? currentUserId) {
-  final isLiked = post.likes?.contains(currentUserId) ?? false;
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
+Widget _buildTabBar() {
+  return Row(
     children: [
-      Row(
-        children: [
-          CircleAvatar(
-            radius: 20,
-            backgroundImage: AssetImage(
-              'lib/assets/images/post.png',
-            ),
-          ),
-          SizedBox(width: 6),
-          Text(post.uid!, style: AppTypography.textMedium),
-          SizedBox(width: 8),
-          Text(timeAgo(post.createdAt!), style: AppTypography.textMedium),
-=======
-  Widget _buildTabBar() {
-    return Row(
-      children: [
-        Text('Trending',
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-        SizedBox(width: 16),
-        Text('Following', style: TextStyle(color: Colors.grey, fontSize: 18)),
-      ],
-    );
-  }
+      Text('Trending',
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+      SizedBox(width: 16),
+      Text('Following', style: TextStyle(color: Colors.grey, fontSize: 18)),
+    ],
+  );
 }
 
-class TrendingPost extends StatelessWidget {
-  const TrendingPost({super.key});
+class TrendingPost extends ConsumerWidget {
+  const TrendingPost({super.key, required this.post});
+  final Post post;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       height: 270,
       width: 60.w,
@@ -275,51 +183,50 @@ class TrendingPost extends StatelessWidget {
                     color: Colors.white,
                   ))
             ],
-          )
->>>>>>> feature/view_posts
-        ],
-      ),
-      SizedBox(height: 1.h),
-      if (post.media?.isNotEmpty ?? false)
-        ClipRRect(
-          borderRadius: BorderRadius.circular(10),
-          child: Image.network(
-            post.media![1].mediaPath!,
-            fit: BoxFit.cover,
-            height: 264,
           ),
-        ),
-      Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: Text(post.text ?? '', style: TextStyle(fontSize: 16)),
-      ),
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4),
-        child: Row(
-          children: [
-            IconButton(
-              onPressed: currentUserId != null
-                  ? () {
-                      ref
-                          .read(postFeedViewModelProvider.notifier)
-                          .toggleLike(post, currentUserId);
-                    }
-                  : null,
-              icon: Icon(
-                isLiked ? Icons.favorite : Icons.favorite_border,
-                size: 20,
-                color: isLiked ? Colors.red : Colors.black,
+          SizedBox(height: 1.h),
+          if (post.media?.isNotEmpty ?? false)
+            ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: Image.network(
+                post.media![1].mediaPath!,
+                fit: BoxFit.cover,
+                height: 264,
               ),
             ),
-            SizedBox(width: 4),
-            Text('${post.likes?.length ?? 0}'),
-            Spacer(),
-            Icon(Icons.comment, size: 20),
-          ],
-        ),
+          Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Text(post.text ?? '', style: TextStyle(fontSize: 16)),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4),
+            child: Row(
+              children: [
+                IconButton(
+                  onPressed: currentUserId != null
+                      ? () {
+                          ref
+                              .read(postFeedViewModelProvider.notifier)
+                              .toggleLike(post, currentUserId);
+                        }
+                      : null,
+                  icon: Icon(
+                    isLiked ? Icons.favorite : Icons.favorite_border,
+                    size: 20,
+                    color: isLiked ? Colors.red : Colors.black,
+                  ),
+                ),
+                SizedBox(width: 4),
+                Text('${post.likes?.length ?? 0}'),
+                Spacer(),
+                Icon(Icons.comment, size: 20),
+              ],
+            ),
+          ),
+        ],
       ),
-    ],
-  );
+    );
+  }
 }
 
 // class TrendingPosts extends StatelessWidget {
