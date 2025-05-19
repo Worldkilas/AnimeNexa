@@ -377,6 +377,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.1"
+  dbus:
+    dependency: transitive
+    description:
+      name: dbus
+      sha256: "79e0c23480ff85dc68de79e2cd6334add97e48f7f4865d17686dd6ea81a47e8c"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.7.11"
   decimal:
     dependency: transitive
     description:
@@ -433,6 +441,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.3.1"
+  ed25519_hd_key:
+    dependency: transitive
+    description:
+      name: ed25519_hd_key
+      sha256: "31e191ec97492873067e46dc9cc0c7d55170559c83a478400feffa0627acaccf"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.3.0"
   eip1559:
     dependency: transitive
     description:
@@ -829,6 +845,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.2"
+  hex:
+    dependency: transitive
+    description:
+      name: hex
+      sha256: "4e7cd54e4b59ba026432a6be2dd9d96e4c5205725194997193bf871703b82c4a"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.0"
   html:
     dependency: transitive
     description:
@@ -1197,6 +1221,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.0.3"
+  rational:
+    dependency: transitive
+    description:
+      name: rational
+      sha256: cb808fb6f1a839e6fc5f7d8cb3b0a10e1db48b3be102de73938c627f0b636336
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.2.3"
   reown_appkit:
     dependency: "direct main"
     description:
@@ -1378,6 +1410,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.1"
+  solana:
+    dependency: "direct main"
+    description:
+      name: solana
+      sha256: "98d8780dbd9af7e90ff14a6e762a45d77466450304773610317d1fffdea09701"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.31.2+1"
+  solana_mobile_client:
+    dependency: "direct main"
+    description:
+      name: solana_mobile_client
+      sha256: "9e509085e23bdb39faaa61383f6f551cfa22d0ffeb0fbbe9d436cff541956c33"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.1+1"
   source_gen:
     dependency: transitive
     description:

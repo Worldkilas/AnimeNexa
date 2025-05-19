@@ -1,5 +1,5 @@
 import 'package:anime_nexa/features/clans/widgets/post_action_button.dart';
-import 'package:anime_nexa/features/clans/widgets/post_media.dart';
+
 import 'package:anime_nexa/models/post.dart';
 import 'package:anime_nexa/providers/global_providers.dart';
 import 'package:anime_nexa/shared/constants/app_theme.dart';
@@ -9,11 +9,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../../home/widgets/post_media.dart';
+
 class PostCard extends ConsumerStatefulWidget {
   final Post post;
-  String? clan;
+  final String? clan;
 
-  PostCard({super.key, required this.post, this.clan});
+  const PostCard({super.key, required this.post, this.clan});
 
   @override
   ConsumerState<PostCard> createState() => _PostCardState();
