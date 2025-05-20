@@ -14,7 +14,7 @@ import 'package:go_router/go_router.dart';
 class PostCard extends ConsumerStatefulWidget {
   final Post post;
 
-  PostCard({super.key, required this.post});
+  const PostCard({super.key, required this.post});
 
   @override
   ConsumerState<PostCard> createState() => _PostCardState();

@@ -31,168 +31,158 @@ import '../../features/settings/view/settings_screen.dart';
 import '../utils/go_router_refresh_stream.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
-final appRouterProvider = Provider<GoRouter>(
-  (ref) {
-    final auth = ref.watch(firebaseAuthProvider);
+final appRouterProvider = Provider<GoRouter>((ref) {
+  final auth = ref.watch(firebaseAuthProvider);
 
-    return GoRouter(
-      navigatorKey: _rootNavigatorKey,
-      refreshListenable: GoRouterRefreshStream(auth.authStateChanges()),
-      initialLocation: '/',
-      redirect: (ctx, state) async {
-        final hasCompletedOnboarding =
-            await ref.watch(onboardingCompleteProvider.future);
+  return GoRouter(
+    navigatorKey: _rootNavigatorKey,
+    refreshListenable: GoRouterRefreshStream(auth.authStateChanges()),
+    initialLocation: '/',
+    redirect: (ctx, state) async {
+      final isAuthRoute = state.uri.path.startsWith('/auth');
 
-        final isAuthRoute = state.uri.path.startsWith('/auth');
+      final isOnboardingRoute = state.uri.path == '/';
+      final user = auth.currentUser;
+      //Onboarding check
 
-        final isOnboardingRoute = state.uri.path == '/';
-        final user = auth.currentUser;
-        //Onboarding check
-        if (!hasCompletedOnboarding && !isOnboardingRoute) return '/';
+      try {
+        await user?.reload();
+      } catch (_) {
+        await auth.signOut();
+        return '/auth';
+      }
 
-        if (hasCompletedOnboarding) {
-          try {
-            await user?.reload();
-          } catch (_) {
-            await auth.signOut();
-            return '/auth';
-          }
+      final isLoggedIn = auth.currentUser != null;
 
-          final isLoggedIn = auth.currentUser != null;
-
-          if (!isLoggedIn && !isAuthRoute) return '/auth';
-          if (isLoggedIn && isAuthRoute) return '/home';
-        }
-
-        // Allow navigation
-        return null;
-      },
-      routes: [
-        GoRoute(
-          path: '/',
-          builder: (context, state) => const OnboardingScreen(),
-        ),
-        GoRoute(
-          path: '/auth',
-          builder: (context, state) => const AuthScreen(),
-          routes: [
-            GoRoute(
-                path: '/createAcct',
-                builder: (context, state) => const CreateAccount(),
-                routes:[
+      if (!isLoggedIn && !isAuthRoute) return '/auth';
+      if (isLoggedIn && isAuthRoute) return '/home';
+      return null;
+    },
+    routes: [
+      GoRoute(
+        path: '/',
+        builder: (context, state) => const OnboardingScreen(),
+      ),
+      GoRoute(
+        path: '/auth',
+        builder: (context, state) => const AuthScreen(),
+        routes: [
+          GoRoute(
+              path: '/createAcct',
+              builder: (context, state) => const CreateAccount(),
+              routes:[
 
                   ]
                 ),
-            GoRoute(
-              path: '/signIn',
-              builder: (context, state) => const SignIn(),
-            ),
-            GoRoute(
-              path: '/verifyEmail',
-              builder: (context, state) => const EmailVerificationScreen(),
-            ),
-            GoRoute(
-              path: '/setNameAndUsername',
-              builder: (context, state) => NameScreen(),
-              routes: [
-                GoRoute(
-                  path: '/genre',
-                  builder: (context, state) => const GenresScreen(),
-                ),
-              ],
-            ),
-          ],
-        ),
-        StatefulShellRoute.indexedStack(
-          builder: (context, state, navigationShell) => LayoutScaffold(
-            statefulNavigationShell: navigationShell,
+          GoRoute(
+            path: '/signIn',
+            builder: (context, state) => const SignIn(),
           ),
-          branches: [
-            StatefulShellBranch(
-              routes: [
-                GoRoute(
-                  path: '/home',
-                  builder: (context, state) => const Homepage(),
-                ),
-              ],
-            ),
-            StatefulShellBranch(
-              routes: [
-                GoRoute(
-                  path: '/discover',
-                  builder: (context, state) => const DiscoverPage(),
-                ),
-              ],
-            ),
-            StatefulShellBranch(
-              routes: [
-                GoRoute(
-                  path: '/crete',
-                  builder: (context, state) => const CreateReels(),
-                ),
-              ],
-            ),
-            StatefulShellBranch(
-              routes: [
-                GoRoute(
-                  path: '/messaging',
-                  builder: (context, state) => const InboxView(),
-                  routes: [
-                    GoRoute(
-                      path: '/chatView',
-                      builder: (context, state) => const ChatView(),
-                    ),
-                    GoRoute(
-                      path: '/settings',
-                      builder: (context, state) => const SettingsScreen(),
-                      routes: [
-                        GoRoute(
-                          path: '/accounts',
-                          builder: (context, state) => const Accounts(),
-                        ),
-                        GoRoute(
-                          path: '/notification',
-                          builder: (context, state) =>
-                              const NotificationsScreen(),
-                        )
-                      ],
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            StatefulShellBranch(
-              routes: [
-                GoRoute(
-                  path: '/profile',
-                  builder: (context, state) => const ProfileScreen(),
-                ),
-              ],
-            ),
-          ],
-        ),
-        GoRoute(
-          path: '/edit',
-          builder: (context, state) => const EditProfileScreen(),
-        ),
-        GoRoute(
-          path: '/createpost',
-          builder: (context, state) => const CreatePost(),
-        ),
-        GoRoute(
-          path: '/postdetail/:id',
-          builder: (context, state) => PostDetail(
-            postId: state.pathParameters['id']!,
+          GoRoute(
+            path: '/verifyEmail',
+            builder: (context, state) => const EmailVerificationScreen(),
           ),
+          GoRoute(
+            path: '/setNameAndUsername',
+            builder: (context, state) => NameScreen(),
+            routes: [
+              GoRoute(
+                path: '/genre',
+                builder: (context, state) => const GenresScreen(),
+              ),
+            ],
+          ),
+        ],
+      ),
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, navigationShell) => LayoutScaffold(
+          statefulNavigationShell: navigationShell,
         ),
-        GoRoute(
-          path: '/mediafullscreen',
-          builder: (context, state) {
-            final (items, count) = state.extra as (List<MediaItem>, int);
-            return MediaFullScreen(mediaItems: items, currentItem: count);
-          },
+        branches: [
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/home',
+                builder: (context, state) => const Homepage(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/discover',
+                builder: (context, state) => const DiscoverPage(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/crete',
+                builder: (context, state) => const CreateReels(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/messaging',
+                builder: (context, state) => const InboxView(),
+                routes: [
+                  GoRoute(
+                    path: '/chatView',
+                    builder: (context, state) => const ChatView(),
+                  ),
+                  GoRoute(
+                    path: '/settings',
+                    builder: (context, state) => const SettingsScreen(),
+                    routes: [
+                      GoRoute(
+                        path: '/accounts',
+                        builder: (context, state) => const Accounts(),
+                      ),
+                      GoRoute(
+                        path: '/notification',
+                        builder: (context, state) =>
+                            const NotificationsScreen(),
+                      )
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/profile',
+                builder: (context, state) => const ProfileScreen(),
+              ),
+            ],
+          ),
+        ],
+      ),
+      GoRoute(
+        path: '/edit',
+        builder: (context, state) => const EditProfileScreen(),
+      ),
+      GoRoute(
+        path: '/createpost',
+        builder: (context, state) => const CreatePost(),
+      ),
+      GoRoute(
+        path: '/postdetail/:id',
+        builder: (context, state) => PostDetail(
+          postId: state.pathParameters['id']!,
         ),
-      ],
-    );
-  },
-);
+      ),
+      GoRoute(
+        path: '/mediafullscreen',
+        builder: (context, state) {
+          final (items, count) = state.extra as (List<MediaItem>, int);
+          return MediaFullScreen(mediaItems: items, currentItem: count);
+        },
+      ),
+    ],
+  );
+});

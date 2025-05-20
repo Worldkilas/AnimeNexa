@@ -1,0 +1,1 @@
+/home/void/Desktop/projects/anime_nexa/build/app/intermediates/cxx/RelWithDebInfo/c4d5y3r3/obj/arm64-v8a

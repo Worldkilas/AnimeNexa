@@ -1,0 +1,2 @@
+/home/void/Desktop/projects/anime_nexa/android/app/.cxx/RelWithDebInfo/c4d5y3r3/x86_64/CMakeFiles/edit_cache.dir
+/home/void/Desktop/projects/anime_nexa/android/app/.cxx/RelWithDebInfo/c4d5y3r3/x86_64/CMakeFiles/rebuild_cache.dir
