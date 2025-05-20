@@ -24,7 +24,7 @@ class _MediaFullScreenState extends ConsumerState<MediaFullScreen> {
   bool _videoIsPlaying = false;
   double _sliderVal = 0;
   bool _isVideoInitialized = false;
-  bool _isVideoLoading = false; 
+  bool _isVideoLoading = false;
 
   @override
   void initState() {
@@ -39,13 +39,12 @@ class _MediaFullScreenState extends ConsumerState<MediaFullScreen> {
     if (media.type != MediaType.video || media.mediaPath == null) return;
 
     setState(() {
-      _isVideoLoading = true; 
+      _isVideoLoading = true;
       _isVideoInitialized = false;
       _videoIsPlaying = false;
       _sliderVal = 0;
     });
 
-    
     if (_videoController != null) {
       await _videoController!.pause();
       await _videoController!.dispose();
@@ -59,7 +58,7 @@ class _MediaFullScreenState extends ConsumerState<MediaFullScreen> {
                 _sliderVal =
                     _videoController!.value.position.inSeconds.toDouble();
                 _isVideoInitialized = true;
-                _isVideoLoading = false; 
+                _isVideoLoading = false;
               });
             }
             if (_videoController!.value.isCompleted) {
@@ -81,7 +80,7 @@ class _MediaFullScreenState extends ConsumerState<MediaFullScreen> {
         _isVideoInitialized = false;
         _isVideoLoading = false;
       });
-      
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Failed to load video: $e')),
       );
@@ -91,7 +90,6 @@ class _MediaFullScreenState extends ConsumerState<MediaFullScreen> {
   Future<void> _playVideo() async {
     if (_videoController == null) return;
 
-    
     if (!_videoController!.value.isInitialized) {
       setState(() {
         _isVideoLoading = true;
@@ -113,7 +111,6 @@ class _MediaFullScreenState extends ConsumerState<MediaFullScreen> {
       }
     }
 
-    
     await _videoController!.play();
     setState(() {
       _videoIsPlaying = true;
@@ -153,44 +150,43 @@ class _MediaFullScreenState extends ConsumerState<MediaFullScreen> {
         itemBuilder: (context, index) {
           final media = widget.mediaItems[index];
           return Center(
-            child: Hero(
-              tag: index,
-              child: switch (media.type) {
-                MediaType.image => Container(
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        fit: BoxFit.fitWidth,
-                        filterQuality: FilterQuality.high,
-                        image: NetworkImage(media.mediaPath!),
-                      ),
+            child: switch (media.type) {
+              MediaType.image => Container(
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      fit: BoxFit.fitWidth,
+                      filterQuality: FilterQuality.high,
+                      image: NetworkImage(media.mediaPath!),
                     ),
                   ),
-                MediaType.video => Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      _isVideoInitialized && _videoController != null
-                          ? AspectRatio(
-                              aspectRatio: _videoController!.value.aspectRatio,
-                              child: VideoPlayer(_videoController!),
-                            )
-                          : AspectRatio(
-                              aspectRatio: 16 / 9,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                    fit: BoxFit.cover,
-                                    filterQuality: FilterQuality.high,
-                                    image: NetworkImage(media.thumbnailPath!),
-                                  ),
+                ),
+              MediaType.video => Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    _isVideoInitialized && _videoController != null
+                        ? AspectRatio(
+                            aspectRatio: _videoController!.value.aspectRatio,
+                            child: VideoPlayer(_videoController!),
+                          )
+                        : AspectRatio(
+                            aspectRatio: 16 / 9,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  fit: BoxFit.cover,
+                                  filterQuality: FilterQuality.high,
+                                  image: NetworkImage(media.thumbnailPath!),
                                 ),
                               ),
                             ),
-                      if (_isVideoLoading)
-                        const Center(
-                          child: CircularProgressIndicator(
-                            color: Colors.white,
                           ),
+                    if (_isVideoLoading)
+                      const Center(
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
                         ),
+                      ),
+                    if (_isVideoInitialized && _videoController != null)
                       Positioned(
                         bottom: -5,
                         left: 0,
@@ -202,7 +198,7 @@ class _MediaFullScreenState extends ConsumerState<MediaFullScreen> {
                               IconButton.filled(
                                 iconSize: 20,
                                 onPressed: _isVideoLoading
-                                    ? null 
+                                    ? null
                                     : () {
                                         if (_videoIsPlaying) {
                                           _videoController?.pause();
@@ -264,11 +260,10 @@ class _MediaFullScreenState extends ConsumerState<MediaFullScreen> {
                           ),
                         ),
                       ),
-                    ],
-                  ),
-                MediaType.gif => GiphyMediaView(mediaId: media.mediaPath)
-              },
-            ),
+                  ],
+                ),
+              MediaType.gif => GiphyMediaView(mediaId: media.mediaPath)
+            },
           );
         },
       ),
