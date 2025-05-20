@@ -13,8 +13,9 @@ import 'package:go_router/go_router.dart';
 
 class PostCard extends ConsumerStatefulWidget {
   final Post post;
+  final bool isDetailScreen;
 
-  PostCard({super.key, required this.post});
+  const PostCard({super.key, required this.post, required this.isDetailScreen});
 
   @override
   ConsumerState<PostCard> createState() => _PostCardState();
@@ -24,12 +25,14 @@ class _PostCardState extends ConsumerState<PostCard> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
+      splashColor: Colors.white,
       onTap: () {
-        print("djdj");
-        context.push('/postdetail/${widget.post.pid}');
+        if (!widget.isDetailScreen) {
+          context.push('/postdetail/${widget.post.pid}');
+        }
       },
       child: Padding(
-        padding: const EdgeInsets.only(bottom: 18, left: 24, right: 24),
+        padding: const EdgeInsets.only(left: 24, right: 24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
