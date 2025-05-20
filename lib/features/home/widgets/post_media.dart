@@ -21,30 +21,27 @@ class PostMedia extends StatelessWidget {
         onTap: () {
           context.push('/mediafullscreen', extra: (media, index));
         },
-        child: Hero(
-          tag: index,
-          child: switch (mediaItem.type) {
-            MediaType.image || MediaType.video => Container(
-                height: double.infinity,
-                width: double.infinity,
-                margin: EdgeInsets.all(0.7),
-                decoration: ShapeDecoration(
-                  shape: SmoothRectangleBorder(
-                    borderRadius: SmoothBorderRadius(
-                      cornerRadius: 10,
-                      cornerSmoothing: 0.8,
-                    ),
+        child: switch (mediaItem.type) {
+          MediaType.image || MediaType.video => Container(
+              height: double.infinity,
+              width: double.infinity,
+              margin: EdgeInsets.all(0.7),
+              decoration: ShapeDecoration(
+                shape: SmoothRectangleBorder(
+                  borderRadius: SmoothBorderRadius(
+                    cornerRadius: 10,
+                    cornerSmoothing: 0.8,
                   ),
-                  image: DecorationImage(
-                      image: NetworkImage(mediaItem.type == MediaType.video
-                          ? mediaItem.thumbnailPath!
-                          : mediaItem.mediaPath!),
-                      fit: BoxFit.cover),
                 ),
+                image: DecorationImage(
+                    image: NetworkImage(mediaItem.type == MediaType.video
+                        ? mediaItem.thumbnailPath!
+                        : mediaItem.mediaPath!),
+                    fit: BoxFit.cover),
               ),
-            MediaType.gif => GiphyMediaView(mediaId: mediaItem.mediaPath)
-          },
-        ),
+            ),
+          MediaType.gif => GiphyMediaView(mediaId: mediaItem.mediaPath)
+        },
       );
     }
 

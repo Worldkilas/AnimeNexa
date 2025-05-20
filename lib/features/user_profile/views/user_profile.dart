@@ -93,15 +93,22 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
                             ? Center(
                                 child: Text("Coming soon"),
                               )
-                            : ref.watch(postNotifierProvider).when(
-                                data: (posts) {
+                            : ref
+                                .watch(getUserPostsProvider(ref
+                                    .watch(firebaseAuthProvider)
+                                    .currentUser!
+                                    .uid))
+                                .when(data: (posts) {
                                 return SingleChildScrollView(
+                                  physics: NeverScrollableScrollPhysics(),
                                   child: Padding(
                                     padding: const EdgeInsets.only(top: 4.0),
                                     child: Column(
                                       children: [
-                                        ...posts
-                                            .map((post) => PostCard(post: post))
+                                        ...posts.map((post) => PostCard(
+                                              post: post,
+                                              isDetailScreen: false,
+                                            ))
                                       ],
                                     ),
                                   ),

@@ -41,15 +41,13 @@ class CustomPopupMenu extends StatelessWidget {
       onTap: () {
         utilitySnackBar(context, "Coming soon");
       },
-      child: SizedBox(
-        width: 45.w,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(text, style: AppTypography.textMedium),
-            SvgPicture.asset(iconPathGen(icon)),
-          ],
-        ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(text, style: AppTypography.textMedium),
+          SizedBox(width: 20),
+          SvgPicture.asset(iconPathGen(icon)),
+        ],
       ),
     );
   }

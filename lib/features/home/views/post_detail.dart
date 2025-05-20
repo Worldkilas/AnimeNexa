@@ -1,19 +1,12 @@
-import 'package:anime_nexa/features/clans/widgets/post_action_button.dart';
 import 'package:anime_nexa/features/home/widgets/comment_card.dart';
 import 'package:anime_nexa/features/home/widgets/post_card.dart';
-import 'package:anime_nexa/features/home/widgets/post_media.dart';
 import 'package:anime_nexa/features/post/viewmodel/post_vm.dart';
 import 'package:anime_nexa/models/comment.dart';
-import 'package:anime_nexa/models/post.dart';
 import 'package:anime_nexa/providers/global_providers.dart';
-import 'package:anime_nexa/shared/constants/app_theme.dart';
 import 'package:anime_nexa/shared/constants/app_typography.dart';
-import 'package:anime_nexa/shared/utils.dart';
 import 'package:anime_nexa/shared/utils/utils.dart';
-import 'package:anime_nexa/shared/widgets/custom_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:uuid/uuid.dart';
@@ -52,7 +45,7 @@ class _PostDetailState extends ConsumerState<PostDetail> {
               Expanded(
                 child: ListView(
                   children: [
-                    PostCard(post: post),
+                    PostCard(post: post, isDetailScreen: true),
                     Divider(),
                     Padding(
                       padding: const EdgeInsets.only(left: 24, right: 24),
