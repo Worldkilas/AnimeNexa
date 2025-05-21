@@ -1,8 +1,10 @@
 import 'package:anime_nexa/features/home/widgets/post_card.dart';
+import 'package:anime_nexa/features/post/models/post.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:sizer/sizer.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../shared/constants/app_colors.dart';
 import '../../../shared/constants/app_typography.dart';
@@ -36,35 +38,70 @@ class Homepage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final displayText = 'Connect wallet';
     return Scaffold(
-        appBar: AppBar(
-            backgroundColor: Colors.white,
-            elevation: 0,
-            title: SvgPicture.asset(
-              "lib/assets/icons/Logo.svg",
-              color: AppColors.primary,
-            ),
-            actions: [
-              Container(
-                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 11),
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  )),
-                  onPressed: () {},
-                  child: Text(
-                    displayText,
-                    style:
-                        AppTypography.textXSmall.copyWith(color: Colors.white),
-                  ),
+      appBar: AppBar(
+          backgroundColor: Colors.white,
+          elevation: 0,
+          title: SvgPicture.asset(
+            "lib/assets/icons/Logo.svg",
+            color: AppColors.primary,
+          ),
+          actions: [
+            Container(
+              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 11),
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                )),
+                onPressed: () {},
+                child: Text(
+                  displayText,
+                  style: AppTypography.textXSmall.copyWith(color: Colors.white),
                 ),
               ),
-              CustomPopupMenu(),
-            ]),
-        body: ref.watch(postNotifierProvider).when(data: (posts) {
+            ),
+            CustomPopupMenu(),
+          ]),
+      body: ref.watch(postNotifierProvider).when(
+        data: (posts) {
+          return RefreshIndicator(
+            onRefresh: () async {
+              return ref.read(postNotifierProvider.notifier).refreshPosts();
+            },
+            child: ListView.separated(
+                physics: BouncingScrollPhysics(),
+                itemBuilder: (context, index) {
+                  return PostCard(post: posts[index], isDetailScreen: false);
+                },
+                separatorBuilder: (context, index) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    child: Divider(
+                      color: Colors.grey[300],
+                      height: 1,
+                    ),
+                  );
+                },
+                itemCount: posts.length),
+          );
+        },
+        error: (_, __) {
+          return Center(
+            child: Text(
+              'Error loading posts',
+              style: AppTypography.textMediumBold,
+            ),
+          );
+        },
+        loading: () {
           return ListView.separated(
               itemBuilder: (context, index) {
-                return PostCard(post: posts[index], isDetailScreen: false);
+                return Skeletonizer(
+                  effect: SoldColorEffect(
+                    color: Colors.grey[300]!,
+                  ),
+                  child: PostCard(post: dummyPost, isDetailScreen: true),
+                );
               },
               separatorBuilder: (context, index) {
                 return Padding(
@@ -76,18 +113,9 @@ class Homepage extends ConsumerWidget {
                 );
               },
               itemCount: posts.length);
-        }, error: (_, __) {
-          return Center(
-            child: Text(
-              'Error loading posts',
-              style: AppTypography.textMediumBold,
-            ),
-          );
-        }, loading: () {
-          return Center(
-            child: CircularProgressIndicator(),
-          );
-        }));
+        },
+      ),
+    );
   }
 
   Widget _buildStoryRow() {

@@ -142,6 +142,17 @@ class PostNotifier extends StreamNotifier<List<Post>> {
     return _repository.getPosts();
   }
 
+  Future<void> refreshPosts() async {
+    state = AsyncValue.data([]);
+    state = const AsyncLoading();
+    try {
+      ref.invalidateSelf();
+    } catch (e, stk) {
+      state = AsyncError(e, stk);
+      log(e.toString(), stackTrace: stk);
+    }
+  }
+
   Future<void> createPost(WidgetRef ref, Post post) async {
     try {
       post.isDraft!
