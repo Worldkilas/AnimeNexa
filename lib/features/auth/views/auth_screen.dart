@@ -28,7 +28,6 @@ class AuthScreen extends StatelessWidget {
                   borderRadius: 10,
                   height: 60,
                   onPressed: () {
-                    //TODO: implement sign in
                     context.go('/auth/signIn');
                   },
                 ),
@@ -44,7 +43,6 @@ class AuthScreen extends StatelessWidget {
                     width: 1.5,
                   ),
                   onPressed: () {
-                    //TODO: implement create account logic
                     context.go('/auth/createAcct');
                   },
                 ),

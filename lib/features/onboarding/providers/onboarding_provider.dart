@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../onboarding/models/onboarding_item.dart';
+import '../models/onboarding_item.dart';
 
 final onboardingItemsProvider = Provider<List<OnboardingItem>>(
   (ref) {

@@ -1,8 +1,5 @@
-import 'dart:async';
 import 'package:anime_nexa/core/typedefs.dart';
 import 'package:anime_nexa/features/user_profile/repos/profile_repo.dart';
-import 'package:anime_nexa/models/anime_nexa_user.dart';
-import 'package:fpdart/fpdart.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'edit_profile_vm.g.dart';

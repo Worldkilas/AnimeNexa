@@ -1,4 +1,3 @@
-import 'package:anime_nexa/core/typedefs.dart';
 import 'package:anime_nexa/features/create/views/create_reels.dart';
 import 'package:anime_nexa/features/discover/views/discover_page.dart';
 import 'package:anime_nexa/features/home/views/homepage.dart';
@@ -14,7 +13,6 @@ import 'package:anime_nexa/shared/view/layout_scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../../features/auth/views/auth_screen.dart';
 import '../../features/auth/views/create_account.dart';
 import '../../features/auth/views/genre_selection.dart';
@@ -23,27 +21,30 @@ import '../../features/auth/views/sign_in.dart';
 import '../../features/auth/views/verify_email.dart';
 import '../../features/messaging/views/chat_view.dart';
 import '../../features/messaging/views/inbox.dart';
-import '../../features/onboarding/viewmodels/onboarding_view_model.dart'
-    show onboardingCompleteProvider;
+import '../../features/onboarding/providers/onboarding_notifier.dart';
 import '../../features/onboarding/views/onboarding_screen.dart';
 import '../../features/settings/view/accounts.dart';
 import '../../features/settings/view/settings_screen.dart';
 import '../utils/go_router_refresh_stream.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
+
 final appRouterProvider = Provider<GoRouter>((ref) {
   final auth = ref.watch(firebaseAuthProvider);
+  final onboardingCompleted = ref.watch(onboardingNotifierProvider);
 
   return GoRouter(
     navigatorKey: _rootNavigatorKey,
+    initialLocation: (onboardingCompleted.value ?? false) ? '/auth' : '/',
     refreshListenable: GoRouterRefreshStream(auth.authStateChanges()),
-    initialLocation: '/',
     redirect: (ctx, state) async {
+      final user = auth.currentUser;
+      final isLoggedIn = auth.currentUser != null;
+
       final isAuthRoute = state.uri.path.startsWith('/auth');
 
-      final isOnboardingRoute = state.uri.path == '/';
-      final user = auth.currentUser;
-      //Onboarding check
+      if (!isLoggedIn && !isAuthRoute) return '/auth';
+      if (isLoggedIn && isAuthRoute) return '/home';
 
       try {
         await user?.reload();
@@ -52,10 +53,6 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         return '/auth';
       }
 
-      final isLoggedIn = auth.currentUser != null;
-
-      if (!isLoggedIn && !isAuthRoute) return '/auth';
-      if (isLoggedIn && isAuthRoute) return '/home';
       return null;
     },
     routes: [

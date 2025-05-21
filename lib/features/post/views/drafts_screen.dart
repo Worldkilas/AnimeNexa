@@ -1,11 +1,8 @@
-import 'dart:developer';
-
 import 'package:anime_nexa/features/post/viewmodel/post_vm.dart';
 import 'package:anime_nexa/models/mediaitem.dart';
 import 'package:anime_nexa/models/post.dart';
 import 'package:anime_nexa/providers/global_providers.dart';
 import 'package:anime_nexa/shared/constants/app_typography.dart';
-import 'package:anime_nexa/shared/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:giphy_flutter_sdk/giphy_media_view.dart';
@@ -29,7 +26,7 @@ class DraftsScreen extends ConsumerWidget {
             TextButton(
               onPressed: () async {
                 Navigator.pop(context);
-                 ref.read(deletePostProvider(post));
+                ref.read(deletePostProvider(post));
               },
               child: Text(
                 'Delete',

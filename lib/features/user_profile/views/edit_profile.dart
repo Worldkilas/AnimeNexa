@@ -6,7 +6,6 @@ import 'package:anime_nexa/shared/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 
 import '../../../models/auth_state.dart';
 import '../view_models/profile_view_models.dart/edit_profile_vm.dart';

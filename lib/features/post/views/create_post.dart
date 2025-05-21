@@ -1,8 +1,6 @@
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:anime_nexa/features/home/widgets/post_card.dart';
-import 'package:anime_nexa/features/home/widgets/post_media.dart';
 import 'package:anime_nexa/features/post/viewmodel/post_vm.dart';
 import 'package:anime_nexa/features/post/views/drafts_screen.dart';
 import 'package:anime_nexa/features/post/views/gif_screen.dart';
@@ -12,7 +10,6 @@ import 'package:anime_nexa/features/post/widgets/schedule_bottom_sheet.dart';
 import 'package:anime_nexa/models/mediaitem.dart';
 import 'package:anime_nexa/models/post.dart';
 import 'package:anime_nexa/providers/global_providers.dart';
-import 'package:anime_nexa/shared/constants/app_theme.dart';
 import 'package:anime_nexa/shared/utils/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -21,7 +18,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:anime_nexa/shared/constants/app_typography.dart';
 import 'package:anime_nexa/shared/utils.dart';
-import 'package:giphy_flutter_sdk/dto/giphy_asset.dart';
 import 'package:giphy_flutter_sdk/dto/giphy_media.dart';
 import 'package:giphy_flutter_sdk/giphy_flutter_sdk.dart';
 import 'package:giphy_flutter_sdk/giphy_media_view.dart';
@@ -531,8 +527,8 @@ class _CreatePostState extends ConsumerState<CreatePost> {
       TextEditingValue ctrl, List<Post>? data) {
     return InkWell(
       onTap: () async {
-        if (ctrl.text.isNotEmpty || data!.isNotEmpty) {
-          if (data!.isEmpty) {
+        if (ctrl.text.isNotEmpty || data.isNotEmpty) {
+          if (data.isEmpty) {
             _showOptionsBottomSheet(ref, context);
           } else {
             final result = await Navigator.push(context,

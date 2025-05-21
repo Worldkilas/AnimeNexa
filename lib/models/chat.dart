@@ -46,10 +46,9 @@ class Chat {
       name: json['name'] as String?,
       lastMessage: json['lastMessage'] as String?,
       lastMessageTimestamp:
-          (json['lastMessageTimestamp'] as Timestamp).toDate() ?? null,
+          (json['lastMessageTimestamp'] as Timestamp).toDate(),
       createdBy: json['createdBy'] as String?,
-      createdAt:
-          (DateTime.parse(json['createdAt']) as Timestamp).toDate() ?? null,
+      createdAt: (DateTime.parse(json['createdAt']) as Timestamp).toDate(),
       admins: json['admin'] != null ? List<String>.from(json['admins']) : null,
       description: json['description'] as String?,
       imageUrl: json['imageUrl'] as String?,

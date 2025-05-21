@@ -5,7 +5,8 @@ import 'package:sizer/sizer.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../../../shared/widgets/custom_button.dart';
-import '../../providers/onboarding_provider.dart';
+import '../providers/onboarding_notifier.dart';
+import '../providers/onboarding_provider.dart';
 import '../viewmodels/onboarding_view_model.dart';
 import 'onboarding_page.dart';
 
@@ -97,10 +98,10 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                           : 'Next',
                       onPressed: () async {
                         if (currentPage == onboardingItems.length - 1) {
-                          // Mark onboarding as complete via shared preference
-                          await markOnboardingComplete();
-                          // Navigate to the login screen
-                          context.go('/auth/createAcct');
+                          await ref
+                              .read(onboardingNotifierProvider.notifier)
+                              .completeOnboarding();
+                          if (context.mounted) context.go('/auth');
                         } else {
                           // Otherwise, go to the next page
                           _pageController.nextPage(

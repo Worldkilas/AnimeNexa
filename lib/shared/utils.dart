@@ -25,6 +25,7 @@ Future<XFile?> generateThumbnail(File videoFile) async {
   } catch (e) {
     print('Error generating thumbnail: $e');
   }
+  return null;
 }
 
 String getFileUrl(String fileId) {

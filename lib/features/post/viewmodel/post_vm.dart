@@ -4,9 +4,7 @@ import 'package:anime_nexa/features/post/repository/post_repository.dart';
 import 'package:anime_nexa/models/comment.dart';
 import 'package:anime_nexa/models/post.dart';
 import 'package:anime_nexa/models/reply.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
 final postNotifierProvider =
     StreamNotifierProvider<PostNotifier, List<Post>>(() {
@@ -17,7 +15,8 @@ final getPostByIDProvider = StreamProvider.family<Post, String>((ref, id) {
   return ref.read(postRepoProvider).getPostByID(id);
 });
 
-final getUserPostsProvider = StreamProvider.family<List<Post>, String>((ref, uid) {
+final getUserPostsProvider =
+    StreamProvider.family<List<Post>, String>((ref, uid) {
   return ref.read(postRepoProvider).fetchPostsByUser(uid);
 });
 
@@ -127,7 +126,8 @@ final getRepliesProvider = FutureProvider.family<List<Reply>, String>(
   },
 );
 
-final fetchCommentsByPostProvider = StreamProvider.family<List<Comment>, String>((ref, postID) {
+final fetchCommentsByPostProvider =
+    StreamProvider.family<List<Comment>, String>((ref, postID) {
   return ref.watch(postRepoProvider).fetchCommentsOnPost(postID);
 });
 
