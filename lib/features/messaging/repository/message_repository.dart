@@ -1,7 +1,7 @@
 import 'package:anime_nexa/features/messaging/repository/i_chat_repo.dart';
 import 'package:anime_nexa/features/messaging/repository/i_message_repository.dart';
-import 'package:anime_nexa/models/chat.dart';
-import 'package:anime_nexa/models/message.dart';
+import 'package:anime_nexa/features/messaging/models/chat.dart';
+import 'package:anime_nexa/features/messaging/models/message.dart';
 import 'package:anime_nexa/shared/constants/collections_paths.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -110,7 +110,7 @@ class MessageRepository implements IMessageRepository, IChatRepository {
         .orderBy('timeSent', descending: true)
         .limit(limit);
 
-     if (lastMessageId != null) {
+    if (lastMessageId != null) {
       query = query.startAfter([
         _firestore
             .collection(CollectionsPaths.chats)

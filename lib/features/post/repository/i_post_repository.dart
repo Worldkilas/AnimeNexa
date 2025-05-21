@@ -1,6 +1,6 @@
-import 'package:anime_nexa/models/comment.dart';
-import 'package:anime_nexa/models/post.dart';
-import 'package:anime_nexa/models/reply.dart';
+import '../models/comment.dart';
+import '../models/post.dart';
+import '../models/reply.dart';
 
 abstract class IPostRepository {
   Stream<List<Post>> getPosts();

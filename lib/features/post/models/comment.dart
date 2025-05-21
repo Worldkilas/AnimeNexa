@@ -1,7 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'package:anime_nexa/models/reply.dart';
+import 'reply.dart';
 
 class Comment {
   String? id;
@@ -43,10 +43,9 @@ class Comment {
       createdAt: (json['createdAt'] as Timestamp).toDate(),
       likes:
           (json['likes'] as List<dynamic>?)?.map((e) => e as String).toList(),
-      replies:
-          (json['replies'] as List<dynamic>?)
-              ?.map((e) => Reply.fromJson(e as Map<String, dynamic>))
-              .toList(),
+      replies: (json['replies'] as List<dynamic>?)
+          ?.map((e) => Reply.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
   }
 
@@ -63,7 +62,5 @@ final dummyComment = Comment(
   text: "This is a dummy comment for testing.",
   createdAt: DateTime.now(),
   likes: ["user_101", "user_102"],
-  replies: [
-   
-  ],
+  replies: [],
 );

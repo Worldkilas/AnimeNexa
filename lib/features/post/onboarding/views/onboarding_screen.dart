@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:sizer/sizer.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
-import '../../../shared/widgets/custom_button.dart';
+import '../../../../shared/widgets/custom_button.dart';
 import '../providers/onboarding_notifier.dart';
 import '../providers/onboarding_provider.dart';
 import '../viewmodels/onboarding_view_model.dart';

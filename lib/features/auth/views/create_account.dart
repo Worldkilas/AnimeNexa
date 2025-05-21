@@ -1,4 +1,4 @@
-import 'package:anime_nexa/models/auth_state.dart';
+import 'package:anime_nexa/features/auth/view_model/states/auth_state.dart';
 import 'package:anime_nexa/features/auth/view_model/auth_view_model.dart';
 import 'package:anime_nexa/shared/utils/utils.dart';
 import 'package:anime_nexa/shared/widgets/custom_button.dart';

@@ -1,7 +1,7 @@
 import 'package:anime_nexa/features/home/widgets/comment_card.dart';
 import 'package:anime_nexa/features/home/widgets/post_card.dart';
 import 'package:anime_nexa/features/post/viewmodel/post_vm.dart';
-import 'package:anime_nexa/models/comment.dart';
+
 import 'package:anime_nexa/providers/global_providers.dart';
 import 'package:anime_nexa/shared/constants/app_typography.dart';
 import 'package:anime_nexa/shared/utils/utils.dart';
@@ -10,6 +10,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:uuid/uuid.dart';
+
+import '../../post/models/comment.dart';
 
 class PostDetail extends ConsumerStatefulWidget {
   final String postId;

@@ -1,4 +1,4 @@
-import 'package:anime_nexa/models/auth_state.dart';
+import 'package:anime_nexa/features/auth/view_model/states/auth_state.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

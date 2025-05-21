@@ -1,7 +1,6 @@
 import 'package:anime_nexa/features/clans/widgets/post_action_button.dart';
 import 'package:anime_nexa/features/home/widgets/post_media.dart';
 import 'package:anime_nexa/features/post/viewmodel/post_vm.dart';
-import 'package:anime_nexa/models/post.dart';
 import 'package:anime_nexa/providers/global_providers.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:anime_nexa/shared/constants/app_typography.dart';
@@ -10,6 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+
+import '../../post/models/post.dart';
 
 class PostCard extends ConsumerStatefulWidget {
   final Post post;

@@ -1,4 +1,4 @@
-import 'package:anime_nexa/models/message.dart';
+import 'package:anime_nexa/features/messaging/models/message.dart';
 
 abstract class IMessageRepository {
   Future<void> sendMessage(Message message, String chatId);

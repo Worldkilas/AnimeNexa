@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../models/auth_state.dart';
+import '../../auth/view_model/states/auth_state.dart';
 import '../view_models/profile_view_models.dart/edit_profile_vm.dart';
 
 class EditProfileScreen extends ConsumerStatefulWidget {

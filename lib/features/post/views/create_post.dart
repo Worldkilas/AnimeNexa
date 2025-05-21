@@ -8,7 +8,6 @@ import 'package:anime_nexa/features/post/widgets/options_bottom_sheet.dart';
 import 'package:anime_nexa/features/post/widgets/privacy_options_bottom_sheet.dart';
 import 'package:anime_nexa/features/post/widgets/schedule_bottom_sheet.dart';
 import 'package:anime_nexa/models/mediaitem.dart';
-import 'package:anime_nexa/models/post.dart';
 import 'package:anime_nexa/providers/global_providers.dart';
 import 'package:anime_nexa/shared/utils/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -24,6 +23,8 @@ import 'package:giphy_flutter_sdk/giphy_media_view.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sizer/sizer.dart';
 import 'package:uuid/uuid.dart';
+
+import '../models/post.dart';
 
 // no need to hide, it's free😂
 const giphyAPIKey = "LrjKIV019iAkmubcMpunGTW1tvLw57x1";

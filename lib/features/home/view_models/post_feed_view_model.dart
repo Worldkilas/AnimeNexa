@@ -1,7 +1,8 @@
 import 'package:anime_nexa/core/typedefs.dart';
-import 'package:anime_nexa/models/post.dart';
+
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../post/models/post.dart';
 import '../../post/repository/post_repository.dart';
 
 part 'post_feed_view_model.g.dart';
@@ -19,8 +20,8 @@ class PostFeedViewModel extends _$PostFeedViewModel {
     postRepo.getPosts().listen(
       (posts) {
         posts.sort(
-          (a, b) => (b.createdAt ?? DateTime(0)).compareTo(
-            a.createdAt ?? DateTime(0),
+          (a, b) => (b!.createdAt ?? DateTime(0)).compareTo(
+            a!.createdAt ?? DateTime(0),
           ),
         ); // recent first
         state = AsyncValue.data(posts);

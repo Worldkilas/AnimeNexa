@@ -1,9 +1,10 @@
-import 'package:anime_nexa/models/comment.dart';
 import 'package:anime_nexa/providers/global_providers.dart';
 import 'package:anime_nexa/shared/constants/app_typography.dart';
 import 'package:anime_nexa/shared/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../post/models/comment.dart';
 
 class CommentCard extends ConsumerWidget {
   final Comment comment;

@@ -1,4 +1,4 @@
-import 'package:anime_nexa/features/onboarding/models/onboarding_item.dart';
+import 'package:anime_nexa/features/post/onboarding/models/onboarding_item.dart';
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 

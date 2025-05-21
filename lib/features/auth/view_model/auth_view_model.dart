@@ -1,5 +1,5 @@
 import 'package:anime_nexa/core/typedefs.dart';
-import 'package:anime_nexa/models/auth_state.dart';
+import 'package:anime_nexa/features/auth/view_model/states/auth_state.dart';
 import 'package:anime_nexa/providers/global_providers.dart';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';

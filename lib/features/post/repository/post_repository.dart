@@ -1,10 +1,7 @@
 import 'dart:developer';
 
 import 'package:anime_nexa/features/post/repository/i_post_repository.dart';
-import 'package:anime_nexa/models/comment.dart';
 import 'package:anime_nexa/models/mediaitem.dart';
-import 'package:anime_nexa/models/post.dart';
-import 'package:anime_nexa/models/reply.dart';
 import 'package:anime_nexa/providers/global_providers.dart';
 import 'package:anime_nexa/shared/utils.dart';
 import 'package:appwrite/appwrite.dart';
@@ -14,6 +11,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:io';
 
 import '../../../shared/constants/collections_paths.dart';
+import '../models/comment.dart';
+import '../models/post.dart';
+import '../models/reply.dart';
 
 final postRepoProvider = Provider((ref) {
   return PostRepository(

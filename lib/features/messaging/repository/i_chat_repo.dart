@@ -1,4 +1,4 @@
-import 'package:anime_nexa/models/chat.dart';
+import 'package:anime_nexa/features/messaging/models/chat.dart';
 
 abstract class IChatRepository {
   Future<Chat> createChat(Chat chat);
