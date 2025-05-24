@@ -2,6 +2,7 @@ import 'package:anime_nexa/features/clans/widgets/post_action_button.dart';
 import 'package:anime_nexa/features/home/widgets/post_media.dart';
 import 'package:anime_nexa/features/post/viewmodel/post_vm.dart';
 import 'package:anime_nexa/providers/global_providers.dart';
+import 'package:sizer/sizer.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:anime_nexa/shared/constants/app_typography.dart';
 import 'package:anime_nexa/shared/utils.dart';
@@ -95,52 +96,82 @@ class _PostCardState extends ConsumerState<PostCard> {
                 style: AppTypography.textMedium,
               ),
             const SizedBox(height: 5),
+            if (widget.post == dummyPost)
+              Container(
+                width: double.infinity,
+                height: 30.h,
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade300,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                margin: const EdgeInsets.only(bottom: 10),
+              ),
             if (widget.post.media!.isNotEmpty)
               PostMedia(media: widget.post.media!),
             if (widget.post.media!.isNotEmpty) SizedBox(height: 5),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  spacing: 16,
-                  children: [
-                    PostActionButton(
-                        icon: Icon(
-                          widget.post.likes!.contains(ref
-                                  .read(firebaseAuthProvider)
-                                  .currentUser!
-                                  .uid)
-                              ? Icons.favorite
-                              : Icons.favorite_outline,
-                          color: widget.post.likes!.contains(ref
-                                  .read(firebaseAuthProvider)
-                                  .currentUser!
-                                  .uid)
-                              ? Colors.red
-                              : Colors.black,
-                        ),
-                        count: widget.post.likes!.length,
-                        onTap: () {
-                          ref.read(likePostProvider((
-                            post: widget.post,
-                            userId:
-                                ref.read(firebaseAuthProvider).currentUser!.uid
-                          )));
-                        }),
-                    PostActionButton(
-                      imagePath: iconPathGen('comment'),
-                      count: widget.post.comments!.length,
-                    )
-                  ],
-                ),
-                Row(
-                  spacing: 16,
-                  children: [
-                    SvgPicture.asset(iconPathGen('Save')),
-                    SvgPicture.asset(iconPathGen('Gift')),
-                    SvgPicture.asset(iconPathGen('Share')),
-                  ],
-                ),
+                widget.post == dummyPost
+                    ? Row(
+                        spacing: 16,
+                        children: [
+                          Icon(Icons.favorite_outline),
+                          Icon(Icons.comment),
+                        ],
+                      )
+                    : Row(
+                        spacing: 16,
+                        children: [
+                          PostActionButton(
+                              icon: Icon(
+                                widget.post.likes!.contains(ref
+                                        .read(firebaseAuthProvider)
+                                        .currentUser!
+                                        .uid)
+                                    ? Icons.favorite
+                                    : Icons.favorite_outline,
+                                color: widget.post.likes!.contains(ref
+                                        .read(firebaseAuthProvider)
+                                        .currentUser!
+                                        .uid)
+                                    ? Colors.red
+                                    : Colors.black,
+                              ),
+                              count: widget.post.likes!.length,
+                              onTap: () {
+                                ref.read(likePostProvider((
+                                  post: widget.post,
+                                  userId: ref
+                                      .read(firebaseAuthProvider)
+                                      .currentUser!
+                                      .uid
+                                )));
+                              }),
+                          PostActionButton(
+                            imagePath: iconPathGen('comment'),
+                            count: widget.post.comments!.length,
+                          )
+                        ],
+                      ),
+                // to enable skeletal loading
+                widget.post == dummyPost
+                    ? Row(
+                        spacing: 16,
+                        children: [
+                          Icon(Icons.bookmark_outline),
+                          Icon(Icons.gif_box),
+                          Icon(Icons.send),
+                        ],
+                      )
+                    : Row(
+                        spacing: 16,
+                        children: [
+                          SvgPicture.asset(iconPathGen('Save')),
+                          SvgPicture.asset(iconPathGen('Gift')),
+                          SvgPicture.asset(iconPathGen('Share')),
+                        ],
+                      ),
               ],
             ),
             if (widget.post.media!.isNotEmpty)

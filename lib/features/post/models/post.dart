@@ -1,5 +1,8 @@
-import 'package:anime_nexa/models/mediaitem.dart';
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
+
+import 'package:anime_nexa/models/mediaitem.dart';
 
 class Post {
   String? pid;
@@ -101,12 +104,40 @@ class Post {
       isDraft: isDraft ?? this.isDraft,
     );
   }
+
+  @override
+  bool operator ==(covariant Post other) {
+    if (identical(this, other)) return true;
+
+    return other.pid == pid &&
+        other.uid == uid &&
+        listEquals(other.media, media) &&
+        other.text == text &&
+        other.createdAt == createdAt &&
+        listEquals(other.likes, likes) &&
+        listEquals(other.comments, comments) &&
+        other.isDraft == isDraft;
+  }
+
+  @override
+  int get hashCode {
+    return pid.hashCode ^
+        uid.hashCode ^
+        media.hashCode ^
+        text.hashCode ^
+        createdAt.hashCode ^
+        likes.hashCode ^
+        comments.hashCode ^
+        isDraft.hashCode;
+  }
 }
 
 final dummyPost = Post(
   pid: "post_123",
   uid: "user_456",
-  media: [MediaItem(type: MediaType.image, mediaPath: "https://placehold.co/600x400")],
+  media: [
+    
+  ],
   text: "This is a sample post for testing purposes.",
   createdAt: DateTime.now(),
   likes: ["user_789", "user_101"],
