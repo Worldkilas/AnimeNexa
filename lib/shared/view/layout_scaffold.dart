@@ -49,8 +49,12 @@ class LayoutScaffold extends StatelessWidget {
               ),
             ),
             NavigationDestination(
-              icon: SvgPicture.asset(
-                'lib/assets/icons/Add.svg',
+              icon: Align(
+                alignment: Alignment.bottomCenter,
+                heightFactor: 2,
+                child: SvgPicture.asset(
+                  'lib/assets/icons/Add.svg',
+                ),
               ),
               label: '',
             ),
