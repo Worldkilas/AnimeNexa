@@ -36,3 +36,13 @@ String timeAgo(DateTime date) {
 
   return '${(diff.inDays / 365).floor()}y ago';
 }
+
+String formatDuration(Duration pos, Duration dur) {
+  String twoDigits(int n) => n.toString().padLeft(2, '0');
+  final minutes = twoDigits(pos.inMinutes.remainder(60));
+  final seconds = twoDigits(pos.inSeconds.remainder(60));
+  final totalMinutes = twoDigits(dur.inMinutes.remainder(60));
+  final totalSeconds = twoDigits(dur.inSeconds.remainder(60));
+
+  return '$minutes:$seconds / $totalMinutes:$totalSeconds';
+}
